@@ -5,9 +5,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="https://blog.ydq6.com/"/>
+  <link href="http://blog.ydq6.com/"/>
   <updated>2020-04-30T13:37:29.149Z</updated>
-  <id>https://blog.ydq6.com/</id>
+  <id>http://blog.ydq6.com/</id>
   
   <author>
     <name>gwolfs</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>实验_web安全之HTTP头部字段理解</title>
-    <link href="https://blog.ydq6.com/web/%E5%AE%9E%E9%AA%8C-web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3"/>
-    <id>https://blog.ydq6.com/web/%E5%AE%9E%E9%AA%8C-web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3</id>
+    <link href="http://blog.ydq6.com/web/%E5%AE%9E%E9%AA%8C-web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3"/>
+    <id>http://blog.ydq6.com/web/%E5%AE%9E%E9%AA%8C-web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3</id>
     <published>2020-04-30T12:55:32.000Z</published>
     <updated>2020-04-30T13:37:29.149Z</updated>
     
@@ -37,19 +37,19 @@
     </summary>
     
     
-      <category term="web安全" scheme="https://blog.ydq6.com/categories/web/"/>
+      <category term="web安全" scheme="http://blog.ydq6.com/categories/web/"/>
     
     
-      <category term="web安全" scheme="https://blog.ydq6.com/tags/web%E5%AE%89%E5%85%A8/"/>
+      <category term="web安全" scheme="http://blog.ydq6.com/tags/web%E5%AE%89%E5%85%A8/"/>
     
-      <category term="http" scheme="https://blog.ydq6.com/tags/http/"/>
+      <category term="http" scheme="http://blog.ydq6.com/tags/http/"/>
     
   </entry>
   
   <entry>
     <title>Hello World</title>
-    <link href="https://blog.ydq6.com/uncategorized/hello-world"/>
-    <id>https://blog.ydq6.com/uncategorized/hello-world</id>
+    <link href="http://blog.ydq6.com/uncategorized/hello-world"/>
+    <id>http://blog.ydq6.com/uncategorized/hello-world</id>
     <published>2020-04-29T15:31:27.813Z</published>
     <updated>2020-04-30T12:56:06.116Z</updated>
     
