@@ -233,7 +233,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="1-beecms"><a href="#1-beecms" class="headerlink" title="1.beecms"></a>1.beecms</h2><p>首先后台登录</p>
+        <h2><span id="1beecms">1.beecms</span></h2><p>首先后台登录</p>
 <p>绕过登录方法：</p>
 <figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">用户名：admi' Un union ion Se%select%lect <span class="number">1</span>,'admin','<span class="number">9003</span>d1df22eb4d3820015070385194c8',<span class="number">4</span>,<span class="number">0</span> #</span><br><span class="line">密码：pwd</span><br></pre></td></tr></table></figure>
 
@@ -246,7 +246,7 @@
 
 
 
-<h2 id="2-fiyocms"><a href="#2-fiyocms" class="headerlink" title="2.fiyocms"></a>2.fiyocms</h2><p>账户密码admin/admin888登录</p>
+<h2><span id="2fiyocms">2.fiyocms</span></h2><p>账户密码admin/admin888登录</p>
 <p>找到上传文件的点：</p>
 <figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span>/<span class="regexp">/47.105.75.177/vulnlab</span><span class="regexp">/upload/fiyocms</span><span class="regexp">/dapur/</span>?app=media&amp;<span class="keyword">type</span>=files</span><br></pre></td></tr></table></figure>
 
@@ -254,7 +254,7 @@
 <p>老师讲了后发现themes下面有漏洞。</p>
 <p>（1）任意文件读取</p>
 <p>（2）任意文件上传</p>
-<h2 id="3-phpok"><a href="#3-phpok" class="headerlink" title="3.phpok"></a>3.phpok</h2><p>账户密码admin/admin登录</p>
+<h2><span id="3phpok">3.phpok</span></h2><p>账户密码admin/admin登录</p>
 <p>找到修改头像的点，发现只能上传图像。</p>
 <p>上传一个后缀名改为gif的php代码。</p>
 <p>然后改包：</p>
@@ -274,7 +274,7 @@
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/phpok/</span>res<span class="regexp">/202004/</span><span class="number">20</span><span class="regexp">/1555e119f9dc2b1f.php</span></span><br></pre></td></tr></table></figure>
 
 <p>为了方便其他同学做再改回去。</p>
-<h2 id="geez"><a href="#geez" class="headerlink" title="geez"></a>geez</h2><p>同样sql注入得到账户名密码：admin/admin445</p>
+<h2><span id="geez">geez</span></h2><p>同样sql注入得到账户名密码：admin/admin445</p>
 <p>发现进去就有上传文件的点。用fuzz模糊测试发现很好绕过。直接php.即可。</p>
 <p>然后在主页再检查头像的地址：</p>
 <p>得到上传文件：</p>
@@ -300,16 +300,16 @@
   <div class="popular-posts-header">相关文章</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\合天培训-实验-命令执行\" rel="bookmark">合天培训_实验_命令执行</a></div>
-    </li>
-    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\web\合天培训-实验-sql注入\" rel="bookmark">合天培训_实验_sql注入</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\合天培训_实验_web安全之HTTP头部字段理解\" rel="bookmark">实验_web安全之HTTP头部字段理解</a></div>
+      <div class="popular-posts-title"><a href="\web\合天培训-实验-命令执行\" rel="bookmark">合天培训_实验_命令执行</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\web\合天培训_实验_文件包含漏洞\" rel="bookmark">实验-文件包含漏洞</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_web安全之HTTP头部字段理解\" rel="bookmark">实验_web安全之HTTP头部字段理解</a></div>
     </li>
   </ul>
 
@@ -391,7 +391,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-beecms"><span class="nav-text">1.beecms</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-fiyocms"><span class="nav-text">2.fiyocms</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-phpok"><span class="nav-text">3.phpok</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#geez"><span class="nav-text">geez</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">1.beecms</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">2.fiyocms</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">3.phpok</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">geez</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

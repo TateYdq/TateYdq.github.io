@@ -237,7 +237,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <center><font size=7>文件包含漏洞实验</font></center>
+        <center><font size="7">文件包含漏洞实验</font></center>
 <center>gwolfs</center>
 ## 本地文件包含
 
@@ -262,7 +262,7 @@
 <p> <a href="http://47.105.75.177/vulnlab/include/1/include.php?file=./upload/post.png" target="_blank" rel="noopener">http://47.105.75.177/vulnlab/include/1/include.php?file=./upload/post.png</a> </p>
 <p>利用菜刀连接即可。</p>
 <p><img src="/assets/image-20200421230943902-1588308709163.png" alt="image-20200421230943902"></p>
-<h2 id="远程文件包含"><a href="#远程文件包含" class="headerlink" title="远程文件包含"></a>远程文件包含</h2><p>（1）参数有file,提示php文件。代表只输入文件名就可以。</p>
+<h2><span id="远程文件包含">远程文件包含</span></h2><p>（1）参数有file,提示php文件。代表只输入文件名就可以。</p>
 <p>猜测代码：</p>
 <figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$file</span>=<span class="variable">$_GET</span>[<span class="string">'file'</span>].<span class="string">"php"</span>;</span><br><span class="line"><span class="keyword">include</span>(<span class="variable">$file</span>);</span><br></pre></td></tr></table></figure>
 
@@ -299,16 +299,16 @@
   <div class="popular-posts-header">相关文章</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\合天培训-实验-文件上传考核\" rel="bookmark">合天培训_实验_上传文件考核</a></div>
+      <div class="popular-posts-title"><a href="\web\合天培训-实验-sql注入\" rel="bookmark">合天培训_实验_sql注入</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\web\合天培训-实验-命令执行\" rel="bookmark">合天培训_实验_命令执行</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\合天培训-实验-sql注入\" rel="bookmark">合天培训_实验_sql注入</a></div>
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_web安全之HTTP头部字段理解\" rel="bookmark">实验_web安全之HTTP头部字段理解</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\合天培训_实验_web安全之HTTP头部字段理解\" rel="bookmark">实验_web安全之HTTP头部字段理解</a></div>
+      <div class="popular-posts-title"><a href="\web\合天培训-实验-文件上传考核\" rel="bookmark">合天培训_实验_上传文件考核</a></div>
     </li>
   </ul>
 
@@ -390,7 +390,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#远程文件包含"><span class="nav-text">远程文件包含</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">远程文件包含</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
