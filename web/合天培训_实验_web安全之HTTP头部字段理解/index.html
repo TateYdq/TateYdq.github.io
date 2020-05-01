@@ -239,20 +239,20 @@
         <p>本文主要是讲解http头部字段实验，实验的目的是加深对http请求头的理解。</p>
 <a id="more"></a>
 
-<h2><span id="第一题-观察http-响应头">第一题 观察HTTP 响应头</span></h2><p>题目提示观察http响应头所以只观察响应头即可。通过命令</p>
+<h2 id="第一题-观察HTTP-响应头"><a href="#第一题-观察HTTP-响应头" class="headerlink" title="第一题 观察HTTP 响应头"></a>第一题 观察HTTP 响应头</h2><p>题目提示观察http响应头所以只观察响应头即可。通过命令</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/1.php</span><br></pre></td></tr></table></figure>
 
 <p>得到:</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">key: hello world!</span><br></pre></td></tr></table></figure>
 
-<h2><span id="第二题-referer理解">第二题 Referer理解</span></h2><p>提示必须从<a href="http://www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段" target="_blank" rel="noopener">www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段</a></p>
+<h2 id="第二题-Referer理解"><a href="#第二题-Referer理解" class="headerlink" title="第二题 Referer理解"></a>第二题 Referer理解</h2><p>提示必须从<a href="http://www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段" target="_blank" rel="noopener">www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段</a></p>
 <p>通过命令</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -H Referer:http://www.baidu.com 47.105.75.177/vulnlab/head/2.php</span><br></pre></td></tr></table></figure>
 
 <p>从响应中获取key:</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
 
-<h2><span id="第三题-x-forwarded-for理解">第三题 X-Forwarded-For理解</span></h2><p>通过浏览器检查获取网址47.105.75.177/vulnlab/head/3.php，点击网址后自动跳转到 <a href="http://www.hetianlab.com/" target="_blank" rel="noopener">http://www.hetianlab.com/</a> 。先curl下：</p>
+<h2 id="第三题-X-Forwarded-For理解"><a href="#第三题-X-Forwarded-For理解" class="headerlink" title="第三题 X-Forwarded-For理解"></a>第三题 X-Forwarded-For理解</h2><p>通过浏览器检查获取网址47.105.75.177/vulnlab/head/3.php，点击网址后自动跳转到 <a href="http://www.hetianlab.com/" target="_blank" rel="noopener">http://www.hetianlab.com/</a> 。先curl下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
 
 <p>得到：</p>
@@ -264,7 +264,7 @@
 <p>得到key</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
 
-<h2><span id="第四题-user-agent理解">第四题 User-Agent理解</span></h2><p>题目提示只能从iPhone中发起访问，猜测检查不严格。直接伪造User-Agent:iPhone。curl命令：</p>
+<h2 id="第四题-User-Agent理解"><a href="#第四题-User-Agent理解" class="headerlink" title="第四题 User-Agent理解"></a>第四题 User-Agent理解</h2><p>题目提示只能从iPhone中发起访问，猜测检查不严格。直接伪造User-Agent:iPhone。curl命令：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -H User-Agent:iPhone 47.105.75.177/vulnlab/head/4.php</span><br></pre></td></tr></table></figure>
 
 <p>得到key:</p>
@@ -274,7 +274,7 @@
 <p>题目提示只允许外国人登录,猜测接收语言为英语即可。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -H Accept-Language:en_us 47.105.75.177/vulnlab/head/5.php</span><br></pre></td></tr></table></figure>
 
-<h2><span id="第六题-cookie理解">第六题 Cookie理解</span></h2><p>题目提示一定要用admin登录，又是cookie，猜测cookie中有判断是否admin字段。</p>
+<h2 id="第六题-Cookie理解"><a href="#第六题-Cookie理解" class="headerlink" title="第六题 Cookie理解"></a>第六题 Cookie理解</h2><p>题目提示一定要用admin登录，又是cookie，猜测cookie中有判断是否admin字段。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
 
 <p>发现响应头中会设置cookie:</p>
@@ -293,16 +293,16 @@
   <div class="popular-posts-header">相关文章</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\合天培训_实验_sql注入\" rel="bookmark">合天培训_实验_sql注入</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\合天培训_实验_文件包含漏洞\" rel="bookmark">实验-文件包含漏洞</a></div>
-    </li>
-    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\web\合天培训_实验_命令执行\" rel="bookmark">合天培训_实验_命令执行</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\web\合天培训_实验_文件上传考核\" rel="bookmark">合天培训_实验_上传文件考核</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_sql注入\" rel="bookmark">合天培训_实验_sql注入</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_文件包含漏洞\" rel="bookmark">实验-文件包含漏洞</a></div>
     </li>
   </ul>
 
@@ -381,7 +381,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">1.</span> <span class="nav-text">第一题 观察HTTP 响应头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">2.</span> <span class="nav-text">第二题 Referer理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">3.</span> <span class="nav-text">第三题 X-Forwarded-For理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">4.</span> <span class="nav-text">第四题 User-Agent理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">5.</span> <span class="nav-text">第六题 Cookie理解</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一题-观察HTTP-响应头"><span class="nav-number">1.</span> <span class="nav-text">第一题 观察HTTP 响应头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二题-Referer理解"><span class="nav-number">2.</span> <span class="nav-text">第二题 Referer理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三题-X-Forwarded-For理解"><span class="nav-number">3.</span> <span class="nav-text">第三题 X-Forwarded-For理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四题-User-Agent理解"><span class="nav-number">4.</span> <span class="nav-text">第四题 User-Agent理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第六题-Cookie理解"><span class="nav-number">5.</span> <span class="nav-text">第六题 Cookie理解</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

