@@ -1198,7 +1198,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #25ee5d;
+  background: #de62f0;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1583,11 +1583,11 @@ pre .javascript .function {
   opacity: 0;
 }
 .post-title {
-  font-size: 32px;
+  font-size: 40px;
   text-align: center;
   word-break: break-word;
   font-weight: $posts-expand-title-font-weight;
-  background-color: #b9d3ee;
+  background-color: #44bba3;
   border-radius: 0.3em;
   line-height: 1em;
   padding-bottom: 0.12em;
