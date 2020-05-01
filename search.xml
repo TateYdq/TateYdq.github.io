@@ -1,6 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>合天培训_实验_上传文件考核</title>
+    <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E8%80%83%E6%A0%B8/</url>
+    <content><![CDATA[<h2 id="1-beecms"><a href="#1-beecms" class="headerlink" title="1.beecms"></a>1.beecms</h2><p>首先后台登录</p>
+<p>绕过登录方法：</p>
+<figure class="highlight lsl"><table><tr><td class="code"><pre><span class="line">用户名：admi' Un union ion Se%select%lect <span class="number">1</span>,'admin','<span class="number">9003</span>d1df22eb4d3820015070385194c8',<span class="number">4</span>,<span class="number">0</span> #</span><br><span class="line">密码：pwd</span><br></pre></td></tr></table></figure>
+
+<p>在后台发现上传图片功能：</p>
+<figure class="highlight sas"><table><tr><td class="code"><pre><span class="line">http://47.105.75.177/vulnlab/sqli/beecms/admin/admin_content.php?action=<span class="meta">add</span><span class="variable">&amp;id</span>=3<span class="variable">&amp;nav</span>=add_channel_product<span class="variable">&amp;admin_p_nav</span>=content<span class="variable">&amp;lang</span>=cn</span><br></pre></td></tr></table></figure>
+
+<p>实际检测，发现是MIME白名单检测，所以Burp改包即可。</p>
+<p>然后在图片管理中可以看到上传的文件的路径：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">/vulnlab/</span>sqli<span class="regexp">/beecms/u</span>pload<span class="regexp">/img/</span><span class="number">202004201359505400</span>.php</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-fiyocms"><a href="#2-fiyocms" class="headerlink" title="2.fiyocms"></a>2.fiyocms</h2><p>账户密码admin/admin888登录</p>
+<p>找到上传文件的点：</p>
+<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="symbol">http:</span>/<span class="regexp">/47.105.75.177/vulnlab</span><span class="regexp">/upload/fiyocms</span><span class="regexp">/dapur/</span>?app=media&amp;<span class="keyword">type</span>=files</span><br></pre></td></tr></table></figure>
+
+<p>但是上传按钮按不动。其他功能点也没有上传的，放弃。</p>
+<p>老师讲了后发现themes下面有漏洞。</p>
+<p>（1）任意文件读取</p>
+<p>（2）任意文件上传</p>
+<h2 id="3-phpok"><a href="#3-phpok" class="headerlink" title="3.phpok"></a>3.phpok</h2><p>账户密码admin/admin登录</p>
+<p>找到修改头像的点，发现只能上传图像。</p>
+<p>上传一个后缀名改为gif的php代码。</p>
+<p>然后改包：</p>
+<p><img src="/assets/image-20200420145021307.png" alt="image-20200420145021307"></p>
+<p>发现php被过滤了。</p>
+<p>php fuzz测试。发现均被过滤了。</p>
+<p>换思路，扫后台</p>
+<p>扫出admin.php</p>
+<p>登录发现不正确，应该用户表和管理员表是两张。</p>
+<p>用户名：admin,密码： admin888 (利用其他网站的sql注入获得)</p>
+<p>在工具，附件分类管理中gif,png,jpg后面再加个php。然后再文件上传即可。</p>
+<p><img src="/assets/image-20200420154112973.png" alt="image-20200420154112973"></p>
+<p>看burp包得到上传路径：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">res/<span class="number">202004</span>/<span class="number">20</span>/<span class="number">1555e119f</span>9dc2b1f.php</span><br></pre></td></tr></table></figure>
+
+<p>访问资源即可：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/phpok/</span>res<span class="regexp">/202004/</span><span class="number">20</span><span class="regexp">/1555e119f9dc2b1f.php</span></span><br></pre></td></tr></table></figure>
+
+<p>为了方便其他同学做再改回去。</p>
+<h2 id="geez"><a href="#geez" class="headerlink" title="geez"></a>geez</h2><p>同样sql注入得到账户名密码：admin/admin445</p>
+<p>发现进去就有上传文件的点。用fuzz模糊测试发现很好绕过。直接php.即可。</p>
+<p>然后在主页再检查头像的地址：</p>
+<p>得到上传文件：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">./upload/<span class="number">1</span>_dama1.php.</span><br></pre></td></tr></table></figure>
+
+<p>访问：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/denglu/u</span>pload<span class="regexp">/1_dama1.php.</span></span><br></pre></td></tr></table></figure>
+
+<p>发现不能解析。</p>
+<p>改为大小写绕过得到上传文件：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">./upload/<span class="number">1</span>_dama1.php</span><br></pre></td></tr></table></figure>
+
+<p>访问：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/denglu/u</span>pload<span class="regexp">/1_dama1.php</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>web安全</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+        <tag>文件上传</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>合天培训_实验_命令执行</title>
     <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/</url>
     <content><![CDATA[<h1 id="命令执行实验"><a href="#命令执行实验" class="headerlink" title="命令执行实验"></a>命令执行实验</h1><center>gwolfs</center>
@@ -655,131 +724,6 @@
       </tags>
   </entry>
   <entry>
-    <title>合天培训_实验_上传文件考核</title>
-    <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E8%80%83%E6%A0%B8/</url>
-    <content><![CDATA[<h2 id="1-beecms"><a href="#1-beecms" class="headerlink" title="1.beecms"></a>1.beecms</h2><p>首先后台登录</p>
-<p>绕过登录方法：</p>
-<figure class="highlight lsl"><table><tr><td class="code"><pre><span class="line">用户名：admi' Un union ion Se%select%lect <span class="number">1</span>,'admin','<span class="number">9003</span>d1df22eb4d3820015070385194c8',<span class="number">4</span>,<span class="number">0</span> #</span><br><span class="line">密码：pwd</span><br></pre></td></tr></table></figure>
-
-<p>在后台发现上传图片功能：</p>
-<figure class="highlight sas"><table><tr><td class="code"><pre><span class="line">http://47.105.75.177/vulnlab/sqli/beecms/admin/admin_content.php?action=<span class="meta">add</span><span class="variable">&amp;id</span>=3<span class="variable">&amp;nav</span>=add_channel_product<span class="variable">&amp;admin_p_nav</span>=content<span class="variable">&amp;lang</span>=cn</span><br></pre></td></tr></table></figure>
-
-<p>实际检测，发现是MIME白名单检测，所以Burp改包即可。</p>
-<p>然后在图片管理中可以看到上传的文件的路径：</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">/vulnlab/</span>sqli<span class="regexp">/beecms/u</span>pload<span class="regexp">/img/</span><span class="number">202004201359505400</span>.php</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-fiyocms"><a href="#2-fiyocms" class="headerlink" title="2.fiyocms"></a>2.fiyocms</h2><p>账户密码admin/admin888登录</p>
-<p>找到上传文件的点：</p>
-<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="symbol">http:</span>/<span class="regexp">/47.105.75.177/vulnlab</span><span class="regexp">/upload/fiyocms</span><span class="regexp">/dapur/</span>?app=media&amp;<span class="keyword">type</span>=files</span><br></pre></td></tr></table></figure>
-
-<p>但是上传按钮按不动。其他功能点也没有上传的，放弃。</p>
-<p>老师讲了后发现themes下面有漏洞。</p>
-<p>（1）任意文件读取</p>
-<p>（2）任意文件上传</p>
-<h2 id="3-phpok"><a href="#3-phpok" class="headerlink" title="3.phpok"></a>3.phpok</h2><p>账户密码admin/admin登录</p>
-<p>找到修改头像的点，发现只能上传图像。</p>
-<p>上传一个后缀名改为gif的php代码。</p>
-<p>然后改包：</p>
-<p><img src="/assets/image-20200420145021307.png" alt="image-20200420145021307"></p>
-<p>发现php被过滤了。</p>
-<p>php fuzz测试。发现均被过滤了。</p>
-<p>换思路，扫后台</p>
-<p>扫出admin.php</p>
-<p>登录发现不正确，应该用户表和管理员表是两张。</p>
-<p>用户名：admin,密码： admin888 (利用其他网站的sql注入获得)</p>
-<p>在工具，附件分类管理中gif,png,jpg后面再加个php。然后再文件上传即可。</p>
-<p><img src="/assets/image-20200420154112973.png" alt="image-20200420154112973"></p>
-<p>看burp包得到上传路径：</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">res/<span class="number">202004</span>/<span class="number">20</span>/<span class="number">1555e119f</span>9dc2b1f.php</span><br></pre></td></tr></table></figure>
-
-<p>访问资源即可：</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/phpok/</span>res<span class="regexp">/202004/</span><span class="number">20</span><span class="regexp">/1555e119f9dc2b1f.php</span></span><br></pre></td></tr></table></figure>
-
-<p>为了方便其他同学做再改回去。</p>
-<h2 id="geez"><a href="#geez" class="headerlink" title="geez"></a>geez</h2><p>同样sql注入得到账户名密码：admin/admin445</p>
-<p>发现进去就有上传文件的点。用fuzz模糊测试发现很好绕过。直接php.即可。</p>
-<p>然后在主页再检查头像的地址：</p>
-<p>得到上传文件：</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">./upload/<span class="number">1</span>_dama1.php.</span><br></pre></td></tr></table></figure>
-
-<p>访问：</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/denglu/u</span>pload<span class="regexp">/1_dama1.php.</span></span><br></pre></td></tr></table></figure>
-
-<p>发现不能解析。</p>
-<p>改为大小写绕过得到上传文件：</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">./upload/<span class="number">1</span>_dama1.php</span><br></pre></td></tr></table></figure>
-
-<p>访问：</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/denglu/u</span>pload<span class="regexp">/1_dama1.php</span></span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>web安全</category>
-      </categories>
-      <tags>
-        <tag>web</tag>
-        <tag>文件上传</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>实验_web安全之HTTP头部字段理解</title>
-    <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3/</url>
-    <content><![CDATA[<h1 id="web安全之HTTP头部字段理解"><a href="#web安全之HTTP头部字段理解" class="headerlink" title="web安全之HTTP头部字段理解"></a>web安全之HTTP头部字段理解</h1><h2 id="第一题-观察HTTP-响应头"><a href="#第一题-观察HTTP-响应头" class="headerlink" title="第一题 观察HTTP 响应头"></a>第一题 观察HTTP 响应头</h2><p>题目提示观察http响应头所以只观察响应头即可。通过命令</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/1.php</span><br></pre></td></tr></table></figure>
-
-<p>得到:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: hello world!</span><br></pre></td></tr></table></figure>
-
-<h2 id="第二题-Referer理解"><a href="#第二题-Referer理解" class="headerlink" title="第二题 Referer理解"></a>第二题 Referer理解</h2><p>提示必须从<a href="http://www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段" target="_blank" rel="noopener">www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段</a></p>
-<p>通过命令</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Referer:http://www.baidu.com 47.105.75.177/vulnlab/head/2.php</span><br></pre></td></tr></table></figure>
-
-<p>从响应中获取key:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
-
-<h2 id="第三题-X-Forwarded-For理解"><a href="#第三题-X-Forwarded-For理解" class="headerlink" title="第三题 X-Forwarded-For理解"></a>第三题 X-Forwarded-For理解</h2><p>通过浏览器检查获取网址47.105.75.177/vulnlab/head/3.php，点击网址后自动跳转到 <a href="http://www.hetianlab.com/" target="_blank" rel="noopener">http://www.hetianlab.com/</a> 。先curl下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
-
-<p>得到：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">this page only accept come from localhost</span><br></pre></td></tr></table></figure>
-
-<p>本地才能访问，所以伪造X-Forwarded-For为127.0.0.1</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H X-Forwarded-For:127.0.0.1 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
-
-<p>得到key</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
-
-<h2 id="第四题-User-Agent理解"><a href="#第四题-User-Agent理解" class="headerlink" title="第四题 User-Agent理解"></a>第四题 User-Agent理解</h2><p>题目提示只能从iPhone中发起访问，猜测检查不严格。直接伪造User-Agent:iPhone。curl命令：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H User-Agent:iPhone 47.105.75.177/vulnlab/head/4.php</span><br></pre></td></tr></table></figure>
-
-<p>得到key:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
-
-<p>第五题 Accept-Language理解</p>
-<p>题目提示只允许外国人登录,猜测接收语言为英语即可。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Accept-Language:en_us 47.105.75.177/vulnlab/head/5.php</span><br></pre></td></tr></table></figure>
-
-<h2 id="第六题-Cookie理解"><a href="#第六题-Cookie理解" class="headerlink" title="第六题 Cookie理解"></a>第六题 Cookie理解</h2><p>题目提示一定要用admin登录，又是cookie，猜测cookie中有判断是否admin字段。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
-
-<p>发现响应头中会设置cookie:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Set-Cookie: Login=anonymous</span><br></pre></td></tr></table></figure>
-
-<p>所以请求时将cookie设置为Login=admin即可。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl --cookie Login=admin 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>web安全</category>
-      </categories>
-      <tags>
-        <tag>web</tag>
-        <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>实验-文件包含漏洞</title>
     <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/</url>
     <content><![CDATA[<center><font size=7>文件包含漏洞实验</font></center>
@@ -841,6 +785,62 @@
       <tags>
         <tag>web</tag>
         <tag>文件包含</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>实验_web安全之HTTP头部字段理解</title>
+    <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3/</url>
+    <content><![CDATA[<h1 id="web安全之HTTP头部字段理解"><a href="#web安全之HTTP头部字段理解" class="headerlink" title="web安全之HTTP头部字段理解"></a>web安全之HTTP头部字段理解</h1><h2 id="第一题-观察HTTP-响应头"><a href="#第一题-观察HTTP-响应头" class="headerlink" title="第一题 观察HTTP 响应头"></a>第一题 观察HTTP 响应头</h2><p>题目提示观察http响应头所以只观察响应头即可。通过命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/1.php</span><br></pre></td></tr></table></figure>
+
+<p>得到:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: hello world!</span><br></pre></td></tr></table></figure>
+
+<h2 id="第二题-Referer理解"><a href="#第二题-Referer理解" class="headerlink" title="第二题 Referer理解"></a>第二题 Referer理解</h2><p>提示必须从<a href="http://www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段" target="_blank" rel="noopener">www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段</a></p>
+<p>通过命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Referer:http://www.baidu.com 47.105.75.177/vulnlab/head/2.php</span><br></pre></td></tr></table></figure>
+
+<p>从响应中获取key:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+
+<h2 id="第三题-X-Forwarded-For理解"><a href="#第三题-X-Forwarded-For理解" class="headerlink" title="第三题 X-Forwarded-For理解"></a>第三题 X-Forwarded-For理解</h2><p>通过浏览器检查获取网址47.105.75.177/vulnlab/head/3.php，点击网址后自动跳转到 <a href="http://www.hetianlab.com/" target="_blank" rel="noopener">http://www.hetianlab.com/</a> 。先curl下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
+
+<p>得到：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">this page only accept come from localhost</span><br></pre></td></tr></table></figure>
+
+<p>本地才能访问，所以伪造X-Forwarded-For为127.0.0.1</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H X-Forwarded-For:127.0.0.1 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
+
+<p>得到key</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+
+<h2 id="第四题-User-Agent理解"><a href="#第四题-User-Agent理解" class="headerlink" title="第四题 User-Agent理解"></a>第四题 User-Agent理解</h2><p>题目提示只能从iPhone中发起访问，猜测检查不严格。直接伪造User-Agent:iPhone。curl命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H User-Agent:iPhone 47.105.75.177/vulnlab/head/4.php</span><br></pre></td></tr></table></figure>
+
+<p>得到key:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+
+<p>第五题 Accept-Language理解</p>
+<p>题目提示只允许外国人登录,猜测接收语言为英语即可。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Accept-Language:en_us 47.105.75.177/vulnlab/head/5.php</span><br></pre></td></tr></table></figure>
+
+<h2 id="第六题-Cookie理解"><a href="#第六题-Cookie理解" class="headerlink" title="第六题 Cookie理解"></a>第六题 Cookie理解</h2><p>题目提示一定要用admin登录，又是cookie，猜测cookie中有判断是否admin字段。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
+
+<p>发现响应头中会设置cookie:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Set-Cookie: Login=anonymous</span><br></pre></td></tr></table></figure>
+
+<p>所以请求时将cookie设置为Login=admin即可。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl --cookie Login=admin 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>web安全</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+        <tag>http</tag>
       </tags>
   </entry>
 </search>
