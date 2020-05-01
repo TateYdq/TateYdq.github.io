@@ -18,8 +18,8 @@
   
   <entry>
     <title>实验-文件包含漏洞</title>
-    <link href="http://blog.ydq6.com/uncategorized/%E5%AE%9E%E9%AA%8C-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E"/>
-    <id>http://blog.ydq6.com/uncategorized/%E5%AE%9E%E9%AA%8C-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E</id>
+    <link href="http://blog.ydq6.com/uncategorized/%E5%AE%9E%E9%AA%8C-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/"/>
+    <id>http://blog.ydq6.com/uncategorized/%E5%AE%9E%E9%AA%8C-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/</id>
     <published>2020-05-01T04:18:04.000Z</published>
     <updated>2020-05-01T04:20:17.150Z</updated>
     
@@ -43,8 +43,8 @@
   
   <entry>
     <title>test1</title>
-    <link href="http://blog.ydq6.com/uncategorized/test1"/>
-    <id>http://blog.ydq6.com/uncategorized/test1</id>
+    <link href="http://blog.ydq6.com/uncategorized/test1/"/>
+    <id>http://blog.ydq6.com/uncategorized/test1/</id>
     <published>2020-05-01T04:16:48.000Z</published>
     <updated>2020-05-01T04:16:48.930Z</updated>
     
@@ -58,8 +58,8 @@
   
   <entry>
     <title>实验_web安全之HTTP头部字段理解</title>
-    <link href="http://blog.ydq6.com/web/%E5%AE%9E%E9%AA%8C-web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3"/>
-    <id>http://blog.ydq6.com/web/%E5%AE%9E%E9%AA%8C-web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3</id>
+    <link href="http://blog.ydq6.com/web/%E5%AE%9E%E9%AA%8C-web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3/"/>
+    <id>http://blog.ydq6.com/web/%E5%AE%9E%E9%AA%8C-web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3/</id>
     <published>2020-04-30T12:55:32.000Z</published>
     <updated>2020-04-30T13:37:29.149Z</updated>
     
@@ -86,8 +86,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://blog.ydq6.com/uncategorized/hello-world"/>
-    <id>http://blog.ydq6.com/uncategorized/hello-world</id>
+    <link href="http://blog.ydq6.com/uncategorized/hello-world/"/>
+    <id>http://blog.ydq6.com/uncategorized/hello-world/</id>
     <published>2020-04-29T15:31:27.813Z</published>
     <updated>2020-04-30T12:56:06.116Z</updated>
     
