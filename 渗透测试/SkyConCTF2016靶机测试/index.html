@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="FJtFPhqPz0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.ydq6.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1、IP探测 netdiscover -i eth0 弹出mac地址08:00:27:d3:70:74对应的ip地址为192.168.43.248">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SkyConCTF2016靶机测试">
+<meta property="og:url" content="http://blog.ydq6.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/SkyConCTF2016%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/index.html">
+<meta property="og:site_name" content="gwolfs的个人博客">
+<meta property="og:description" content="1、IP探测 netdiscover -i eth0 弹出mac地址08:00:27:d3:70:74对应的ip地址为192.168.43.248">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180602100404515-1588777753200.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180602100539377-1588777753201.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180602103843825-1588777753202.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180602114356663-1588777753202.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180602114422355-1588777753202.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180602114948886-1588777753203.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180603155953564-1588777753203.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180603160105406-1588777753203.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180603162606699-1588777753203.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180603165015569-1588777753203.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180603165641329-1588777753204.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180603170045319-1588777753204.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180603170440593-1588777753204.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180603171745363-1588777753204.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20180603171824459-1588777753204.png">
+<meta property="article:published_time" content="2020-05-06T15:07:27.000Z">
+<meta property="article:modified_time" content="2020-05-06T15:17:15.654Z">
+<meta property="article:author" content="gwolfs">
+<meta property="article:tag" content="靶机">
+<meta property="article:tag" content="web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20180602100404515-1588777753200.png">
+
+<link rel="canonical" href="http://blog.ydq6.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/SkyConCTF2016%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>SkyConCTF2016靶机测试 | gwolfs的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="gwolfs的个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">gwolfs的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/SkyConCTF2016%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head1.png">
+      <meta itemprop="name" content="gwolfs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gwolfs的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SkyConCTF2016靶机测试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-05-06 23:07:27 / 修改时间：23:17:15" itemprop="dateCreated datePublished" datetime="2020-05-06T23:07:27+08:00">2020-05-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>1、IP探测</p>
+<p>netdiscover -i eth0</p>
+<p>弹出mac地址08:00:27:d3:70:74对应的ip地址为192.168.43.248</p>
+<a id="more"></a>
+
+<p>2、扫描端口</p>
+<p>(1)nmap -sV -O 192.168.43.248</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Nmap scan report <span class="keyword">for</span> skydogconctf2016 (192.168.43.248)</span><br><span class="line">Host is up (0.0019s latency).</span><br><span class="line"><span class="keyword">Not</span> shown: 997 filtered ports</span><br><span class="line">PORT    STATE <span class="built_in"> SERVICE </span> VERSION</span><br><span class="line">22/tcp  closed ssh</span><br><span class="line">80/tcp  open   http     Apache httpd 2.4.18 ((Ubuntu))</span><br><span class="line">443/tcp open   ssl/http Apache httpd 2.4.18 ((Ubuntu))</span><br><span class="line">MAC Address: 08:00:27:D3:70:74 (Oracle VirtualBox virtual NIC)</span><br><span class="line">Device type: general purpose</span><br><span class="line">Running: Linux 3.X|4.X</span><br><span class="line">OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4</span><br><span class="line">OS details: Linux 3.10 - 4.8</span><br><span class="line">Network Distance: 1 hop</span><br></pre></td></tr></table></figure>
+
+<p>只开了两个端口，80，443.Ubuntu系统</p>
+<p>(2)扫描常见漏洞</p>
+<p>nmap –script=vuln 192.168.43.248</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">Starting Nmap <span class="number">7.50</span> ( https://nmap.org ) at <span class="number">2018</span><span class="number">-06</span><span class="number">-02</span> <span class="number">10</span>:<span class="number">06</span> CSTPre-scan script results:</span><br><span class="line">| broadcast-avahi-dos:</span><br><span class="line">|   Discovered hosts:</span><br><span class="line">|     <span class="number">224.0</span>.<span class="number">0.251</span></span><br><span class="line">|   After NULL UDP avahi packet DoS (CVE<span class="number">-2011</span><span class="number">-1002</span>).</span><br><span class="line">|_  Hosts are all up (not vulnerable).</span><br><span class="line">Nmap scan report for skydogconctf<span class="number">2016</span> (<span class="number">192.168</span>.<span class="number">43.248</span>)</span><br><span class="line">Host is up (<span class="number">0.00096</span>s latency).</span><br><span class="line">Not shown: <span class="number">997</span> filtered ports</span><br><span class="line">PORT    STATE  SERVICE</span><br><span class="line"><span class="number">22</span>/tcp  closed ssh</span><br><span class="line"><span class="number">80</span>/tcp  open   http</span><br><span class="line">|_http-csrf: Couldn't find any CSRF vulnerabilities.</span><br><span class="line">|_http-dombased-xss: Couldn't find any DOM based XSS.</span><br><span class="line">| http-slowloris-check:</span><br><span class="line">|   VULNERABLE:</span><br><span class="line">|   Slowloris DOS attack</span><br><span class="line">|     State: LIKELY VULNERABLE</span><br><span class="line">|     IDs:  CVE:CVE<span class="number">-2007</span><span class="number">-6750</span></span><br><span class="line">|       Slowloris tries <span class="keyword">to</span> keep many connections <span class="keyword">to</span> the <span class="keyword">target</span> web server open <span class="keyword">and</span> hold</span><br><span class="line">|       them open as long as possible.  It accomplishes this by opening connections <span class="keyword">to</span></span><br><span class="line">|       the <span class="keyword">target</span> web server <span class="keyword">and</span> sending a partial request. By doing so, it starves</span><br><span class="line">|       the http server's resources causing Denial Of Service.</span><br><span class="line">|</span><br><span class="line">|     Disclosure date: <span class="number">2009</span><span class="number">-09</span><span class="number">-17</span></span><br><span class="line">|     References:</span><br><span class="line">|       http://ha.ckers.org/slowloris/</span><br><span class="line">|_      https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE<span class="number">-2007</span><span class="number">-6750</span></span><br><span class="line">| http-sql-injection:</span><br><span class="line">|   Possible sqli for queries:</span><br><span class="line">|_    http://skydogconctf<span class="number">2016</span>/assets/js/<span class="keyword">c</span>,l.<span class="keyword">type</span>=a),l.width=l.height=<span class="symbol">%220</span><span class="symbol">%22</span>,l.onerror=l.onload=l.onreadystatechange=function()<span class="symbol">%7</span>bk.<span class="keyword">call</span>(this,r)<span class="symbol">%7</span>d,p.splice(e,<span class="number">0</span>,u),<span class="symbol">%22</span>img<span class="symbol">%22</span>!=a&amp;&amp;(r<span class="symbol">%7</span><span class="keyword">c</span><span class="symbol">%7</span><span class="keyword">c</span><span class="number">2</span>===y<span class="symbol">%5</span>bc<span class="symbol">%5</span>d?<span class="symbol">%28</span>t<span class="symbol">%2</span>einsertBefore<span class="symbol">%28</span>l<span class="symbol">%2</span>cs<span class="symbol">%3</span>fnull<span class="symbol">%3</span>an<span class="symbol">%29</span><span class="symbol">%2</span>cm<span class="symbol">%28</span>k<span class="symbol">%2</span>cj<span class="symbol">%29</span><span class="symbol">%29</span><span class="symbol">%3</span>ay<span class="symbol">%5</span>bc<span class="symbol">%5</span>d<span class="symbol">%2</span>epush<span class="symbol">%28</span>l<span class="symbol">%29</span><span class="symbol">%29</span><span class="symbol">%7</span>dfunction=<span class="symbol">%27</span><span class="symbol">%20</span>OR<span class="symbol">%20</span>sqlspider</span><br><span class="line">|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.</span><br><span class="line"><span class="number">443</span>/tcp open   https</span><br><span class="line">|_http-csrf: Couldn't find any CSRF vulnerabilities.</span><br><span class="line">|_http-dombased-xss: Couldn't find any DOM based XSS.</span><br><span class="line">| http-slowloris-check:</span><br><span class="line">|   VULNERABLE:</span><br><span class="line">|   Slowloris DOS attack</span><br><span class="line">|     State: LIKELY VULNERABLE</span><br><span class="line">|     IDs:  CVE:CVE<span class="number">-2007</span><span class="number">-6750</span></span><br><span class="line">|       Slowloris tries <span class="keyword">to</span> keep many connections <span class="keyword">to</span> the <span class="keyword">target</span> web server open <span class="keyword">and</span> hold</span><br><span class="line">|       them open as long as possible.  It accomplishes this by opening connections <span class="keyword">to</span></span><br><span class="line">|       the <span class="keyword">target</span> web server <span class="keyword">and</span> sending a partial request. By doing so, it starves</span><br><span class="line">|       the http server's resources causing Denial Of Service.</span><br><span class="line">|</span><br><span class="line">|     Disclosure date: <span class="number">2009</span><span class="number">-09</span><span class="number">-17</span></span><br><span class="line">|     References:</span><br><span class="line">|       http://ha.ckers.org/slowloris/</span><br><span class="line">|_      https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE<span class="number">-2007</span><span class="number">-6750</span></span><br><span class="line">| http-sql-injection:</span><br><span class="line">|   Possible sqli for queries:</span><br><span class="line">|_    https://skydogconctf<span class="number">2016</span>/assets/js/<span class="keyword">c</span>,l.<span class="keyword">type</span>=a),l.width=l.height=<span class="symbol">%220</span><span class="symbol">%22</span>,l.onerror=l.onload=l.onreadystatechange=function()<span class="symbol">%7</span>bk.<span class="keyword">call</span>(this,r)<span class="symbol">%7</span>d,p.splice(e,<span class="number">0</span>,u),<span class="symbol">%22</span>img<span class="symbol">%22</span>!=a&amp;&amp;(r<span class="symbol">%7</span><span class="keyword">c</span><span class="symbol">%7</span><span class="keyword">c</span><span class="number">2</span>===y<span class="symbol">%5</span>bc<span class="symbol">%5</span>d?<span class="symbol">%28</span>t<span class="symbol">%2</span>einsertBefore<span class="symbol">%28</span>l<span class="symbol">%2</span>cs<span class="symbol">%3</span>fnull<span class="symbol">%3</span>an<span class="symbol">%29</span><span class="symbol">%2</span>cm<span class="symbol">%28</span>k<span class="symbol">%2</span>cj<span class="symbol">%29</span><span class="symbol">%29</span><span class="symbol">%3</span>ay<span class="symbol">%5</span>bc<span class="symbol">%5</span>d<span class="symbol">%2</span>epush<span class="symbol">%28</span>l<span class="symbol">%29</span><span class="symbol">%29</span><span class="symbol">%7</span>dfunction=<span class="symbol">%27</span><span class="symbol">%20</span>OR<span class="symbol">%20</span>sqlspider</span><br><span class="line">|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.</span><br><span class="line">|_sslv<span class="number">2</span>-drown:</span><br></pre></td></tr></table></figure>
+
+<p>发现一个点</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http-sql-<span class="string">injection:</span> </span><br><span class="line">Possible sqli <span class="keyword">for</span> <span class="string">queries:</span></span><br></pre></td></tr></table></figure>
+
+<p>看来应该存在sql注入</p>
+<p>3、进入服务器网页</p>
+<p><img src="/assets/image-20180602100404515-1588777753200.png" alt="image-20180602100404515"></p>
+<p>浏览下网页，发现下面有提示</p>
+<p><img src="/assets/image-20180602100539377-1588777753201.png" alt="image-20180602100539377">4、获取flag</p>
+<p>(1)第一个flag</p>
+<p>根据上图的提示，不要去home,home中有一个十六进制。那么去Home试试。</p>
+<p>/home</p>
+<p>发现home根本不存在。</p>
+<p>用zap扫一下网站，发现网站下有两个目录，一个是assets,一个是oldIE,有了以前的经验教训就先找oldIE,然后发现下面只有一个文件html5.js，打开后发现最上面醒目的标识着一个注释。</p>
+<p><img src="/assets/image-20180602103843825-1588777753202.png" alt="image-20180602103843825"></p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">666</span>c61677b37633031333230373061306566373164353432363633653964633166356465657d</span><br></pre></td></tr></table></figure>
+
+<p>用十六机制转ASCII码解码得：</p>
+<p>flag{7c0132070a0ef71d542663e9dc1f5dee}</p>
+<p>（2）第二个flag</p>
+<p>那第二个flag该怎么找呢？第二个那个flag提示相当于没有什么提示。一般这种题目后面个flag需要靠前面个flag寻找过程的帮助，但是前面个没有任何提示信息。怎么办？观察下flag里面的字符恰好是32位。</p>
+<p>7c0132070a0ef71d542663e9dc1f5dee用md5解码后为nmap。</p>
+<p>意思提示用nmap，可是刚刚已经扫过了一次，难道是先前没扫全？</p>
+<p>重新扫一次</p>
+<p>nmap -A 192.168.43.248</p>
+<p>发现还是没有什么信息</p>
+<p>那看一下端口吧,为了快速分为两次扫描</p>
+<p>nmap -p 1000-20000 192.168.43.248</p>
+<p>没有</p>
+<p>nmap -sV -p 20000-65535 192.168.43.248</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PORT      STATE SERVICE</span><br><span class="line">22222/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.1 (Ubuntu Linux; protocol 2.0)</span><br></pre></td></tr></table></figure>
+
+<p>发现开了22222端口，而且服务是ssh服务，</p>
+<p>连接试一下看看有没有弱密码：</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">windows7phone% ssh -p <span class="number">22222</span> root@<span class="number">192.168</span><span class="number">.43</span><span class="number">.248</span></span><br><span class="line">The authenticity <span class="keyword">of</span> host '[<span class="number">192.168</span><span class="number">.43</span><span class="number">.248</span>]:<span class="number">22222</span> ([<span class="number">192.168</span><span class="number">.43</span><span class="number">.248</span>]:<span class="number">22222</span>)' can't be established.</span><br><span class="line">ECDSA key fingerprint <span class="keyword">is</span> SHA256:DeCMZ74o5wesBHFLyaVY7UTCA7mW+bx6WroHm6AgMqU.</span><br><span class="line">Are you sure you want <span class="keyword">to</span> <span class="keyword">continue</span> connecting (yes/no)? yes</span><br><span class="line">Warning: Permanently added '[<span class="number">192.168</span><span class="number">.43</span><span class="number">.248</span>]:<span class="number">22222</span>' (ECDSA) <span class="keyword">to</span> <span class="keyword">the</span> <span class="built_in">list</span> <span class="keyword">of</span> known hosts.</span><br><span class="line"></span><br><span class="line"><span class="comment">###### #</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># WARNING</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># FBI - Authorized access only!</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Disconnect IMMEDIATELY if you are not an authorized user!!!</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># All actions Will be monitored and recorded</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Flag&#123;53c82eba31f6d416f331de9162ebe997&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">###### #</span></span><br></pre></td></tr></table></figure>
+
+<p>结果直接弹出flag了，第二个flag get.Flag{53c82eba31f6d416f331de9162ebe997}</p>
+<p>(3)第三个flag</p>
+<p>有了先前的经验把第二个flag的值用md5解密后得encrypt</p>
+<p>看来第三关是加密。再看看最先前的提示：“During his Travels Frank has Been Known to Intercept Traffic”</p>
+<p>意思不安全，有人可以窃听流量。意思用http不安全？</p>
+<p>那用https试下</p>
+<p>发现证书错误,看一下证书,发现证书中没有flag，看了下解密不太可能。</p>
+<p>于是看下是否还有其他可以利用的信息。</p>
+<p>点击把证书添加例外后发现可以查看证书状态：</p>
+<p><img src="/assets/image-20180602114356663-1588777753202.png" alt="image-20180602114356663"></p>
+<p>点击进去看下。惊奇的发现里面有flag</p>
+<p><img src="/assets/image-20180602114422355-1588777753202.png" alt="image-20180602114422355"></p>
+<p>flag3{f82366a9ddc064585d54e3f78bde3221}</p>
+<p>（4）第四个flag</p>
+<p>再次解密上面的flag得到personnel,又结合提示“A Good Agent is Hard to Find”。看来是要改代理。可是personnel是为什么？难道是要代理改为全体人员吗？试了半天无果。于是又想这个单词会不会是个目录，输入/personnel,结果：</p>
+<p><img src="/assets/image-20180602114948886-1588777753203.png" alt="image-20180602114948886"></p>
+<p>拒绝访问，要FBI机构的。那怎么才是FBI机构的呢？在其他文件中找找线索。目前已知的好像只有html5.js和assets文件。</p>
+<p>回到刚刚的html5.js文件查询FBI字符串发现：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/* maindev -  6/</span><span class="number">7</span><span class="regexp">/02 Adding temporary support for IE4 FBI Workstations */</span></span><br><span class="line"><span class="regexp">/* newmaindev -  5/</span><span class="number">22</span><span class="regexp">/16 Last maindev was and idoit and IE4 is still Gold image -@Support doug.perterson@fbi.gov */</span></span><br></pre></td></tr></table></figure>
+
+<p>意思是使用IE4？</p>
+<p>网上搜一下IE4版本的IE，在<a href="http://www.966266.com/jishu/ie-user-agent.html这个网站找到" target="_blank" rel="noopener">http://www.966266.com/jishu/ie-user-agent.html这个网站找到</a></p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">**Internet Explorer <span class="number">4.0</span>**</span><br><span class="line"></span><br><span class="line">Mozilla/<span class="number">4.0</span> WebTV/<span class="number">2.6</span> (compatible; MSIE <span class="number">4.0</span>)</span><br><span class="line"></span><br><span class="line">Mozilla/<span class="number">4.0</span> (compatible; MSIE <span class="number">4.0</span>; Windows NT)</span><br><span class="line"></span><br><span class="line">Mozilla/<span class="number">4.0</span> (compatible; MSIE <span class="number">4.0</span>; Windows <span class="number">98</span> )</span><br><span class="line"></span><br><span class="line">Mozilla/<span class="number">4.0</span> (compatible; MSIE <span class="number">4.0</span>; Windows <span class="number">95</span>; .NET CLR <span class="number">1.1</span><span class="number">.4322</span>; .NET CLR <span class="number">2.0</span><span class="number">.50727</span>)</span><br><span class="line"></span><br><span class="line">Mozilla/<span class="number">4.0</span> (compatible; MSIE <span class="number">4.0</span>; Windows <span class="number">95</span>)</span><br><span class="line"></span><br><span class="line">Mozilla/<span class="number">4.0</span> (Compatible; MSIE <span class="number">4.0</span>)</span><br><span class="line"></span><br><span class="line">Mozilla/<span class="number">2.0</span> (compatible; MSIE <span class="number">4.0</span>; Windows <span class="number">98</span>)</span><br></pre></td></tr></table></figure>
+
+<p>随便选一个Mozilla/4.0 (compatible; MSIE 4.0; Windows 95; .NET CLR 1.1.4322; .NET CLR 2.0.50727)利用User Agent插件改代理。如何所示。</p>
+<p><img src="/assets/image-20180603155953564-1588777753203.png" alt="image-20180603155953564"></p>
+<p>再次访问/personnel成功进入</p>
+<p><img src="/assets/image-20180603160105406-1588777753203.png" alt="image-20180603160105406"></p>
+<p>现在该找flag了,可以看到在右下角很清楚的实现flag</p>
+<p>flag{14e10d570047667f904261e6d08f520f} </p>
+<p>（5）第5个flag</p>
+<p>将第5个flag解码后得evidence,再根据下面的提示clue=new +flag和第5条提示 “The Devil is in the Details - Or is it Dialogue? Either Way,  if it’s Simple, Guessable, or Personal it Goes Against Best Practices”。</p>
+<p>看了提示还是没太懂，意思是新的证据？想一下clue为newevidence，是不是又像上一次personnel那个一样呢？</p>
+<p>输入/newevidence进入果真出现新界面</p>
+<p><img src="/assets/image-20180603162606699-1588777753203.png" alt="image-20180603162606699"></p>
+<p>要求输入用户和密码。用户名密码是什么呢？提示只有FBI的人才能访问。那么肯定是输入一个FBI的账号密码。而且提示又说的简单的、可猜的，猜想可能是弱口令。于是爆破吧，先试了一下admin和root爆破，均没成功。那么肯定问题在于如何确定用户名。</p>
+<p>前面的html.js中给出了一个邮箱：<a href="mailto:doug.perterson@fbi.gov">doug.perterson@fbi.gov</a>,根据这个邮箱可以猜想是一个用户名。</p>
+<p>用doug.perterson爆破无果。那再去第四关去寻找一下线索。</p>
+<p><img src="/assets/image-20180603165015569-1588777753203.png" alt="image-20180603165015569"></p>
+<p>仔细浏览才发现这是一个FBI探员的个人页面。而且上面写了Hanratty探员，那用Hanratty再爆破试试，还是不行。换种思路先前都是一个英文单词.一个英文单词。</p>
+<p>那这次是不是账号也要一个单词.一个单词呢？Hanratty的姓是什么？google一下</p>
+<p><img src="/assets/image-20180603165641329-1588777753204.png" alt="image-20180603165641329"></p>
+<p>然后发现是部电影，而且这电影我还看过，是猫鼠游戏，因为当初看的是中文版，所以不知道它的英文名字叫Catch me if you can,所以一直没发现，现在终于知道这个靶机要做什么了，肯定是Hanratty要抓Frank，而Frank东躲西藏。Hanratty的姓是Carl。</p>
+<p>因为不清楚是姓在前还是名在前于是查了下doug.perterson，发现也是名在前姓在后。<img src="/assets/image-20180603170045319-1588777753204.png" alt="image-20180603170045319"></p>
+<p>于是利用carl.hanratty去爆破。</p>
+<p>现在具体的讲爆破</p>
+<p>先用burpsuit抓包,输入admin,123</p>
+<p><img src="/assets/image-20180603170440593-1588777753204.png" alt="image-20180603170440593"></p>
+<p>发现有一串密文，用Base64解码后为admin:123，看来是根据账户:密码然后base64加密。</p>
+<p>将请求发送给burp的Intruder，然后在刚刚密文的地方点击左侧的add$，使其成为变量</p>
+<p><img src="/assets/image-20180603171745363-1588777753204.png" alt="image-20180603171745363"></p>
+<p>在payload下Payload Processing上添加base64编码方式</p>
+<p><img src="/assets/image-20180603171824459-1588777753204.png" alt="image-20180603171824459"></p>
+
+    </div>
+
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\渗透测试\JIS-CTF靶机测试\" rel="bookmark">JIS-CTF靶机测试</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\渗透测试\pwnlab靶机测试\" rel="bookmark">pwnlab靶机测试</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\JS学习\" rel="bookmark">JS学习</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_sql注入\" rel="bookmark">合天培训_实验_sql注入</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_web安全之HTTP头部字段理解\" rel="bookmark">合天培训_实验_web安全之HTTP头部字段理解</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9D%B6%E6%9C%BA/" rel="tag"><i class="fa fa-tag"></i>靶机</a>
+              <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i>web</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/pwnlab%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/" rel="prev" title="pwnlab靶机测试">
+      <i class="fa fa-chevron-left"></i> pwnlab靶机测试
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="gwolfs"
+      src="/images/head1.png">
+  <p class="site-author-name" itemprop="name">gwolfs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TataYdq" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TataYdq" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1937441951@qq.com" title="E-Mail → mailto:1937441951@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备19000724号-1 </a>
+      <img src="/images/beian.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802028114" rel="noopener" target="_blank">京公网安备 11010802028114号 </a>
+  </div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">gwolfs</span>
+</div>
+
+
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共16.6k字</span>
+  <span class="post-meta-divider">|</span>
+  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  <span class="post-meta-divider">|</span>
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  <span class="post-meta-divider">|</span>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+<!-- calendar widget -->
+
+
+</body>
+</html>

