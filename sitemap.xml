@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.ydq6.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/vulnhub-xxe/</loc>
+    
+    <lastmod>2020-05-12T14:40:52.640Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.ydq6.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/SkyConCTF2016%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/</loc>
     
     <lastmod>2020-05-06T15:17:15.654Z</lastmod>

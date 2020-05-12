@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.ydq6.com/"/>
-  <updated>2020-05-06T15:17:15.654Z</updated>
+  <updated>2020-05-12T14:40:52.640Z</updated>
   <id>http://blog.ydq6.com/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>vulnhub_xxe</title>
+    <link href="http://blog.ydq6.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/vulnhub-xxe/"/>
+    <id>http://blog.ydq6.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/vulnhub-xxe/</id>
+    <published>2020-05-12T14:36:41.000Z</published>
+    <updated>2020-05-12T14:40:52.640Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="vulnhub-xxe实验"><a href="#vulnhub-xxe实验" class="headerlink" title="vulnhub xxe实验"></a>vulnhub xxe实验</h1><h2 id="1-主机发现"><a href="#1-主机发现" class="headerlink" title="(1)主机发现"></a>(1)主机发现</h2><p>首先ifconfig查看当前ip地址： 10.1.1.92</p><p>然后利用netdiscover被动扫描扫描局域网机器。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netdiscover -r 10.1.1.92/24</span><br></pre></td></tr></table></figure><p><img src="/assets/image-20200512161540297.png" alt="image-20200512161540297"></p><p>发现两台机器，90，91，93</p><p>利用Nmap扫描端口：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim ip.txt #将要扫描的ip列表写进ip.txt</span><br><span class="line">nmap -sV -p 1-65535 -iL ip.txt -v</span><br></pre></td></tr></table></figure><p>结果如下：</p><p><img src="/assets/image-20200512163413524.png" alt="image-20200512163413524"></p><p><img src="/assets/image-20200512163430298.png" alt="image-20200512163430298"></p><p><img src="/assets/image-20200512163449465.png" alt="image-20200512163449465"></p><p>访问91机器，发现是apache目录，找到目标。</p><h2 id="（2）网站扫描"><a href="#（2）网站扫描" class="headerlink" title="（2）网站扫描"></a>（2）网站扫描</h2><p>利用kali的dirb扫描:</p><p><img src="/assets/image-20200512162428309.png" alt="image-20200512162428309"></p><p>关键文件：robots.txt</p><p>访问发现：</p><p><img src="/assets/image-20200512162501481.png" alt="image-20200512162501481"></p><p>可以访问xxe目录，发现有登录栏。</p><p>访问admin.php，发现400了。所以猜想可能是xxe下的admin.php</p><p>又发现一个登录页面。所以可以知道后面个登录是管理员登录，前面个登录是用户登录。</p><h3 id="漏洞挖掘"><a href="#漏洞挖掘" class="headerlink" title="漏洞挖掘"></a>漏洞挖掘</h3><p>访问10.1.1.91/xxe</p><p>输入Name和Password:</p><p><img src="/assets/image-20200512163534468.png" alt="image-20200512163534468"></p><p>抓包:</p><p><img src="/assets/image-20200512163659235.png" alt="image-20200512163659235"></p><p>发现请求是xml请求，猜想有xxe,验证一下。</p><p>构造payload,验证漏洞</p><p><img src="/assets/image-20200512164212079.png" alt="image-20200512164212079"></p><p>漏洞存在。</p><p>构造payload读取源码:</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root</span>[<span class="meta">&lt;!ENTITY <span class="meta-keyword">xxe</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"php://filter/read=convert.base64-encode/resource=xxe.php"</span>&gt;</span>] &gt;</span></span><br><span class="line"><span class="symbol">&amp;xxe;</span></span><br></pre></td></tr></table></figure><p><img src="/assets/image-20200512164305534.png" alt="image-20200512164305534"></p><p>然后再解码：</p><p><img src="/assets/image-20200512164400006.png" alt="image-20200512164400006"></p><p>成功读取，再读admin.php，并解码：</p><p><img src="/assets/image-20200512164625029.png" alt="image-20200512164625029"></p><p>查出账户名为administhebest。密码的md5为 e6e061838856bf47e1de730719fb2609，md5解密后为admin@123.</p><p>admin.php处输入账号密码：</p><p><img src="/assets/image-20200512164816064.png" alt="image-20200512164816064"></p><p>得到flag:</p><p><img src="/assets/image-20200512164834411.png" alt="image-20200512164834411"></p><p>点击后发现跳转空了，加一个xxe目录就可以。</p><p><img src="/assets/image-20200512164917137.png" alt="image-20200512164917137"></p><p>可能flag在源码里，那就读源码：</p><p><img src="/assets/image-20200512165013929.png" alt="image-20200512165013929"></p><p><img src="/assets/image-20200512165033499.png" alt="image-20200512165033499"></p><p>得到flag：JQZFMMCZPE4HKWTNPBUFU6JVO5QUQQJ5。</p><p>flag还可以再解码： L2V0Yy8uZmxhZy5waHA= </p><p>再base64解码：</p><p>/etc/.flag.php</p><p>再读，由于是在etc目录下，所以用file协议读：</p><p><img src="/assets/image-20200512165748626.png" alt="image-20200512165748626"></p><p>很明显有加密，本地解密得到:</p><p><img src="/assets/image-20200512170140547.png" alt="image-20200512170140547"></p><p>发现不成功，原来是最后的?&gt;标识符打错了。</p><p>重写后发现访问虽然成功了，但是没有结果。重新换一台windows电脑解密即可，flag:</p><p>SAFCSP{xxe_is_so_easy}</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;vulnhub-xxe实验&quot;&gt;&lt;a href=&quot;#vulnhub-xxe实验&quot; class=&quot;headerlink&quot; title=&quot;vulnhub xxe实验&quot;&gt;&lt;/a&gt;vulnhub xxe实验&lt;/h1&gt;&lt;h2 id=&quot;1-主机发现&quot;&gt;&lt;a href=&quot;#1-主
+      
+    
+    </summary>
+    
+    
+      <category term="渗透测试" scheme="http://blog.ydq6.com/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
+    
+    
+      <category term="靶机" scheme="http://blog.ydq6.com/tags/%E9%9D%B6%E6%9C%BA/"/>
+    
+      <category term="web" scheme="http://blog.ydq6.com/tags/web/"/>
+    
+      <category term="xxe" scheme="http://blog.ydq6.com/tags/xxe/"/>
+    
+  </entry>
   
   <entry>
     <title>SkyConCTF2016靶机测试</title>
