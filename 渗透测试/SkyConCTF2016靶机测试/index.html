@@ -46,8 +46,8 @@
 <meta property="article:published_time" content="2020-05-06T15:07:27.000Z">
 <meta property="article:modified_time" content="2020-05-06T15:17:15.654Z">
 <meta property="article:author" content="gwolfs">
-<meta property="article:tag" content="web">
 <meta property="article:tag" content="靶机">
+<meta property="article:tag" content="web">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20180602100404515-1588777753200.png">
 
@@ -185,7 +185,12 @@
           <div class="content post posts-expand">
             
 
-    
+    <% if (page.top) { %>
+  <i class="fa fa-thumb-tack"></i>
+  <font color=7D26CD>置顶</font>
+  <span class="post-meta-divider">|</span>
+<% } %>
+  
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -377,8 +382,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i>web</a>
               <a href="/tags/%E9%9D%B6%E6%9C%BA/" rel="tag"><i class="fa fa-tag"></i>靶机</a>
+              <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i>web</a>
           </div>
 
         
