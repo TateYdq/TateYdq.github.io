@@ -215,7 +215,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="vulnhub-xxe实验"><a href="#vulnhub-xxe实验" class="headerlink" title="vulnhub xxe实验"></a>vulnhub xxe实验</h1><h2 id="1-主机发现"><a href="#1-主机发现" class="headerlink" title="(1)主机发现"></a>(1)主机发现</h2><p>首先ifconfig查看当前ip地址： 10.1.1.92</p>
+          <h1><span id="vulnhub-xxe实验">vulnhub xxe实验</span></h1><h2><span id="1主机发现">(1)主机发现</span></h2><p>首先ifconfig查看当前ip地址： 10.1.1.92</p>
 <p>然后利用netdiscover被动扫描扫描局域网机器。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netdiscover -r 10.1.1.92/24</span><br></pre></td></tr></table></figure>
 
@@ -231,7 +231,7 @@
 <p><img src="/assets/image-20200512163430298.png" alt="image-20200512163430298"></p>
 <p><img src="/assets/image-20200512163449465.png" alt="image-20200512163449465"></p>
 <p>访问91机器，发现是apache目录，找到目标。</p>
-<h2 id="（2）网站扫描"><a href="#（2）网站扫描" class="headerlink" title="（2）网站扫描"></a>（2）网站扫描</h2><p>利用kali的dirb扫描:</p>
+<h2><span id="2网站扫描">（2）网站扫描</span></h2><p>利用kali的dirb扫描:</p>
 <p><img src="/assets/image-20200512162428309.png" alt="image-20200512162428309"></p>
 <p>关键文件：robots.txt</p>
 <p>访问发现：</p>
@@ -239,7 +239,7 @@
 <p>可以访问xxe目录，发现有登录栏。</p>
 <p>访问admin.php，发现400了。所以猜想可能是xxe下的admin.php</p>
 <p>又发现一个登录页面。所以可以知道后面个登录是管理员登录，前面个登录是用户登录。</p>
-<h3 id="漏洞挖掘"><a href="#漏洞挖掘" class="headerlink" title="漏洞挖掘"></a>漏洞挖掘</h3><p>访问10.1.1.91/xxe</p>
+<h3><span id="漏洞挖掘">漏洞挖掘</span></h3><p>访问10.1.1.91/xxe</p>
 <p>输入Name和Password:</p>
 <p><img src="/assets/image-20200512163534468.png" alt="image-20200512163534468"></p>
 <p>抓包:</p>
