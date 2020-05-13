@@ -6,7 +6,7 @@
     <content><![CDATA[<p>本文主要描述自己练习的算法题总结，会经常更新。</p>
 <a id="more"></a>
 
-<h2><span id="字符串">字符串</span></h2><h2><span id="数组">数组</span></h2><p><a href="!https://blog.ydq6.com/uncategorized/求数组连续最大和/">求数组连续最大和</a></p>
+<h2><span id="字符串">字符串</span></h2><h2><span id="数组">数组</span></h2><p><a href="https://blog.ydq6.com/算法/求数组连续最大和/">求数组连续最大和</a></p>
 <h2><span id="链表">链表</span></h2><h2><span id="队列和栈">队列和栈</span></h2><h2><span id="排序">排序</span></h2><h2><span id="动态规划">动态规划</span></h2>]]></content>
       <categories>
         <category>算法</category>
@@ -14,6 +14,11 @@
       <tags>
         <tag>算法</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Untitled</title>
+    <url>/uncategorized/Untitled/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>MyWebServer1靶机练习</title>
@@ -182,8 +187,8 @@
         <category>web安全</category>
       </categories>
       <tags>
-        <tag>xxe</tag>
         <tag>web</tag>
+        <tag>xxe</tag>
       </tags>
   </entry>
   <entry>
@@ -285,9 +290,9 @@
         <category>渗透测试</category>
       </categories>
       <tags>
-        <tag>xxe</tag>
-        <tag>web</tag>
         <tag>靶机</tag>
+        <tag>web</tag>
+        <tag>xxe</tag>
       </tags>
   </entry>
   <entry>
@@ -400,8 +405,8 @@
         <category>渗透测试</category>
       </categories>
       <tags>
-        <tag>web</tag>
         <tag>靶机</tag>
+        <tag>web</tag>
       </tags>
   </entry>
   <entry>
@@ -503,8 +508,8 @@
         <category>渗透测试</category>
       </categories>
       <tags>
-        <tag>web</tag>
         <tag>靶机</tag>
+        <tag>web</tag>
       </tags>
   </entry>
   <entry>
@@ -968,8 +973,8 @@
         <category>渗透测试</category>
       </categories>
       <tags>
-        <tag>web</tag>
         <tag>靶机</tag>
+        <tag>web</tag>
       </tags>
   </entry>
   <entry>
