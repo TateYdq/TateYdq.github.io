@@ -84,11 +84,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Untitled</title>
-    <url>/uncategorized/Untitled/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>MyWebServer1靶机练习</title>
     <url>/uncategorized/MyWebServer1%E9%9D%B6%E6%9C%BA%E7%BB%83%E4%B9%A0/</url>
     <content><![CDATA[]]></content>
@@ -373,8 +368,8 @@
         <category>渗透测试</category>
       </categories>
       <tags>
-        <tag>web</tag>
         <tag>靶机</tag>
+        <tag>web</tag>
         <tag>xxe</tag>
       </tags>
   </entry>
@@ -488,8 +483,8 @@
         <category>渗透测试</category>
       </categories>
       <tags>
-        <tag>web</tag>
         <tag>靶机</tag>
+        <tag>web</tag>
       </tags>
   </entry>
   <entry>
@@ -591,8 +586,8 @@
         <category>渗透测试</category>
       </categories>
       <tags>
-        <tag>web</tag>
         <tag>靶机</tag>
+        <tag>web</tag>
       </tags>
   </entry>
   <entry>
@@ -1056,8 +1051,8 @@
         <category>渗透测试</category>
       </categories>
       <tags>
-        <tag>web</tag>
         <tag>靶机</tag>
+        <tag>web</tag>
       </tags>
   </entry>
   <entry>
