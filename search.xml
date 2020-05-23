@@ -16,6 +16,69 @@
       </tags>
   </entry>
   <entry>
+    <title>Leetcode142_环形链表_II</title>
+    <url>/uncategorized/Leetcode142-%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8-II/</url>
+    <content><![CDATA[<p>题目说明：</p>
+<p>给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。</p>
+<p>为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。</p>
+<p>说明：不允许修改给定的链表。</p>
+<p>来源：力扣（LeetCode）<br>链接：<a href="https://leetcode-cn.com/problems/linked-list-cycle-ii" target="_blank" rel="noopener">https://leetcode-cn.com/problems/linked-list-cycle-ii</a><br>著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。</p>
+<a id="more"></a>
+
+
+
+<h2><span id="方式一使用额外空间判断是否遍历过">方式一，使用额外空间判断是否遍历过。</span></h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">detectCycle1</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">       ListNode node = head;</span><br><span class="line">       HashSet&lt;ListNode&gt; visitedSet = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">       <span class="keyword">while</span>(node != <span class="keyword">null</span>)&#123;</span><br><span class="line">           <span class="keyword">if</span>(visitedSet.contains(node))&#123;</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line">           &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">               visitedSet.add(node);</span><br><span class="line">           &#125;</span><br><span class="line">           node = node.next;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> node;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h2><span id="方法二快慢指针法">方法二，快慢指针法</span></h2><p>慢指针：每次走一步</p>
+<p>快指针：每次走两步</p>
+<p>如果快慢指针相遇且任意一个指针不为null则一定存在环。</p>
+<p>首结点索引0，环起点索引b，环终点索引e，相遇点索引m，环长（e-b+1）.</p>
+<p><img src="/assets/image-20200523203221526.png" alt="image-20200523203221526"></p>
+<p>相遇时间为t</p>
+<p>$$ 2t=b-1+(m-b+1)+(e-b+1)*k1$$    k1圈</p>
+<p>$$ t=b-1+(m-b+1)+(e-b+1)*k2 $$     k2圈</p>
+<p>简化:</p>
+<p>$$ 2t=m+(e-b+1)*k1$$</p>
+<p>$$ t= m+(e-b+1)*k2$$</p>
+<p>再简化：</p>
+<p>$$ t=(e-b+1)*(k1-k2) $$</p>
+<p>只知道t，目标是求b。方程组是求不出来的。</p>
+<p>现在证明一个问题，k2=0。相当于证明$$t&lt;e$$</p>
+<p>经过问题分析，总结结论：</p>
+<p><font color="orange">结论一 、如果快指针在慢指针后面，快指针想超过慢指针，它们必须会相遇。</font></p>
+<p>证明：</p>
+<p>（1）如果快指针比慢指针慢1步。下1s慢指针走1步，快指针走2步，快慢相遇。</p>
+<p>（2）如果快指针比慢指针慢2步，下1s慢指针走1步，快指针走2步，快指针比慢指针慢1。问题转化为（1）</p>
+<p>（3）其他问题都可以归纳为问题（1）和问题（2），即归纳为问题（1）</p>
+<p>所以一定会相遇。</p>
+<p><font color="orange">结论二、慢指针第一次到达环尾必定和快指针相遇至少一次。</font></p>
+<p>反证法:<font color="red">假设慢指针第一次到达环尾都没有和快指针相遇过。</font></p>
+<p>慢指针到达环尾走了e步。此时快指针走了2e步。</p>
+<p>慢指针走了b步，就在环头了。此时快指针走了2b步，且肯定在环上。</p>
+<p>此时分为两种情况：</p>
+<p>（1）快指针和慢指针都在环头。此时快慢指针相遇，与假设矛盾。</p>
+<p>（2）快指针不在环头，假设快指针此时在索引k点。接下来慢指针走（e-b）步到达e点，此时快指针亦走了2（e-b）步。而环的总长度为（e-b）。快指针在环上走了两圈，快指针在环上走了一圈，肯定存在快指针超过慢指针情况。根据结论一，快慢指针必定会相遇，与假设矛盾。</p>
+<p>所以慢指针第一次到达环尾必定和快指针相遇至少一次。</p>
+<p>所以问题可以简化为：</p>
+<p>$$t=m$$</p>
+<p>$$ 2t=m+(e-b+1)*k1 $$</p>
+<p>即$$t=m=(e-b+1)*k1$$</p>
+<p>现在慢指针走(e-m+1)+(e-b+1)*k步可以到达入口点，其中k为任意常数，代表圈数。</p>
+<p>如果同时有个慢指针（每次只走一步）从链头出发，走b步可以到达环头。</p>
+<p><font color="orange">如果在快慢指针相遇时，有一个慢指针s2从链头参加走动，则当这个慢指针第一次到达环头时会和另一个慢指针s1相遇</font></p>
+<p>慢指针s2到达环头时走了b步,此时s2也走了b步。</p>
+<p>由下面分析发现此时s2也在环头，且走路（k1-1）圈。</p>
+<p><img src="/assets/image-20200524001721432.png" alt="image-20200524001721432"></p>
+<p>因此代码就很简单了。s1和s2第一次相遇点即为环头。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">detectCycle</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(head==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ListNode slow1Pointer = head;</span><br><span class="line">        ListNode quickPointer = head;</span><br><span class="line">        <span class="keyword">int</span> t = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">do</span>&#123;</span><br><span class="line">            slow1Pointer = slow1Pointer.next;</span><br><span class="line">            ListNode tmpQuickPointer = quickPointer.next;</span><br><span class="line">            <span class="keyword">if</span> (tmpQuickPointer == <span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            quickPointer = tmpQuickPointer.next;</span><br><span class="line">            <span class="keyword">if</span>(quickPointer == <span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            t++;</span><br><span class="line">        &#125;<span class="keyword">while</span> (slow1Pointer != quickPointer);</span><br><span class="line">        ListNode slow2Pointer = head;</span><br><span class="line">        <span class="keyword">while</span>(slow1Pointer != slow2Pointer)&#123;</span><br><span class="line">            slow2Pointer = slow2Pointer.next;</span><br><span class="line">            slow1Pointer = slow1Pointer.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> slow1Pointer;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>效率：</p>
+<p><img src="/assets/image-20200524002314952.png" alt="image-20200524002314952"></p>
+]]></content>
+  </entry>
+  <entry>
     <title>hackthebox_expz</title>
     <url>/web/hackthebox-expz/</url>
     <content><![CDATA[<p>本文主要讲解hackthebox上的20分挑战ezpz</p>

