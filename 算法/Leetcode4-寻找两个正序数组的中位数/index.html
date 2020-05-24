@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="FJtFPhqPz0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.ydq6.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="给定两个大小为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。 请你找出这两个正序数组的中位数，并且要求算法的时间复杂度为 O(log(m + n))。 你可以假设 nums1 和 nums2 不会同时为空。 来源：力扣（LeetCode）链接：https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;median-of-two-sorted-arrays著作权归领扣网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leetcode4-寻找两个正序数组的中位数">
+<meta property="og:url" content="http://blog.ydq6.com/%E7%AE%97%E6%B3%95/Leetcode4-%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/index.html">
+<meta property="og:site_name" content="gwolfs的个人博客">
+<meta property="og:description" content="给定两个大小为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。 请你找出这两个正序数组的中位数，并且要求算法的时间复杂度为 O(log(m + n))。 你可以假设 nums1 和 nums2 不会同时为空。 来源：力扣（LeetCode）链接：https:&#x2F;&#x2F;leetcode-cn.com&#x2F;problems&#x2F;median-of-two-sorted-arrays著作权归领扣网络">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200524154401166.png">
+<meta property="article:published_time" content="2020-05-24T01:45:53.000Z">
+<meta property="article:modified_time" content="2020-05-24T07:44:02.578Z">
+<meta property="article:author" content="gwolfs">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="数组">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20200524154401166.png">
+
+<link rel="canonical" href="http://blog.ydq6.com/%E7%AE%97%E6%B3%95/Leetcode4-%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Leetcode4-寻找两个正序数组的中位数 | gwolfs的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="gwolfs的个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">gwolfs的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/%E7%AE%97%E6%B3%95/Leetcode4-%E5%AF%BB%E6%89%BE%E4%B8%A4%E4%B8%AA%E6%AD%A3%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head1.png">
+      <meta itemprop="name" content="gwolfs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gwolfs的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Leetcode4-寻找两个正序数组的中位数
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-05-24 09:45:53 / 修改时间：15:44:02" itemprop="dateCreated datePublished" datetime="2020-05-24T09:45:53+08:00">2020-05-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>给定两个大小为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。</p>
+<p>请你找出这两个正序数组的中位数，并且要求算法的时间复杂度为 O(log(m + n))。</p>
+<p>你可以假设 nums1 和 nums2 不会同时为空。</p>
+<p>来源：力扣（LeetCode）<br>链接：<a href="https://leetcode-cn.com/problems/median-of-two-sorted-arrays" target="_blank" rel="noopener">https://leetcode-cn.com/problems/median-of-two-sorted-arrays</a><br>著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。</p>
+<a id="more"></a>
+
+<p>注意本题讨论时数组起始位规定为1，编程时才将起始位转化为0。</p>
+<p>一、nums1的数组长度为m，nums2的数组长度为n。假设总长m+n=L。</p>
+<p>，将问题简化为求第k大的数即可。</p>
+<ul>
+<li><p>如果L为偶数，则应该求第k=L/2和第k+1=L/2+1位开始的数（从1开始）。</p>
+</li>
+<li><p>如果L为奇数，则应该求第k=(L+1)/2个数。</p>
+</li>
+</ul>
+<p>二、两个数组求第k大数。</p>
+<p>我们采用排除法，每次除去一半比第k个数小的数即可。</p>
+<p>假设当前求第k大数，当前数组1长度为len1,数组2长度为len1。则k&lt;=max(len1,len2)，令ktmp = k//2 。</p>
+<p>（1）ktmp &lt;=len1且ktmp &lt;=len2时：</p>
+<p>比较nums1[ktmp]和nums2[ktmp]。</p>
+<p>谁小左边数就可以排除。这样就可以排除一半的数。</p>
+<p>剩下找第k=k-k//2大数即可。</p>
+<p>（2）ktmp &gt;len1且ktmp &lt;=len2</p>
+<p>比较nums1[len1]和nums2[ktmp]。</p>
+<ul>
+<li>nums1[len1] &gt;= nums2[ktmp]   排除掉nums2的ktmp左边数。剩下找第k=k-k//2大数即可。</li>
+<li>nums1[len1] &lt; nums2[ktmp] 除去nums1数组，nums2寻找第(k-len1)个数即可</li>
+</ul>
+<p>（3）ktmp&lt;=len1且ktmp&gt;len2</p>
+<p>比较nums1[ktmp]和nums2[len2]。</p>
+<ul>
+<li>nums1[ktmp] &gt;= nums2[len2]   排除掉nums1的ktmp左边数。剩下找第k=k-k//2大数即可。</li>
+<li>nums1[ktmp] &lt; nums2[len2] 除去nums2数组，nums1寻找第(k-len2)个数即可</li>
+</ul>
+<p>特殊情况：</p>
+<p>如果k=1时，不需排除一半，直接找即可。</p>
+<p>第k+1个数只需在第k个数后面再找一个数即可。当把第k+1大的数前面的数都排除了.</p>
+<p>（1）剩下两个数组时，比较两个数组的头谁最小</p>
+<p>（2）剩下一个数组时，取数组头即可。</p>
+<p>这里归纳一下：可以将nums1和nums2，第k大数前面的所有数剔除。</p>
+<p>这样只需将nums1中前两个数字和nums2中前两个数字做运算即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">if</span>(begin1 &lt; nums1.length)&#123;</span><br><span class="line">    list.add(nums1[begin1]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(begin1 + <span class="number">1</span> &lt; nums1.length)&#123;</span><br><span class="line">    list.add(nums1[begin1+<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(begin2 &lt; nums2.length)&#123;</span><br><span class="line">    list.add(nums2[begin2]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(begin2 + <span class="number">1</span> &lt; nums2.length)&#123;</span><br><span class="line">    list.add(nums2[begin2+<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">int</span> minValue = list.get(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> minIndex = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; list.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (list.get(i) &lt; minValue) &#123;</span><br><span class="line">            minValue = list.get(i);</span><br><span class="line">            minIndex = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> secondMinValue;</span><br><span class="line">    <span class="keyword">if</span> (minIndex != <span class="number">0</span>) &#123;</span><br><span class="line">        secondMinValue = list.get(<span class="number">0</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        secondMinValue = list.get(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; list.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i != minIndex &amp;&amp; list.get(i) &lt; secondMinValue) &#123;</span><br><span class="line">            secondMinValue = list.get(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (minValue + secondMinValue) / <span class="number">2.0</span>;</span><br><span class="line">&#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>所有代码（未优化前）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">realIndex</span><span class="params">(<span class="keyword">int</span> begin,<span class="keyword">int</span> index)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> begin + (index -<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">findMedianSortedArrays</span><span class="params">(<span class="keyword">int</span>[] nums1, <span class="keyword">int</span>[] nums2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> L = nums1.length+nums2.length;</span><br><span class="line">        <span class="keyword">int</span> k;</span><br><span class="line">        <span class="keyword">boolean</span> isEven = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(L%<span class="number">2</span>==<span class="number">0</span>)&#123;</span><br><span class="line">            k = L / <span class="number">2</span>;</span><br><span class="line">            isEven = <span class="keyword">true</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            k = (L+<span class="number">1</span>) / <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> begin1 = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> begin2 = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> len1 = nums1.length;</span><br><span class="line">        <span class="keyword">int</span> len2 = nums2.length;</span><br><span class="line">        <span class="keyword">int</span> ktmp;</span><br><span class="line">        <span class="keyword">while</span> (k &gt; <span class="number">1</span>)&#123;</span><br><span class="line">            ktmp = k / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span>(len1 == <span class="number">0</span>)&#123;</span><br><span class="line">                begin2 = begin2 + k - <span class="number">1</span>;</span><br><span class="line">                len2 = nums2.length - begin2;</span><br><span class="line">                k=<span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(len2 == <span class="number">0</span>)&#123;</span><br><span class="line">                begin1 = begin1 + k - len2 - <span class="number">1</span>;</span><br><span class="line">                len1 = nums1.length - begin1;</span><br><span class="line">                k=<span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(ktmp &lt;= len1 &amp;&amp; ktmp &lt;= len2)&#123;</span><br><span class="line">                <span class="keyword">if</span>(nums1[realIndex(begin1,ktmp)] &gt;= nums2[realIndex(begin2,ktmp)])&#123;</span><br><span class="line">                    begin2 = begin2 + ktmp;</span><br><span class="line">                    len2 = nums2.length - begin2;</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    begin1 = begin1 + ktmp;</span><br><span class="line">                    len1 = nums1.length - begin1;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(ktmp &gt; len1 &amp;&amp; ktmp &lt;= len2)&#123;</span><br><span class="line">                <span class="keyword">if</span>(nums1[realIndex(begin1,len1)] &gt;= nums2[realIndex(begin2,ktmp)])&#123;</span><br><span class="line">                    begin2 = begin2 + ktmp;</span><br><span class="line">                    len2 = nums2.length - begin2;</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    begin2 = begin2 + k - len1 - <span class="number">1</span>;</span><br><span class="line">                    begin1 = len1;</span><br><span class="line">                    len1 = <span class="number">0</span>;</span><br><span class="line">                    len2 = nums2.length - begin2;</span><br><span class="line">                    k=<span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(ktmp &lt;= len1 &amp;&amp; ktmp &gt; len2) &#123;</span><br><span class="line">                <span class="keyword">if</span>(nums1[realIndex(begin1,ktmp)] &lt;= nums2[realIndex(begin2,len2)]) &#123;</span><br><span class="line">                    begin1 = begin1 + ktmp;</span><br><span class="line">                    len1 = nums1.length - begin1;</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    begin1 = begin1 + k - len2 - <span class="number">1</span>;</span><br><span class="line">                    begin2 = len2;</span><br><span class="line">                    len2 = <span class="number">0</span>;</span><br><span class="line">                    len1 = nums1.length - begin1;</span><br><span class="line">                    k=<span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            k = k - ktmp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!isEven)&#123;</span><br><span class="line">            <span class="keyword">if</span>(begin1 &gt;= nums1.length || ((begin2 &lt; nums2.length) &amp;&amp; (nums1[begin1] &gt;= nums2[begin2])) )&#123;</span><br><span class="line">                <span class="keyword">return</span> nums2[begin2];</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">return</span> nums1[begin1];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">            <span class="keyword">if</span>(begin1 &lt; nums1.length)&#123;</span><br><span class="line">                list.add(nums1[begin1]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(begin1 + <span class="number">1</span> &lt; nums1.length)&#123;</span><br><span class="line">                list.add(nums1[begin1+<span class="number">1</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(begin2 &lt; nums2.length)&#123;</span><br><span class="line">                list.add(nums2[begin2]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(begin2 + <span class="number">1</span> &lt; nums2.length)&#123;</span><br><span class="line">                list.add(nums2[begin2+<span class="number">1</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">int</span> minValue = list.get(<span class="number">0</span>);</span><br><span class="line">                <span class="keyword">int</span> minIndex = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; list.size(); i++) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (list.get(i) &lt; minValue) &#123;</span><br><span class="line">                        minValue = list.get(i);</span><br><span class="line">                        minIndex = i;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">int</span> secondMinValue;</span><br><span class="line">                <span class="keyword">if</span> (minIndex != <span class="number">0</span>) &#123;</span><br><span class="line">                    secondMinValue = list.get(<span class="number">0</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    secondMinValue = list.get(<span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; list.size(); i++) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (i != minIndex &amp;&amp; list.get(i) &lt; secondMinValue) &#123;</span><br><span class="line">                        secondMinValue = list.get(i);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> (minValue + secondMinValue) / <span class="number">2.0</span>;</span><br><span class="line">            &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200524154401166.png" alt="image-20200524154401166"></p>
+<p>总结:这道题一定要考虑细节处理，以及很多特殊用例。</p>
+
+    </div>
+
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\算法\求数组连续最大和\" rel="bookmark">求数组连续最大和</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\算法\面试算法题系列\" rel="bookmark">面试算法题系列</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="\算法\Leetcode142-环形链表-II\" rel="bookmark">Leetcode142_环形链表_II</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"><i class="fa fa-tag"></i>算法</a>
+              <a href="/tags/%E6%95%B0%E7%BB%84/" rel="tag"><i class="fa fa-tag"></i>数组</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95/Leetcode142-%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8-II/" rel="prev" title="Leetcode142_环形链表_II">
+      <i class="fa fa-chevron-left"></i> Leetcode142_环形链表_II
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="gwolfs"
+      src="/images/head1.png">
+  <p class="site-author-name" itemprop="name">gwolfs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TateYdq" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TateYdq" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1937441951@qq.com" title="E-Mail → mailto:1937441951@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备19000724号-1 </a>
+      <img src="/images/beian.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802028114" rel="noopener" target="_blank">京公网安备 11010802028114号 </a>
+  </div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">gwolfs</span>
+</div>
+
+
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共22k字</span>
+  <span class="post-meta-divider">|</span>
+  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  <span class="post-meta-divider">|</span>
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  <span class="post-meta-divider">|</span>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+<!-- calendar widget -->
+
+
+</body>
+</html>
