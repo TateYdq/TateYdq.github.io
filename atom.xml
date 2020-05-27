@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.ydq6.com/"/>
-  <updated>2020-05-25T03:16:39.002Z</updated>
+  <updated>2020-05-27T01:27:29.210Z</updated>
   <id>http://blog.ydq6.com/</id>
   
   <author>
@@ -15,6 +15,82 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Leetcode974-和可被K整除的子数组</title>
+    <link href="http://blog.ydq6.com/uncategorized/Leetcode974-%E5%92%8C%E5%8F%AF%E8%A2%ABK%E6%95%B4%E9%99%A4%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84/"/>
+    <id>http://blog.ydq6.com/uncategorized/Leetcode974-%E5%92%8C%E5%8F%AF%E8%A2%ABK%E6%95%B4%E9%99%A4%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84/</id>
+    <published>2020-05-27T01:25:07.000Z</published>
+    <updated>2020-05-27T01:27:29.210Z</updated>
+    
+    <content type="html"><![CDATA[<p>给定一个整数数组 A，返回其中元素之和可被 K 整除的（连续、非空）子数组的数目。</p><p>示例：</p><p>输入：A = [4,5,0,-2,-3,1], K = 5<br>输出：7<br>解释：<br>有 7 个子数组满足其元素之和可被 K = 5 整除：<br>[4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]</p><p><strong>提示：</strong></p><ol><li><code>1 &lt;= A.length &lt;= 30000</code></li><li><code>-10000 &lt;= A[i] &lt;= 10000</code></li><li><code>2 &lt;= K &lt;= 10000</code></li></ol><p>来源：力扣（LeetCode）<br>链接：<a href="https://leetcode-cn.com/problems/subarray-sums-divisible-by-k" target="_blank" rel="noopener">https://leetcode-cn.com/problems/subarray-sums-divisible-by-k</a><br>著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。</p><a id="more"></a>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;给定一个整数数组 A，返回其中元素之和可被 K 整除的（连续、非空）子数组的数目。&lt;/p&gt;
+&lt;p&gt;示例：&lt;/p&gt;
+&lt;p&gt;输入：A = [4,5,0,-2,-3,1], K = 5&lt;br&gt;输出：7&lt;br&gt;解释：&lt;br&gt;有 7 个子数组满足其元素之和可被 K = 5 整除：&lt;br&gt;[4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;提示：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;1 &amp;lt;= A.length &amp;lt;= 30000&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-10000 &amp;lt;= A[i] &amp;lt;= 10000&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;2 &amp;lt;= K &amp;lt;= 10000&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;来源：力扣（LeetCode）&lt;br&gt;链接：&lt;a href=&quot;https://leetcode-cn.com/problems/subarray-sums-divisible-by-k&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://leetcode-cn.com/problems/subarray-sums-divisible-by-k&lt;/a&gt;&lt;br&gt;著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Leetcode139-单词拆分</title>
+    <link href="http://blog.ydq6.com/%E7%AE%97%E6%B3%95/Leetcode139-%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86/"/>
+    <id>http://blog.ydq6.com/%E7%AE%97%E6%B3%95/Leetcode139-%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86/</id>
+    <published>2020-05-26T02:13:10.000Z</published>
+    <updated>2020-05-26T03:25:21.900Z</updated>
+    
+    <content type="html"><![CDATA[<p>给定一个非空字符串 s 和一个包含非空单词列表的字典 wordDict，判定 s 是否可以被空格拆分为一个或多个在字典中出现的单词。</p><p>说明：</p><p>拆分时可以重复使用字典中的单词。<br>你可以假设字典中没有重复的单词。</p><p>来源：力扣（LeetCode）<br>链接：<a href="https://leetcode-cn.com/problems/word-break" target="_blank" rel="noopener">https://leetcode-cn.com/problems/word-break</a><br>著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。</p><a id="more"></a><p>方法一、分治法</p><p>这个问题可以用分治法来解决，分治法的关键在于划分子问题。</p><p>分治三步：分解-&gt;解决-&gt;合并</p><ul><li><p>分解：假设字符串为s长度为len。分解点为j（1-len-1），子问题：s[0,j) 、s[j,len)。</p></li><li><p>解决： 对于每一个子问题s。如果s在wordDict中，则返回true，否则分解为子问题继续查找。</p></li><li><p>合并：两个子问题均为true才能为true。对于j从0-len，如果存在一个j，则结果返回true.</p></li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">wordBreak</span><span class="params">(String s, List&lt;String&gt; wordDict)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span>(wordDict.contains(s))&#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;s.length();j++)&#123;</span><br><span class="line">           <span class="keyword">boolean</span> res1 = wordBreak(s.substring(<span class="number">0</span>,j),wordDict);</span><br><span class="line">           <span class="keyword">boolean</span> res2 = wordBreak(s.substring(j),wordDict);</span><br><span class="line">           <span class="keyword">if</span>(res1&amp;&amp;res2)&#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure><p>这种分治法有很多子问题重叠，所以需要优化，可以利用HashMap来记忆化搜索。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">HashMap&lt;String,Boolean&gt; hashMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">wordBreak</span><span class="params">(String s, List&lt;String&gt; wordDict)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(hashMap.containsKey(s))&#123;</span><br><span class="line">            <span class="keyword">return</span> hashMap.get(s);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(wordDict.contains(s))&#123;</span><br><span class="line">            hashMap.put(s,<span class="keyword">true</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;s.length();j++)&#123;</span><br><span class="line">            <span class="keyword">boolean</span> res1 = wordBreak(s.substring(<span class="number">0</span>,j),wordDict);</span><br><span class="line">            <span class="keyword">boolean</span> res2 = wordBreak(s.substring(j),wordDict);</span><br><span class="line">            <span class="keyword">if</span>(res1&amp;&amp;res2)&#123;</span><br><span class="line">                hashMap.put(s,<span class="keyword">true</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        hashMap.put(s,<span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure><p><img src="/assets/image-20200526110315840.png" alt="image-20200526110315840"></p><p>方法二、动态规划方法：</p><p>设dp[i]为从第0点到第i点的字符串是否满足要求。注意dp[0]=0。因为空字符串一定在单词列表中。</p><p>转移方程：</p><p><img src="/assets/image-20200526110151858.png" alt="image-20200526110151858"></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;给定一个非空字符串 s 和一个包含非空单词列表的字典 wordDict，判定 s 是否可以被空格拆分为一个或多个在字典中出现的单词。&lt;/p&gt;
+&lt;p&gt;说明：&lt;/p&gt;
+&lt;p&gt;拆分时可以重复使用字典中的单词。&lt;br&gt;你可以假设字典中没有重复的单词。&lt;/p&gt;
+&lt;p&gt;来源：力扣（LeetCode）&lt;br&gt;链接：&lt;a href=&quot;https://leetcode-cn.com/problems/word-break&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://leetcode-cn.com/problems/word-break&lt;/a&gt;&lt;br&gt;著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="算法" scheme="http://blog.ydq6.com/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="算法" scheme="http://blog.ydq6.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Leetcode287-寻找重复数</title>
+    <link href="http://blog.ydq6.com/uncategorized/Leetcode287-%E5%AF%BB%E6%89%BE%E9%87%8D%E5%A4%8D%E6%95%B0/"/>
+    <id>http://blog.ydq6.com/uncategorized/Leetcode287-%E5%AF%BB%E6%89%BE%E9%87%8D%E5%A4%8D%E6%95%B0/</id>
+    <published>2020-05-26T00:55:44.000Z</published>
+    <updated>2020-05-26T02:10:54.018Z</updated>
+    
+    <content type="html"><![CDATA[<p>给定一个包含 n + 1 个整数的数组 nums，其数字都在 1 到 n 之间（包括 1 和 n），可知至少存在一个重复的整数。假设只有一个重复的整数，找出这个重复的数。</p><p>说明：</p><p>不能更改原数组（假设数组是只读的）。<br>只能使用额外的 O(1) 的空间。<br>时间复杂度小于 O(n**2) 。<br>数组中只有一个重复的数字，但它可能不止重复出现一次。</p><p>来源：力扣（LeetCode）<br>链接：<a href="https://leetcode-cn.com/problems/find-the-duplicate-number" target="_blank" rel="noopener">https://leetcode-cn.com/problems/find-the-duplicate-number</a><br>著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。</p><a id="more"></a><p>方案一、不考虑题目要求可以直接用一个hash表（Map）来存储映射，找到重复的即可，时间复杂度O(n),空间复杂度O(n)。</p><p>方案二、如果考虑题目要求空间复杂度为O(1)，时间复杂度小于o(n**2)。可以先用o(nlogn)的排序，再遍历一遍数组，遍历时找到与后面个数相等的数即可。</p><p>但是注意题目有个要求，不能更改原数组，所以排序方案不可行。再看看题目，n+1个整数的数组，数字都在1-n之间，可以想着鸽巢原理，鸽巢原理也可以转化为有向图。</p><p>数组转有向图：i指向(nums[i])。</p><p>假设数组为[1,3,4,2,2]。链表如下所示。</p><p><img src="/assets/image-20200526095419163.png" alt="image-20200526095419163"></p><p>可以推断出存在重复数的点，入度大于等于2。但是不一定只存在一个环。如下图所示：</p><p><img src="/assets/image-20200526095219650.png" alt="image-20200526095219650"></p><p>图是由0—k个强联通子图+一个循环链表构成。</p><p>所以我们首先把图中强连通子图排除掉就剩下一个循环链表，循环链表的入口点索引即为重复数组。</p><p>强连通子图也是一个循环链表，这里有个比较巧的方法就是判定环的入口点是否有两个或以上前驱点即可。用快慢指针方法可以判断循环链表入口点。</p><p>我们再注意一个问题，从索引0位置出发所构成的子图一定不是强连通子图，因为一定不存在nums[i]=0。所以从索引0出发一定能找到循环链表，且该循环链表的入口点一定为环入口点。</p><p>代码：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(nums.length&lt;<span class="number">2</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> slow=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> fast=<span class="number">0</span>;</span><br><span class="line">    slow = nums[slow];</span><br><span class="line">    fast = nums[nums[fast]];</span><br><span class="line">    <span class="keyword">while</span>(slow != fast)&#123;</span><br><span class="line">        slow = nums[slow];</span><br><span class="line">        fast = nums[nums[fast]];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> slow2 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(slow2 != slow)&#123;</span><br><span class="line">        slow = nums[slow];</span><br><span class="line">        slow2 = nums[slow2];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> slow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;给定一个包含 n + 1 个整数的数组 nums，其数字都在 1 到 n 之间（包括 1 和 n），可知至少存在一个重复的整数。假设只有一个重复的整数，找出这个重复的数。&lt;/p&gt;
+&lt;p&gt;说明：&lt;/p&gt;
+&lt;p&gt;不能更改原数组（假设数组是只读的）。&lt;br&gt;只能使用额外的 O(1) 的空间。&lt;br&gt;时间复杂度小于 O(n**2) 。&lt;br&gt;数组中只有一个重复的数字，但它可能不止重复出现一次。&lt;/p&gt;
+&lt;p&gt;来源：力扣（LeetCode）&lt;br&gt;链接：&lt;a href=&quot;https://leetcode-cn.com/problems/find-the-duplicate-number&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://leetcode-cn.com/problems/find-the-duplicate-number&lt;/a&gt;&lt;br&gt;著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Leetcode146-LRU缓存机制</title>
@@ -449,31 +525,6 @@
       <category term="web" scheme="http://blog.ydq6.com/tags/web/"/>
     
       <category term="文件包含" scheme="http://blog.ydq6.com/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>合天培训_实验_web安全之HTTP头部字段理解</title>
-    <link href="http://blog.ydq6.com/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3/"/>
-    <id>http://blog.ydq6.com/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_web%E5%AE%89%E5%85%A8%E4%B9%8BHTTP%E5%A4%B4%E9%83%A8%E5%AD%97%E6%AE%B5%E7%90%86%E8%A7%A3/</id>
-    <published>2020-04-30T12:55:32.000Z</published>
-    <updated>2020-05-01T15:47:22.127Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文主要是讲解http头部字段实验，实验的目的是加深对http请求头的理解。</p><a id="more"></a><h2><span id="第一题-观察http-响应头">第一题 观察HTTP 响应头</span></h2><p>题目提示观察http响应头所以只观察响应头即可。通过命令</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/1.php</span><br></pre></td></tr></table></figure><p>得到:</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">key: hello world!</span><br></pre></td></tr></table></figure><h2><span id="第二题-referer理解">第二题 Referer理解</span></h2><p>提示必须从<a href="http://www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段" target="_blank" rel="noopener">www.baidu.com跳转过来，所以在请求头中直接伪造Refer字段</a></p><p>通过命令</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -H Referer:http://www.baidu.com 47.105.75.177/vulnlab/head/2.php</span><br></pre></td></tr></table></figure><p>从响应中获取key:</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure><h2><span id="第三题-x-forwarded-for理解">第三题 X-Forwarded-For理解</span></h2><p>通过浏览器检查获取网址47.105.75.177/vulnlab/head/3.php，点击网址后自动跳转到 <a href="http://www.hetianlab.com/" target="_blank" rel="noopener">http://www.hetianlab.com/</a> 。先curl下：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure><p>得到：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">this page only accept come from localhost</span><br></pre></td></tr></table></figure><p>本地才能访问，所以伪造X-Forwarded-For为127.0.0.1</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -H X-Forwarded-For:127.0.0.1 47.105.75.177/vulnlab/head/3.php</span><br></pre></td></tr></table></figure><p>得到key</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure><h2><span id="第四题-user-agent理解">第四题 User-Agent理解</span></h2><p>题目提示只能从iPhone中发起访问，猜测检查不严格。直接伪造User-Agent:iPhone。curl命令：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -H User-Agent:iPhone 47.105.75.177/vulnlab/head/4.php</span><br></pre></td></tr></table></figure><p>得到key:</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">key: you are right</span><br></pre></td></tr></table></figure><p>第五题 Accept-Language理解</p><p>题目提示只允许外国人登录,猜测接收语言为英语即可。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -H Accept-Language:en_us 47.105.75.177/vulnlab/head/5.php</span><br></pre></td></tr></table></figure><h2><span id="第六题-cookie理解">第六题 Cookie理解</span></h2><p>题目提示一定要用admin登录，又是cookie，猜测cookie中有判断是否admin字段。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure><p>发现响应头中会设置cookie:</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set-Cookie: Login=anonymous</span><br></pre></td></tr></table></figure><p>所以请求时将cookie设置为Login=admin即可。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --cookie Login=admin 47.105.75.177/vulnlab/head/6.php</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文主要是讲解http头部字段实验，实验的目的是加深对http请求头的理解。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="web安全" scheme="http://blog.ydq6.com/categories/web/"/>
-    
-    
-      <category term="web" scheme="http://blog.ydq6.com/tags/web/"/>
-    
-      <category term="http" scheme="http://blog.ydq6.com/tags/http/"/>
     
   </entry>
   
