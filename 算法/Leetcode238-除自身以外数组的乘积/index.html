@@ -21,24 +21,25 @@
     var CONFIG = {"hostname":"blog.ydq6.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="本文主要讲解几个cms中出现的文件上传漏洞，以及对应的攻击方法。">
+  <meta name="description" content="给你一个长度为 n 的整数数组 nums，其中 n &gt; 1，返回输出数组 output ，其中 output[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积。 示例: 输入: [1,2,3,4]输出: [24,12,8,6] 提示：题目数据保证数组之中任意元素的全部前缀元素和后缀（甚至是整个数组）的乘积都在 32 位整数范围内。 说明: 请不要使用除法，且在 O(n) 时间">
 <meta property="og:type" content="article">
-<meta property="og:title" content="合天培训_实验_文件上传考核">
-<meta property="og:url" content="http://blog.ydq6.com/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E8%80%83%E6%A0%B8/index.html">
+<meta property="og:title" content="Leetcode238-除自身以外数组的乘积">
+<meta property="og:url" content="http://blog.ydq6.com/%E7%AE%97%E6%B3%95/Leetcode238-%E9%99%A4%E8%87%AA%E8%BA%AB%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF/index.html">
 <meta property="og:site_name" content="gwolfs的个人博客">
-<meta property="og:description" content="本文主要讲解几个cms中出现的文件上传漏洞，以及对应的攻击方法。">
+<meta property="og:description" content="给你一个长度为 n 的整数数组 nums，其中 n &gt; 1，返回输出数组 output ，其中 output[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积。 示例: 输入: [1,2,3,4]输出: [24,12,8,6] 提示：题目数据保证数组之中任意元素的全部前缀元素和后缀（甚至是整个数组）的乘积都在 32 位整数范围内。 说明: 请不要使用除法，且在 O(n) 时间">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200420145021307.png">
-<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200420154112973.png">
-<meta property="article:published_time" content="2020-05-01T08:50:32.000Z">
-<meta property="article:modified_time" content="2020-05-01T15:47:04.613Z">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200604105752184.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200604110018249.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200604111653691.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200604113840186.png">
+<meta property="article:published_time" content="2020-06-04T02:09:54.000Z">
+<meta property="article:modified_time" content="2020-06-04T03:38:55.024Z">
 <meta property="article:author" content="gwolfs">
-<meta property="article:tag" content="web">
-<meta property="article:tag" content="文件上传">
+<meta property="article:tag" content="算法">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20200420145021307.png">
+<meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20200604105752184.png">
 
-<link rel="canonical" href="http://blog.ydq6.com/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E8%80%83%E6%A0%B8/">
+<link rel="canonical" href="http://blog.ydq6.com/%E7%AE%97%E6%B3%95/Leetcode238-%E9%99%A4%E8%87%AA%E8%BA%AB%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF/">
 
 
 <script id="page-configurations">
@@ -51,7 +52,7 @@
   };
 </script>
 
-  <title>合天培训_实验_文件上传考核 | gwolfs的个人博客</title>
+  <title>Leetcode238-除自身以外数组的乘积 | gwolfs的个人博客</title>
   
 
 
@@ -176,7 +177,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E8%80%83%E6%A0%B8/">
+    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/%E7%AE%97%E6%B3%95/Leetcode238-%E9%99%A4%E8%87%AA%E8%BA%AB%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head1.png">
@@ -189,7 +190,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          合天培训_实验_文件上传考核
+          Leetcode238-除自身以外数组的乘积
         </h1>
 
         <div class="post-meta">
@@ -201,7 +202,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-05-01 16:50:32 / 修改时间：23:47:04" itemprop="dateCreated datePublished" datetime="2020-05-01T16:50:32+08:00">2020-05-01</time>
+              <time title="创建时间：2020-06-04 10:09:54 / 修改时间：11:38:55" itemprop="dateCreated datePublished" datetime="2020-06-04T10:09:54+08:00">2020-06-04</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -209,7 +210,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index"><span itemprop="name">web安全</span></a>
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
                 </span>
             </span>
 
@@ -224,66 +225,42 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文主要讲解几个cms中出现的文件上传漏洞，以及对应的攻击方法。</p>
+        <p>给你一个长度为 n 的整数数组 nums，其中 n &gt; 1，返回输出数组 output ，其中 output[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积。</p>
+<p>示例:</p>
+<p>输入: [1,2,3,4]<br>输出: [24,12,8,6]</p>
+<p>提示：题目数据保证数组之中任意元素的全部前缀元素和后缀（甚至是整个数组）的乘积都在 32 位整数范围内。</p>
+<p>说明: 请不要使用除法，且在 O(n) 时间复杂度内完成此题。</p>
+<p>进阶：<br>你可以在常数空间复杂度内完成这个题目吗？（ 出于对空间复杂度分析的目的，输出数组不被视为额外空间。）</p>
+<p>来源：力扣（LeetCode）<br>链接：<a href="https://leetcode-cn.com/problems/product-of-array-except-self" target="_blank" rel="noopener">https://leetcode-cn.com/problems/product-of-array-except-self</a><br>著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。</p>
 <a id="more"></a>
 
-<h2><span id="1beecms">1.beecms</span></h2><p>首先后台登录</p>
-<p>绕过登录方法：</p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">用户名：admi' Un union ion Se%select%lect <span class="number">1</span>,'admin','<span class="number">9003</span>d1df22eb4d3820015070385194c8',<span class="number">4</span>,<span class="number">0</span> #</span><br><span class="line">密码：pwd</span><br></pre></td></tr></table></figure>
+<p>要求除本身外数组的乘积，只需要将数字左右的乘积相乘即可。假设</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[<span class="string">i</span>][<span class="symbol">j</span>]为nums[i]<span class="emphasis">*nums[i+1]*</span>...*nums[j];</span><br></pre></td></tr></table></figure>
 
-<p>在后台发现上传图片功能：</p>
-<figure class="highlight sas"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://47.105.75.177/vulnlab/sqli/beecms/admin/admin_content.php?action=<span class="meta">add</span><span class="variable">&amp;id</span>=3<span class="variable">&amp;nav</span>=add_channel_product<span class="variable">&amp;admin_p_nav</span>=content<span class="variable">&amp;lang</span>=cn</span><br></pre></td></tr></table></figure>
+<p>所以</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sums[<span class="string">i</span>]=dp[<span class="string">0</span>][<span class="symbol">i-1</span>]*dp[<span class="string">i+1</span>][<span class="symbol">len</span>]</span><br></pre></td></tr></table></figure>
 
-<p>实际检测，发现是MIME白名单检测，所以Burp改包即可。</p>
-<p>然后在图片管理中可以看到上传的文件的路径：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/vulnlab/</span>sqli<span class="regexp">/beecms/u</span>pload<span class="regexp">/img/</span><span class="number">202004201359505400</span>.php</span><br></pre></td></tr></table></figure>
+<p>状态转移方程：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[<span class="string">i</span>][<span class="symbol">j</span>]=dp[<span class="string">i</span>][<span class="symbol">j-1</span>]*nums[j]</span><br></pre></td></tr></table></figure>
+
+<p>方向是从0~len.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] productExceptSelf(<span class="keyword">int</span>[] nums) &#123;</span><br><span class="line">        <span class="keyword">int</span> len = nums.length;</span><br><span class="line">        <span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[len][len];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=i;j&lt;len;j++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(j == i) &#123;</span><br><span class="line">                    dp[i][i] = nums[i];</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    dp[i][j] = dp[i][j - <span class="number">1</span>] * nums[j];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span>[] sum = <span class="keyword">new</span> <span class="keyword">int</span>[len];</span><br><span class="line">        sum[<span class="number">0</span>]=dp[<span class="number">1</span>][len-<span class="number">1</span>];</span><br><span class="line">        sum[len-<span class="number">1</span>]=dp[<span class="number">0</span>][len-<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; len-<span class="number">1</span>;i++)&#123;</span><br><span class="line">            sum[i] = dp[<span class="number">0</span>][i-<span class="number">1</span>]*dp[i+<span class="number">1</span>][len-<span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 
 
-<h2><span id="2fiyocms">2.fiyocms</span></h2><p>账户密码admin/admin888登录</p>
-<p>找到上传文件的点：</p>
-<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span>/<span class="regexp">/47.105.75.177/vulnlab</span><span class="regexp">/upload/fiyocms</span><span class="regexp">/dapur/</span>?app=media&amp;<span class="keyword">type</span>=files</span><br></pre></td></tr></table></figure>
+<p>这样虽然对，但是超出内存限制了。题目要求o(1)时间复杂度，所以需要重新调整过。</p>
+<p>看下状态转移方程表格：<br><img src="/assets/image-20200604105752184.png" alt="image-20200604105752184"></p>
+<p>再看下sum是怎么计算的：</p>
+<p><img src="/assets/image-20200604110018249.png" alt="image-20200604110018249"></p>
+<p>可以重新算状态转移表格：</p>
+<p><img src="/assets/image-20200604111653691.png" alt="image-20200604111653691"></p>
+<p>其实很简单的一个表格，用几个中间变量表示即可。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">leftValue 代表左面计算乘积，初始化为<span class="number">1</span>。</span><br><span class="line">rightValue 代表右面计算乘积，初始化为<span class="number">1.</span></span><br><span class="line"></span><br><span class="line">注意右面乘积的计算只需要从num[j+<span class="number">1</span>]*...num[len<span class="number">-1</span>]即可，</span><br><span class="line">但是左面计算乘积需要记录上一次的左面乘积，这样就可以防止重复计算。</span><br><span class="line">所以用lastLeftValue代表上次计算的左面乘积。则leftValue=lastLeftValue*nums[j<span class="number">-1</span>]</span><br></pre></td></tr></table></figure>
 
-<p>但是上传按钮按不动。其他功能点也没有上传的，放弃。</p>
-<p>老师讲了后发现themes下面有漏洞。</p>
-<p>（1）任意文件读取</p>
-<p>（2）任意文件上传</p>
-<h2><span id="3phpok">3.phpok</span></h2><p>账户密码admin/admin登录</p>
-<p>找到修改头像的点，发现只能上传图像。</p>
-<p>上传一个后缀名改为gif的php代码。</p>
-<p>然后改包：</p>
-<p><img src="/assets/image-20200420145021307.png" alt="image-20200420145021307"></p>
-<p>发现php被过滤了。</p>
-<p>php fuzz测试。发现均被过滤了。</p>
-<p>换思路，扫后台</p>
-<p>扫出admin.php</p>
-<p>登录发现不正确，应该用户表和管理员表是两张。</p>
-<p>用户名：admin,密码： admin888 (利用其他网站的sql注入获得)</p>
-<p>在工具，附件分类管理中gif,png,jpg后面再加个php。然后再文件上传即可。</p>
-<p><img src="/assets/image-20200420154112973.png" alt="image-20200420154112973"></p>
-<p>看burp包得到上传路径：</p>
-<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">res/<span class="number">202004</span>/<span class="number">20</span>/<span class="number">1555e119f</span>9dc2b1f.php</span><br></pre></td></tr></table></figure>
+<p>所以最后的代码为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> len = nums.length;</span><br><span class="line"><span class="keyword">int</span>[] sum = <span class="keyword">new</span> <span class="keyword">int</span>[len];</span><br><span class="line"><span class="keyword">int</span> lastLeftValue = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i =<span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">    <span class="keyword">int</span> leftValue = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> rightValue = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(i == <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j =i+<span class="number">1</span>;j&lt;len;j++)&#123;</span><br><span class="line">            rightValue *= nums[j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(i == len-<span class="number">1</span>)&#123;</span><br><span class="line">        leftValue = lastLeftValue*nums[i-<span class="number">1</span>];</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        leftValue = lastLeftValue*nums[i-<span class="number">1</span>];</span><br><span class="line">        lastLeftValue = leftValue;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j =i+<span class="number">1</span>;j&lt;len;j++)&#123;</span><br><span class="line">            rightValue *= nums[j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    sum[i] = leftValue*rightValue;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> sum;</span><br></pre></td></tr></table></figure>
 
-<p>访问资源即可：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/phpok/</span>res<span class="regexp">/202004/</span><span class="number">20</span><span class="regexp">/1555e119f9dc2b1f.php</span></span><br></pre></td></tr></table></figure>
-
-<p>为了方便其他同学做再改回去。</p>
-<h2><span id="4geez">4.geez</span></h2><p>同样sql注入得到账户名密码：admin/admin445</p>
-<p>发现进去就有上传文件的点。用fuzz模糊测试发现很好绕过。直接php.即可。</p>
-<p>然后在主页再检查头像的地址：</p>
-<p>得到上传文件：</p>
-<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./upload/<span class="number">1</span>_dama1.php.</span><br></pre></td></tr></table></figure>
-
-<p>访问：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/denglu/u</span>pload<span class="regexp">/1_dama1.php.</span></span><br></pre></td></tr></table></figure>
-
-<p>发现不能解析。</p>
-<p>改为大小写绕过得到上传文件：</p>
-<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./upload/<span class="number">1</span>_dama1.php</span><br></pre></td></tr></table></figure>
-
-<p>访问：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">47.105</span>.<span class="number">75.177</span><span class="regexp">/vulnlab/u</span>pload<span class="regexp">/denglu/u</span>pload<span class="regexp">/1_dama1.php</span></span><br></pre></td></tr></table></figure>
-
+<p><img src="/assets/image-20200604113840186.png" alt="image-20200604113840186"></p>
 
     </div>
 
@@ -304,27 +281,26 @@
   <div class="popular-posts-header">相关文章</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\XXE漏洞实验\" rel="bookmark">XXE漏洞实验</a></div>
+      <div class="popular-posts-title"><a href="\算法\面试算法题系列\" rel="bookmark">面试算法题系列</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\渗透测试\vulnhub-xxe\" rel="bookmark">vulnhub_xxe</a></div>
+      <div class="popular-posts-title"><a href="\算法\Leetcode152-乘积最大子数组\" rel="bookmark">Leetcode152-乘积最大子数组</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\渗透测试\SkyConCTF2016靶机测试\" rel="bookmark">SkyConCTF2016靶机测试</a></div>
+      <div class="popular-posts-title"><a href="\算法\Leetcode139-单词拆分\" rel="bookmark">Leetcode139-单词拆分</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\渗透测试\pwnlab靶机测试\" rel="bookmark">pwnlab靶机测试</a></div>
+      <div class="popular-posts-title"><a href="\算法\Leetcode146-LRU缓存机制\" rel="bookmark">Leetcode146-LRU缓存机制</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="\web\JS学习\" rel="bookmark">JS学习</a></div>
+      <div class="popular-posts-title"><a href="\算法\Leetcode4-寻找两个正序数组的中位数\" rel="bookmark">Leetcode4-寻找两个正序数组的中位数</a></div>
     </li>
   </ul>
 
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i>web</a>
-              <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" rel="tag"><i class="fa fa-tag"></i>文件上传</a>
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"><i class="fa fa-tag"></i>算法</a>
           </div>
 
         
@@ -333,13 +309,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/" rel="prev" title="合天培训_实验_文件包含漏洞">
-      <i class="fa fa-chevron-left"></i> 合天培训_实验_文件包含漏洞
+    <a href="/%E7%AE%97%E6%B3%95/Leetcode152-%E4%B9%98%E7%A7%AF%E6%9C%80%E5%A4%A7%E5%AD%90%E6%95%B0%E7%BB%84/" rel="prev" title="Leetcode152-乘积最大子数组">
+      <i class="fa fa-chevron-left"></i> Leetcode152-乘积最大子数组
     </a></div>
-      <div class="post-nav-item">
-    <a href="/web/%E5%90%88%E5%A4%A9%E5%9F%B9%E8%AE%AD_%E5%AE%9E%E9%AA%8C_%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/" rel="next" title="合天培训_实验_命令执行">
-      合天培训_实验_命令执行 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -398,7 +371,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">1.beecms</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">2.fiyocms</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">3.phpok</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">4.geez</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
