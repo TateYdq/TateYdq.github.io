@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="FJtFPhqPz0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.ydq6.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="因为很多时候测试涉及到小程序和app的测试，而测试过程中可能遇到一些阻隔，所以开始学习android测试。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安卓测试(一)">
+<meta property="og:url" content="http://blog.ydq6.com/android/%E5%AE%89%E5%8D%93%E6%B5%8B%E8%AF%95-%E4%B8%80/index.html">
+<meta property="og:site_name" content="gwolfs的个人博客">
+<meta property="og:description" content="因为很多时候测试涉及到小程序和app的测试，而测试过程中可能遇到一些阻隔，所以开始学习android测试。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607155844624.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607160116200.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607160225606.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607160725005.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607160909672.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607161207168.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607162415591.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607162613685.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607163557925.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607170223141.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607170238703.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607170759437.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607171032384.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607171427354.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607171513728.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607171823766.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607171938655.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200609224324994.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200609225733881.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607190745464.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607180032085.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607190844347.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607191013245.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607191337324.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607191439337.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607203150653.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607203457762.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607205622609.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607205914084.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200608102044844.png">
+<meta property="article:published_time" content="2020-06-07T07:51:13.000Z">
+<meta property="article:modified_time" content="2020-06-09T15:12:22.841Z">
+<meta property="article:author" content="gwolfs">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="逆向">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20200607155844624.png">
+
+<link rel="canonical" href="http://blog.ydq6.com/android/%E5%AE%89%E5%8D%93%E6%B5%8B%E8%AF%95-%E4%B8%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>安卓测试(一) | gwolfs的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="gwolfs的个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">gwolfs的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/android/%E5%AE%89%E5%8D%93%E6%B5%8B%E8%AF%95-%E4%B8%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head1.png">
+      <meta itemprop="name" content="gwolfs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gwolfs的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          安卓测试(一)
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-07 15:51:13" itemprop="dateCreated datePublished" datetime="2020-06-07T15:51:13+08:00">2020-06-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-09 23:12:22" itemprop="dateModified" datetime="2020-06-09T23:12:22+08:00">2020-06-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index"><span itemprop="name">android</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>因为很多时候测试涉及到小程序和app的测试，而测试过程中可能遇到一些阻隔，所以开始学习android测试。</p>
+<a id="more"></a>
+
+<h1><span id="hook工具环境安装">hook工具环境安装</span></h1><p>用到工具</p>
+<ul>
+<li>夜深模拟器</li>
+<li>adb</li>
+</ul>
+<h2><span id="首先用adb调试夜神模拟器">首先用adb调试夜神模拟器。</span></h2><p>先查看adb版本：</p>
+<p><img src="/assets/image-20200607155844624.png" alt="image-20200607155844624"></p>
+<p>然后找到夜深浏览器所在目录，使用nox_adb.exe查看版本：</p>
+<p>[注]如何快速查找这两个工具所在位置用utool就可以。</p>
+<p><img src="/assets/image-20200607160116200.png" alt="image-20200607160116200"></p>
+<p>发现两个工具版本不一样。</p>
+<p>如果直接运行adb devices是不成功的。</p>
+<p><img src="/assets/image-20200607160225606.png" alt="image-20200607160225606"></p>
+<p>现在将nox_adb.exe改为nox_adb_bak.exe</p>
+<p>然后把adb.exe拷贝到夜神模拟器所在路径并改名为nox_adb.exe</p>
+<p><img src="/assets/image-20200607160725005.png" alt="image-20200607160725005"></p>
+<p>再次执行发现还是</p>
+<p><img src="/assets/image-20200607160909672.png" alt="image-20200607160909672"></p>
+<p>然后发现夜神由于打游戏用的平板模式，换成手机模式就好了：</p>
+<p><img src="/assets/image-20200607161207168.png" alt="image-20200607161207168"></p>
+<h2><span id="手机burp证书安装">手机burp证书安装</span></h2><p>（1）burp导出证书并修改后缀名为.cer</p>
+<p>（2）adb push 证书路径 /mnt/sdcard/gwolfs/cacert.cer</p>
+<p>（3）在手机上安装证书。</p>
+<p>设置-安全-从SD卡安装证书</p>
+<p>（4）配置代理</p>
+<p>[注]</p>
+<ul>
+<li>安卓文件系统的默认路径是：</li>
+</ul>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/storage/</span>emulated<span class="regexp">/0/</span></span><br></pre></td></tr></table></figure>
+
+<p>但是该路径是read-only的。</p>
+<ul>
+<li>adb shell 后面可以执行linux系统命令</li>
+</ul>
+<p><img src="/assets/image-20200607162415591.png" alt="image-20200607162415591"></p>
+<p><img src="/assets/image-20200607162613685.png" alt="image-20200607162613685"></p>
+<p><img src="/assets/image-20200607163557925.png" alt="image-20200607163557925"></p>
+<p><img src="/assets/image-20200607170223141.png" alt="image-20200607170223141"></p>
+<p><img src="/assets/image-20200607170238703.png" alt="image-20200607170238703"></p>
+<p><img src="/assets/image-20200607170759437.png" alt="image-20200607170759437"></p>
+<h2><span id="安装frida">安装Frida</span></h2><p>(1)pip install frida</p>
+<p>(2)github下载frida-server</p>
+<p>(3)adb push放入手机目录里</p>
+<p><img src="/assets/image-20200607171032384.png" alt="image-20200607171032384"></p>
+<p>（4）chmod 777 赋予赋予执行权限</p>
+<p><img src="/assets/image-20200607171427354.png" alt="image-20200607171427354"></p>
+<p>（5）启动frida-server服务器</p>
+<p><img src="/assets/image-20200607171513728.png" alt="image-20200607171513728"></p>
+<p>发现不对。想了想CPU架构有问题，夜神模拟器底层的CPU是基于本机的，是intel的，不是arm的，所以换成x86的导入即可。</p>
+<p><img src="/assets/image-20200607171823766.png" alt="image-20200607171823766"></p>
+<p>（6）在windows上使用<code>firda-ps -U</code>列出所有进程</p>
+<p><img src="/assets/image-20200607171938655.png" alt="image-20200607171938655"></p>
+<p>成功列出，环境搭建成功。</p>
+<h2><span id="安装xposed">安装Xposed</span></h2><p>下载xposed安装apk</p>
+<p>android5.0以下：</p>
+<p><a href="https://repo.xposed.info/module/de.robv.android.xposed.installer" target="_blank" rel="noopener">https://repo.xposed.info/module/de.robv.android.xposed.installer</a></p>
+<p>android5.0以上：</p>
+<p><a href="https://forum.xda-developers.com/showthread.php?t=3034811" target="_blank" rel="noopener">https://forum.xda-developers.com/showthread.php?t=3034811</a></p>
+<p>注意安装xposed需要root权限。</p>
+<p>安装apk后发现</p>
+<p><img src="/assets/image-20200609224324994.png" alt="image-20200609224324994"></p>
+<p>点击下面的安装，下载完成后安装成功。</p>
+<p><img src="/assets/image-20200609225733881.png" alt="image-20200609225733881"></p>
+<h1><span id="app抓包">App抓包</span></h1><h2><span id="ssl-pinning">SSL pinning</span></h2><h2><span id="绕过证书锁定">绕过证书锁定</span></h2><p>注意一点，当前frida-server不是以后台服务启动的，需要加个&amp;作为后台服务启动</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./frida-server<span class="meta">&amp;</span></span><br></pre></td></tr></table></figure>
+
+<p>先前说到，利用<code>frida-ps -U</code>可以列举出模拟器中的所有进程。</p>
+<p>绕过证书锁定的原理是注入进程。所以可以根据列举进程命令找到需要注入的进程ID和名字，然后使用frida进行注入。</p>
+<p>（1）首先模拟器上打开app。</p>
+<p>（2）查看进程</p>
+<p><img src="/assets/image-20200607190745464.png" alt="image-20200607190745464"></p>
+<p>发现两个进程号。</p>
+<p>注意frida写python脚本时：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">get_remote_device</span><span class="params">()</span></span>   <span class="comment">//模拟器使用这个</span></span><br><span class="line"><span class="function"><span class="title">get_usb_device</span><span class="params">()</span></span>    <span class="comment">//usb设备用这个</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>绕过脚本来源：<a href="https://techblog.mediaservice.net/2017/07/universal-android-ssl-pinning-bypass-with-frida/" target="_blank" rel="noopener">https://techblog.mediaservice.net/2017/07/universal-android-ssl-pinning-bypass-with-frida/</a></p>
+<p>因为脚本中会用到burp证书，所以先把burp证书复制到与frida-server一个目录下。</p>
+<p><img src="/assets/image-20200607180032085.png" alt="image-20200607180032085"></p>
+<p>然后执行脚本：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">frida</span> <span class="selector-tag">-U</span> <span class="selector-tag">-f</span> <span class="selector-tag">com</span><span class="selector-class">.feiliao</span><span class="selector-class">.flipchat</span><span class="selector-class">.android</span> <span class="selector-tag">-l</span> <span class="selector-tag">frida-android-repinning</span><span class="selector-class">.js</span> <span class="selector-tag">--no-pause</span></span><br></pre></td></tr></table></figure>
+
+<p>成功注入：</p>
+<p><img src="/assets/image-20200607190844347.png" alt="image-20200607190844347"></p>
+<p>不知道为什么爆红了，但实际抓包成功。</p>
+<p><img src="/assets/image-20200607191013245.png" alt="image-20200607191013245"></p>
+<h2><span id="objection">Objection</span></h2><p>发现objection工具自动的可以绕过。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install objection</span><br></pre></td></tr></table></figure>
+
+<h3><span id="方法一-动态交互式界面hook">方法一 动态交互式界面hook</span></h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">objection</span> <span class="selector-tag">-g</span> <span class="selector-tag">com</span><span class="selector-class">.feiliao</span><span class="selector-class">.flipchat</span><span class="selector-class">.android</span> <span class="selector-tag">explore</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/assets/image-20200607191337324.png" alt="image-20200607191337324"></p>
+<ul>
+<li><p>环境变量</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">env</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><img src="/assets/image-20200607191439337.png" alt="image-20200607191439337"></p>
+<ul>
+<li>列举出所有activity.</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android hooking list activities        #还支持列举<span class="class"><span class="keyword">class</span>,<span class="type">services。</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/assets/image-20200607203150653.png" alt="image-20200607203150653"></p>
+<ul>
+<li>memory管理</li>
+</ul>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">memory</span> <span class="keyword">list</span> modules       查看当前进程的内存情况</span><br><span class="line"><span class="keyword">memory</span> <span class="keyword">search</span> --string --offsets-only  搜索内存</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/assets/image-20200607203457762.png" alt="image-20200607203457762"></p>
+<ul>
+<li>hook方式</li>
+</ul>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">android </span>hooking watch class_method 包名.类名.方法名</span><br><span class="line"><span class="keyword">android </span>hooking watch class 包名.类名</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>执行命令行命令</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">android</span> shell_exec<span class="meta"> [command]</span></span><br><span class="line">[command]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下载文件</li>
+</ul>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">file</span> download 目标文件 存放地址</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动activies/services</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">android <span class="built_in">int</span>ent lanuch_activity [活动名]</span><br><span class="line">android <span class="built_in">int</span>ent launch_service [类名]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>绕过 sslpinning </li>
+</ul>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">android </span>sslpinning disable</span><br></pre></td></tr></table></figure>
+
+<p><img src="/assets/image-20200607205622609.png" alt="image-20200607205622609"></p>
+<h3><span id="方法二-重新打包apk">方法二 重新打包apk</span></h3><figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objection patchapk <span class="comment">--source app-release.apk</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><img src="/assets/image-20200607205914084.png" alt="image-20200607205914084"></p>
+<p>objection 出现Timeout Error</p>
+<p>网上也不建议采用这种方式注入。</p>
+<h1><span id="逆向工具安装">逆向工具安装</span></h1><h2><span id="jeb">JEB</span></h2><p>JEB是类似于IDA的android逆向工具，从吾爱破解爱盘3.0下载pro版本的即可。免安装。</p>
+<p>测试：<br><img src="/assets/image-20200608102044844.png" alt="image-20200608102044844"></p>
+<p>可以看出会apk文件包含资源文件和字节码，JEB可以分析字节码并点击解析可以逆向为android文件。</p>
+<h2><span id="apktool">Apktool</span></h2><p>下载是个jar包，利用</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">apktool</span><span class="selector-class">.jar</span> <span class="selector-tag">d</span> 目标文件</span><br></pre></td></tr></table></figure>
+
+<p>即可反汇编。</p>
+<h2><span id="jadx">Jadx</span></h2><p>有gui和图形界面，直接使用即可。</p>
+
+    </div>
+
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+      
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"><i class="fa fa-tag"></i>android</a>
+              <a href="/tags/%E9%80%86%E5%90%91/" rel="tag"><i class="fa fa-tag"></i>逆向</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95/Leetcode128-%E6%9C%80%E9%95%BF%E8%BF%9E%E7%BB%AD%E5%BA%8F%E5%88%97/" rel="prev" title="Leetcode128-最长连续序列">
+      <i class="fa fa-chevron-left"></i> Leetcode128-最长连续序列
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/android%E6%B5%8B%E8%AF%95/%E5%AE%89%E5%8D%93%E6%B5%8B%E8%AF%95-%E4%BA%8C/" rel="next" title="安卓测试(二)">
+      安卓测试(二) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-text">hook工具环境安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">首先用adb调试夜神模拟器。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">手机burp证书安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">安装Frida</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">安装Xposed</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-text">App抓包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">SSL pinning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">绕过证书锁定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">Objection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-text">方法一 动态交互式界面hook</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-text">方法二 重新打包apk</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-text">逆向工具安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">JEB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">Apktool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">Jadx</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="gwolfs"
+      src="/images/head1.png">
+  <p class="site-author-name" itemprop="name">gwolfs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TateYdq" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TateYdq" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1937441951@qq.com" title="E-Mail → mailto:1937441951@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备19000724号-1 </a>
+      <img src="/images/beian.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802028114" rel="noopener" target="_blank">京公网安备 11010802028114号 </a>
+  </div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">gwolfs</span>
+</div>
+
+
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共31.4k字</span>
+  <span class="post-meta-divider">|</span>
+  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  <span class="post-meta-divider">|</span>
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  <span class="post-meta-divider">|</span>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+<!-- calendar widget -->
+
+
+</body>
+</html>

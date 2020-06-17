@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="FJtFPhqPz0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.ydq6.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="此文主要探讨LLVM是如何处理多态的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLVM系列-多态测试">
+<meta property="og:url" content="http://blog.ydq6.com/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/LLVM%E7%B3%BB%E5%88%97-%E5%A4%9A%E6%80%81%E6%B5%8B%E8%AF%95/index.html">
+<meta property="og:site_name" content="gwolfs的个人博客">
+<meta property="og:description" content="此文主要探讨LLVM是如何处理多态的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-08T12:44:49.000Z">
+<meta property="article:modified_time" content="2020-06-08T13:01:41.605Z">
+<meta property="article:author" content="gwolfs">
+<meta property="article:tag" content="LLVM">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://blog.ydq6.com/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/LLVM%E7%B3%BB%E5%88%97-%E5%A4%9A%E6%80%81%E6%B5%8B%E8%AF%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>LLVM系列-多态测试 | gwolfs的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="gwolfs的个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">gwolfs的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/LLVM%E7%B3%BB%E5%88%97-%E5%A4%9A%E6%80%81%E6%B5%8B%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head1.png">
+      <meta itemprop="name" content="gwolfs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gwolfs的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LLVM系列-多态测试
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-06-08 20:44:49 / 修改时间：21:01:41" itemprop="dateCreated datePublished" datetime="2020-06-08T20:44:49+08:00">2020-06-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">程序分析</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>此文主要探讨LLVM是如何处理多态的。</p>
+<a id="more"></a>
+
+
+
+<p>测试代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Created by ydq on 6/8/20.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b,<span class="keyword">int</span> c)</span></span>&#123;</span><br><span class="line">      <span class="keyword">return</span> a+b+c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>&#123;</span><br><span class="line">      <span class="keyword">return</span> a+b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  A a;</span><br><span class="line">  <span class="keyword">int</span> res1 = a.add(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line">  <span class="keyword">int</span> res2 = a.add(<span class="number">1</span>,<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line">  <span class="built_in">cout</span>&lt;&lt;<span class="string">"res1:"</span>&lt;&lt;res1&lt;&lt;<span class="string">",res2:"</span>&lt;&lt;res2&lt;&lt;<span class="string">"\n"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>llvm生成：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clang -emit-llvm testclass.cpp -S -o testclass.ll</span><br></pre></td></tr></table></figure>
+
+<p>生成代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line">; ModuleID &#x3D; &#39;testclass.cpp&#39;</span><br><span class="line">source_filename &#x3D; &quot;testclass.cpp&quot;</span><br><span class="line">target datalayout &#x3D; &quot;e-m:e-i64:64-f80:128-n8:16:32:64-S128&quot;</span><br><span class="line">target triple &#x3D; &quot;x86_64-unknown-linux-gnu&quot;</span><br><span class="line"></span><br><span class="line">%&quot;class.std::ios_base::Init&quot; &#x3D; type &#123; i8 &#125;</span><br><span class="line">%&quot;class.std::basic_ostream&quot; &#x3D; type &#123; i32 (...)**, %&quot;class.std::basic_ios&quot; &#125;</span><br><span class="line">%&quot;class.std::basic_ios&quot; &#x3D; type &#123; %&quot;class.std::ios_base&quot;, %&quot;class.std::basic_ostream&quot;*, i8, i8, %&quot;class.std::basic_streambuf&quot;*, %&quot;class.std::ctype&quot;*, %&quot;class.std::num_put&quot;*, %&quot;class.std::num_get&quot;* &#125;</span><br><span class="line">%&quot;class.std::ios_base&quot; &#x3D; type &#123; i32 (...)**, i64, i64, i32, i32, i32, %&quot;struct.std::ios_base::_Callback_list&quot;*, %&quot;struct.std::ios_base::_Words&quot;, [8 x %&quot;struct.std::ios_base::_Words&quot;], i32, %&quot;struct.std::ios_base::_Words&quot;*, %&quot;class.std::locale&quot; &#125;</span><br><span class="line">%&quot;struct.std::ios_base::_Callback_list&quot; &#x3D; type &#123; %&quot;struct.std::ios_base::_Callback_list&quot;*, void (i32, %&quot;class.std::ios_base&quot;*, i32)*, i32, i32 &#125;</span><br><span class="line">%&quot;struct.std::ios_base::_Words&quot; &#x3D; type &#123; i8*, i64 &#125;</span><br><span class="line">%&quot;class.std::locale&quot; &#x3D; type &#123; %&quot;class.std::locale::_Impl&quot;* &#125;</span><br><span class="line">%&quot;class.std::locale::_Impl&quot; &#x3D; type &#123; i32, %&quot;class.std::locale::facet&quot;**, i64, %&quot;class.std::locale::facet&quot;**, i8** &#125;</span><br><span class="line">%&quot;class.std::locale::facet&quot; &#x3D; type &lt;&#123; i32 (...)**, i32, [4 x i8] &#125;&gt;</span><br><span class="line">%&quot;class.std::basic_streambuf&quot; &#x3D; type &#123; i32 (...)**, i8*, i8*, i8*, i8*, i8*, i8*, %&quot;class.std::locale&quot; &#125;</span><br><span class="line">%&quot;class.std::ctype&quot; &#x3D; type &lt;&#123; %&quot;class.std::locale::facet.base&quot;, [4 x i8], %struct.__locale_struct*, i8, [7 x i8], i32*, i32*, i16*, i8, [256 x i8], [256 x i8], i8, [6 x i8] &#125;&gt;</span><br><span class="line">%&quot;class.std::locale::facet.base&quot; &#x3D; type &lt;&#123; i32 (...)**, i32 &#125;&gt;</span><br><span class="line">%struct.__locale_struct &#x3D; type &#123; [13 x %struct.__locale_data*], i16*, i32*, i32*, [13 x i8*] &#125;</span><br><span class="line">%struct.__locale_data &#x3D; type opaque</span><br><span class="line">%&quot;class.std::num_put&quot; &#x3D; type &#123; %&quot;class.std::locale::facet.base&quot;, [4 x i8] &#125;</span><br><span class="line">%&quot;class.std::num_get&quot; &#x3D; type &#123; %&quot;class.std::locale::facet.base&quot;, [4 x i8] &#125;</span><br><span class="line">%class.A &#x3D; type &#123; i8 &#125;</span><br><span class="line"></span><br><span class="line">$_ZN1A3addEii &#x3D; comdat any</span><br><span class="line"></span><br><span class="line">$_ZN1A3addEiii &#x3D; comdat any</span><br><span class="line"></span><br><span class="line">@_ZStL8__ioinit &#x3D; internal global %&quot;class.std::ios_base::Init&quot; zeroinitializer, align 1</span><br><span class="line">@__dso_handle &#x3D; external hidden global i8</span><br><span class="line">@_ZSt4cout &#x3D; external dso_local global %&quot;class.std::basic_ostream&quot;, align 8</span><br><span class="line">@.str &#x3D; private unnamed_addr constant [6 x i8] c&quot;res1:\00&quot;, align 1</span><br><span class="line">@.str.1 &#x3D; private unnamed_addr constant [7 x i8] c&quot;,res2:\00&quot;, align 1</span><br><span class="line">@.str.2 &#x3D; private unnamed_addr constant [2 x i8] c&quot;\0A\00&quot;, align 1</span><br><span class="line">@llvm.global_ctors &#x3D; appending global [1 x &#123; i32, void ()*, i8* &#125;] [&#123; i32, void ()*, i8* &#125; &#123; i32 65535, void ()* @_GLOBAL__sub_I_testclass.cpp, i8* null &#125;]</span><br><span class="line"></span><br><span class="line">; Function Attrs: noinline uwtable</span><br><span class="line">define internal void @__cxx_global_var_init() #0 section &quot;.text.startup&quot; &#123;</span><br><span class="line">entry:</span><br><span class="line">  call void @_ZNSt8ios_base4InitC1Ev(%&quot;class.std::ios_base::Init&quot;* @_ZStL8__ioinit)</span><br><span class="line">  %0 &#x3D; call i32 @__cxa_atexit(void (i8*)* bitcast (void (%&quot;class.std::ios_base::Init&quot;*)* @_ZNSt8ios_base4InitD1Ev to void (i8*)*), i8* getelementptr inbounds (%&quot;class.std::ios_base::Init&quot;, %&quot;class.std::ios_base::Init&quot;* @_ZStL8__ioinit, i32 0, i32 0), i8* @__dso_handle) #3</span><br><span class="line">  ret void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">declare dso_local void @_ZNSt8ios_base4InitC1Ev(%&quot;class.std::ios_base::Init&quot;*) unnamed_addr #1</span><br><span class="line"></span><br><span class="line">; Function Attrs: nounwind</span><br><span class="line">declare dso_local void @_ZNSt8ios_base4InitD1Ev(%&quot;class.std::ios_base::Init&quot;*) unnamed_addr #2</span><br><span class="line"></span><br><span class="line">; Function Attrs: nounwind</span><br><span class="line">declare dso_local i32 @__cxa_atexit(void (i8*)*, i8*, i8*) #3</span><br><span class="line"></span><br><span class="line">; Function Attrs: noinline norecurse optnone uwtable</span><br><span class="line">define dso_local i32 @main() #4 &#123;</span><br><span class="line">entry:</span><br><span class="line">  %a &#x3D; alloca %class.A, align 1</span><br><span class="line">  %res1 &#x3D; alloca i32, align 4</span><br><span class="line">  %res2 &#x3D; alloca i32, align 4</span><br><span class="line">  %call &#x3D; call i32 @_ZN1A3addEii(%class.A* %a, i32 1, i32 2)</span><br><span class="line">  store i32 %call, i32* %res1, align 4</span><br><span class="line">  %call1 &#x3D; call i32 @_ZN1A3addEiii(%class.A* %a, i32 1, i32 3, i32 4)</span><br><span class="line">  store i32 %call1, i32* %res2, align 4</span><br><span class="line">  %call2 &#x3D; call dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc(%&quot;class.std::basic_ostream&quot;* dereferenceable(272) @_ZSt4cout, i8* getelementptr inbounds ([6 x i8], [6 x i8]* @.str, i32 0, i32 0))</span><br><span class="line">  %0 &#x3D; load i32, i32* %res1, align 4</span><br><span class="line">  %call3 &#x3D; call dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZNSolsEi(%&quot;class.std::basic_ostream&quot;* %call2, i32 %0)</span><br><span class="line">  %call4 &#x3D; call dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc(%&quot;class.std::basic_ostream&quot;* dereferenceable(272) %call3, i8* getelementptr inbounds ([7 x i8], [7 x i8]* @.str.1, i32 0, i32 0))</span><br><span class="line">  %1 &#x3D; load i32, i32* %res2, align 4</span><br><span class="line">  %call5 &#x3D; call dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZNSolsEi(%&quot;class.std::basic_ostream&quot;* %call4, i32 %1)</span><br><span class="line">  %call6 &#x3D; call dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc(%&quot;class.std::basic_ostream&quot;* dereferenceable(272) %call5, i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.2, i32 0, i32 0))</span><br><span class="line">  ret i32 0</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">; Function Attrs: noinline nounwind optnone uwtable</span><br><span class="line">define linkonce_odr dso_local i32 @_ZN1A3addEii(%class.A* %this, i32 %a, i32 %b) #5 comdat align 2 &#123;</span><br><span class="line">entry:</span><br><span class="line">  %this.addr &#x3D; alloca %class.A*, align 8</span><br><span class="line">  %a.addr &#x3D; alloca i32, align 4</span><br><span class="line">  %b.addr &#x3D; alloca i32, align 4</span><br><span class="line">  store %class.A* %this, %class.A** %this.addr, align 8</span><br><span class="line">  store i32 %a, i32* %a.addr, align 4</span><br><span class="line">  store i32 %b, i32* %b.addr, align 4</span><br><span class="line">  %this1 &#x3D; load %class.A*, %class.A** %this.addr, align 8</span><br><span class="line">  %0 &#x3D; load i32, i32* %a.addr, align 4</span><br><span class="line">  %1 &#x3D; load i32, i32* %b.addr, align 4</span><br><span class="line">  %add &#x3D; add nsw i32 %0, %1</span><br><span class="line">  ret i32 %add</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">; Function Attrs: noinline nounwind optnone uwtable</span><br><span class="line">define linkonce_odr dso_local i32 @_ZN1A3addEiii(%class.A* %this, i32 %a, i32 %b, i32 %c) #5 comdat align 2 &#123;</span><br><span class="line">entry:</span><br><span class="line">  %this.addr &#x3D; alloca %class.A*, align 8</span><br><span class="line">  %a.addr &#x3D; alloca i32, align 4</span><br><span class="line">  %b.addr &#x3D; alloca i32, align 4</span><br><span class="line">  %c.addr &#x3D; alloca i32, align 4</span><br><span class="line">  store %class.A* %this, %class.A** %this.addr, align 8</span><br><span class="line">  store i32 %a, i32* %a.addr, align 4</span><br><span class="line">  store i32 %b, i32* %b.addr, align 4</span><br><span class="line">  store i32 %c, i32* %c.addr, align 4</span><br><span class="line">  %this1 &#x3D; load %class.A*, %class.A** %this.addr, align 8</span><br><span class="line">  %0 &#x3D; load i32, i32* %a.addr, align 4</span><br><span class="line">  %1 &#x3D; load i32, i32* %b.addr, align 4</span><br><span class="line">  %add &#x3D; add nsw i32 %0, %1</span><br><span class="line">  %2 &#x3D; load i32, i32* %c.addr, align 4</span><br><span class="line">  %add2 &#x3D; add nsw i32 %add, %2</span><br><span class="line">  ret i32 %add2</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">declare dso_local dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc(%&quot;class.std::basic_ostream&quot;* dereferenceable(272), i8*) #1</span><br><span class="line"></span><br><span class="line">declare dso_local dereferenceable(272) %&quot;class.std::basic_ostream&quot;* @_ZNSolsEi(%&quot;class.std::basic_ostream&quot;*, i32) #1</span><br><span class="line"></span><br><span class="line">; Function Attrs: noinline uwtable</span><br><span class="line">define internal void @_GLOBAL__sub_I_testclass.cpp() #0 section &quot;.text.startup&quot; &#123;</span><br><span class="line">entry:</span><br><span class="line">  call void @__cxx_global_var_init()</span><br><span class="line">  ret void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">attributes #0 &#x3D; &#123; noinline uwtable &quot;correctly-rounded-divide-sqrt-fp-math&quot;&#x3D;&quot;false&quot; &quot;disable-tail-calls&quot;&#x3D;&quot;false&quot; &quot;less-precise-fpmad&quot;&#x3D;&quot;false&quot; &quot;no-frame-pointer-elim&quot;&#x3D;&quot;true&quot; &quot;no-frame-pointer-elim-non-leaf&quot; &quot;no-infs-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-jump-tables&quot;&#x3D;&quot;false&quot; &quot;no-nans-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-signed-zeros-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-trapping-math&quot;&#x3D;&quot;false&quot; &quot;stack-protector-buffer-size&quot;&#x3D;&quot;8&quot; &quot;target-cpu&quot;&#x3D;&quot;x86-64&quot; &quot;target-features&quot;&#x3D;&quot;+fxsr,+mmx,+sse,+sse2,+x87&quot; &quot;unsafe-fp-math&quot;&#x3D;&quot;false&quot; &quot;use-soft-float&quot;&#x3D;&quot;false&quot; &#125;</span><br><span class="line">attributes #1 &#x3D; &#123; &quot;correctly-rounded-divide-sqrt-fp-math&quot;&#x3D;&quot;false&quot; &quot;disable-tail-calls&quot;&#x3D;&quot;false&quot; &quot;less-precise-fpmad&quot;&#x3D;&quot;false&quot; &quot;no-frame-pointer-elim&quot;&#x3D;&quot;true&quot; &quot;no-frame-pointer-elim-non-leaf&quot; &quot;no-infs-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-nans-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-signed-zeros-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-trapping-math&quot;&#x3D;&quot;false&quot; &quot;stack-protector-buffer-size&quot;&#x3D;&quot;8&quot; &quot;target-cpu&quot;&#x3D;&quot;x86-64&quot; &quot;target-features&quot;&#x3D;&quot;+fxsr,+mmx,+sse,+sse2,+x87&quot; &quot;unsafe-fp-math&quot;&#x3D;&quot;false&quot; &quot;use-soft-float&quot;&#x3D;&quot;false&quot; &#125;</span><br><span class="line">attributes #2 &#x3D; &#123; nounwind &quot;correctly-rounded-divide-sqrt-fp-math&quot;&#x3D;&quot;false&quot; &quot;disable-tail-calls&quot;&#x3D;&quot;false&quot; &quot;less-precise-fpmad&quot;&#x3D;&quot;false&quot; &quot;no-frame-pointer-elim&quot;&#x3D;&quot;true&quot; &quot;no-frame-pointer-elim-non-leaf&quot; &quot;no-infs-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-nans-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-signed-zeros-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-trapping-math&quot;&#x3D;&quot;false&quot; &quot;stack-protector-buffer-size&quot;&#x3D;&quot;8&quot; &quot;target-cpu&quot;&#x3D;&quot;x86-64&quot; &quot;target-features&quot;&#x3D;&quot;+fxsr,+mmx,+sse,+sse2,+x87&quot; &quot;unsafe-fp-math&quot;&#x3D;&quot;false&quot; &quot;use-soft-float&quot;&#x3D;&quot;false&quot; &#125;</span><br><span class="line">attributes #3 &#x3D; &#123; nounwind &#125;</span><br><span class="line">attributes #4 &#x3D; &#123; noinline norecurse optnone uwtable &quot;correctly-rounded-divide-sqrt-fp-math&quot;&#x3D;&quot;false&quot; &quot;disable-tail-calls&quot;&#x3D;&quot;false&quot; &quot;less-precise-fpmad&quot;&#x3D;&quot;false&quot; &quot;no-frame-pointer-elim&quot;&#x3D;&quot;true&quot; &quot;no-frame-pointer-elim-non-leaf&quot; &quot;no-infs-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-jump-tables&quot;&#x3D;&quot;false&quot; &quot;no-nans-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-signed-zeros-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-trapping-math&quot;&#x3D;&quot;false&quot; &quot;stack-protector-buffer-size&quot;&#x3D;&quot;8&quot; &quot;target-cpu&quot;&#x3D;&quot;x86-64&quot; &quot;target-features&quot;&#x3D;&quot;+fxsr,+mmx,+sse,+sse2,+x87&quot; &quot;unsafe-fp-math&quot;&#x3D;&quot;false&quot; &quot;use-soft-float&quot;&#x3D;&quot;false&quot; &#125;</span><br><span class="line">attributes #5 &#x3D; &#123; noinline nounwind optnone uwtable &quot;correctly-rounded-divide-sqrt-fp-math&quot;&#x3D;&quot;false&quot; &quot;disable-tail-calls&quot;&#x3D;&quot;false&quot; &quot;less-precise-fpmad&quot;&#x3D;&quot;false&quot; &quot;no-frame-pointer-elim&quot;&#x3D;&quot;true&quot; &quot;no-frame-pointer-elim-non-leaf&quot; &quot;no-infs-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-jump-tables&quot;&#x3D;&quot;false&quot; &quot;no-nans-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-signed-zeros-fp-math&quot;&#x3D;&quot;false&quot; &quot;no-trapping-math&quot;&#x3D;&quot;false&quot; &quot;stack-protector-buffer-size&quot;&#x3D;&quot;8&quot; &quot;target-cpu&quot;&#x3D;&quot;x86-64&quot; &quot;target-features&quot;&#x3D;&quot;+fxsr,+mmx,+sse,+sse2,+x87&quot; &quot;unsafe-fp-math&quot;&#x3D;&quot;false&quot; &quot;use-soft-float&quot;&#x3D;&quot;false&quot; &#125;</span><br><span class="line"></span><br><span class="line">!llvm.module.flags &#x3D; !&#123;!0&#125;</span><br><span class="line">!llvm.ident &#x3D; !&#123;!1&#125;</span><br><span class="line"></span><br><span class="line">!0 &#x3D; !&#123;i32 1, !&quot;wchar_size&quot;, i32 4&#125;</span><br><span class="line">!1 &#x3D; !&#123;!&quot;clang version 7.0.0 (tags&#x2F;RELEASE_700&#x2F;final)&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add</span>(<span class="keyword">int</span> a,<span class="keyword">int</span> b);</span><br></pre></td></tr></table></figure>
+
+<p>生成的是：</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">define</span> <span class="keyword">linkonce_odr</span> dso_local <span class="keyword">i32</span> <span class="title">@_ZN1A3addEii</span>(<span class="symbol">%class.A</span>* <span class="symbol">%this</span>, <span class="keyword">i32</span> <span class="symbol">%a</span>, <span class="keyword">i32</span> <span class="symbol">%b</span>)</span><br></pre></td></tr></table></figure>
+
+<p>而</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b,<span class="keyword">int</span> c)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>生成的是：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">define linkonce_odr dso_local i32 @_ZN1A3addEiii(%<span class="keyword">class</span>.<span class="symbol">A</span>* %<span class="symbol">this, <span class="symbol">i32</span></span> %<span class="symbol">a, <span class="symbol">i32</span></span> %<span class="symbol">b, <span class="symbol">i32</span></span> %<span class="symbol">c</span>)</span><br></pre></td></tr></table></figure>
+
+<p>比两个参数多了一个i。</p>
+<p>而且类名和函数之间用一个数字连接。</p>
+
+    </div>
+
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+      
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LLVM/" rel="tag"><i class="fa fa-tag"></i>LLVM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/android%E6%B5%8B%E8%AF%95/%E5%AE%89%E5%8D%93%E6%B5%8B%E8%AF%95-%E4%BA%8C/" rel="prev" title="安卓测试(二)">
+      <i class="fa fa-chevron-left"></i> 安卓测试(二)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/uncategorized/solr%E6%BC%8F%E6%B4%9E%E7%A0%94%E7%A9%B6/" rel="next" title="solr漏洞研究">
+      solr漏洞研究 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="gwolfs"
+      src="/images/head1.png">
+  <p class="site-author-name" itemprop="name">gwolfs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TateYdq" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TateYdq" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1937441951@qq.com" title="E-Mail → mailto:1937441951@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备19000724号-1 </a>
+      <img src="/images/beian.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802028114" rel="noopener" target="_blank">京公网安备 11010802028114号 </a>
+  </div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">gwolfs</span>
+</div>
+
+
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共31.4k字</span>
+  <span class="post-meta-divider">|</span>
+  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  <span class="post-meta-divider">|</span>
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  <span class="post-meta-divider">|</span>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+<!-- calendar widget -->
+
+
+</body>
+</html>

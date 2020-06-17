@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="FJtFPhqPz0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.ydq6.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="此篇文章主要讲的是android中使用frida框架hook应用进程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安卓测试(二)">
+<meta property="og:url" content="http://blog.ydq6.com/android%E6%B5%8B%E8%AF%95/%E5%AE%89%E5%8D%93%E6%B5%8B%E8%AF%95-%E4%BA%8C/index.html">
+<meta property="og:site_name" content="gwolfs的个人博客">
+<meta property="og:description" content="此篇文章主要讲的是android中使用frida框架hook应用进程。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607215916539.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607220848783.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607215820676.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607223202986.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607223304658.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607231641389.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200607231659556.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200609165516555.png">
+<meta property="og:image" content="http://blog.ydq6.com/assets/image-20200609213830362.png">
+<meta property="article:published_time" content="2020-06-07T13:50:53.000Z">
+<meta property="article:modified_time" content="2020-06-10T15:38:41.375Z">
+<meta property="article:author" content="gwolfs">
+<meta property="article:tag" content="Frida">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.ydq6.com/assets/image-20200607215916539.png">
+
+<link rel="canonical" href="http://blog.ydq6.com/android%E6%B5%8B%E8%AF%95/%E5%AE%89%E5%8D%93%E6%B5%8B%E8%AF%95-%E4%BA%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>安卓测试(二) | gwolfs的个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="gwolfs的个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">gwolfs的个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.ydq6.com/android%E6%B5%8B%E8%AF%95/%E5%AE%89%E5%8D%93%E6%B5%8B%E8%AF%95-%E4%BA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head1.png">
+      <meta itemprop="name" content="gwolfs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="gwolfs的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          安卓测试(二)
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-07 21:50:53" itemprop="dateCreated datePublished" datetime="2020-06-07T21:50:53+08:00">2020-06-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-10 23:38:41" itemprop="dateModified" datetime="2020-06-10T23:38:41+08:00">2020-06-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">android测试</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>此篇文章主要讲的是android中使用frida框架hook应用进程。</p>
+<a id="more"></a>
+
+<h1><span id="编写demo测试frida-api">编写demo测试frida api</span></h1><h2><span id="编写demo">编写demo</span></h2><p>Android Studio安装具体过程网上自行搜索。</p>
+<p>笔者当前AS版本：</p>
+<p><img src="/assets/image-20200607215916539.png" alt="image-20200607215916539"></p>
+<p>AS连接夜神简单方法：</p>
+<p><img src="/assets/image-20200607220848783.png" alt="image-20200607220848783"></p>
+<p>先新建一个空activity</p>
+<p><img src="/assets/image-20200607215820676.png" alt="image-20200607215820676"></p>
+<p>编写程序的思路是，一个简单的注册号检验，输入正确的校验号则成功激活，否则失败。</p>
+<p>绕过逻辑，hook掉判断成功失败的函数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        <span class="keyword">final</span> TextView textView = (TextView)findViewById(R.id.editText_code);</span><br><span class="line">        textView.setEnabled(<span class="keyword">true</span>);</span><br><span class="line">        Button check = (Button)findViewById(R.id.button);</span><br><span class="line">        check.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(check(textView.getText().toString()))&#123;</span><br><span class="line">                    Toast.makeText(MainActivity.<span class="keyword">this</span>,<span class="string">"校验成功"</span>,Toast.LENGTH_LONG).show();</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    Toast.makeText(MainActivity.<span class="keyword">this</span>,<span class="string">"校验失败"</span>,Toast.LENGTH_LONG).show();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">check</span><span class="params">(String number)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> number.equals(<span class="string">"pass_word"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><img src="/assets/image-20200607223202986.png" alt="image-20200607223202986"></p>
+<p>现在hook app。</p>
+<p>首先生成带签名app</p>
+<p><img src="/assets/image-20200607223304658.png" alt="image-20200607223304658"></p>
+<h2><span id="frida测试">frida测试</span></h2><p>这里app没加壳，又有源码不用逆向，所以直接上手即可。</p>
+<p>check.js代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(Java.available)&#123;</span><br><span class="line">    Java.perform(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> checkMethod = Java.use(<span class="string">"blog.ydq6.demo1.MainActivity"</span>);</span><br><span class="line">        checkMethod.check.overload(<span class="string">"java.lang.String"</span>).implementation=<span class="function"><span class="keyword">function</span>(<span class="params">param</span>)</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"修改成功;\n"</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后执行frida命令</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">frida -U -f blog.ydq6.demo1 -l F:<span class="symbol">\c</span>ode<span class="symbol">\A</span>ndroidProject<span class="symbol">\D</span>emo1<span class="symbol">\a</span>pp<span class="symbol">\h</span>ook<span class="symbol">\m</span>odifyCheck.js --no-pause</span><br></pre></td></tr></table></figure>
+
+<p>发现还是错误。</p>
+<p>参考网上教程：</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">frida -U blog.ydq6.demo1 -l F:<span class="symbol">\c</span>ode<span class="symbol">\A</span>ndroidProject<span class="symbol">\D</span>emo1<span class="symbol">\a</span>pp<span class="symbol">\h</span>ook<span class="symbol">\m</span>odifyCheck.js</span><br></pre></td></tr></table></figure>
+
+<p>去掉了-f –no-pause选项。</p>
+<p>退出app,再重新打开，发现成功：<br><img src="/assets/image-20200607231641389.png" alt="image-20200607231641389"></p>
+<p><img src="/assets/image-20200607231659556.png" alt="image-20200607231659556"></p>
+<h2><span id="飞聊软件逆向分析">飞聊软件逆向分析</span></h2><p>将豌豆荚下载的飞聊apk放入jeb中反编译发现错误，猜测加了壳。</p>
+<p><img src="/assets/image-20200609165516555.png" alt="image-20200609165516555"></p>
+<p>放jadx发现信息出来了。</p>
+<p><img src="/assets/image-20200609213830362.png" alt="image-20200609213830362"></p>
+<p>很奇怪</p>
+<h2><span id="frida脱壳">frida脱壳</span></h2><figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb forward tcp:27042 tcp:27042</span><br><span class="line">frida -R -f com.gaotu100.superclass -l  N:<span class="symbol">\w</span>eiyun<span class="symbol">\D</span>ocuments<span class="symbol">\s</span>ecurity<span class="symbol">\a</span>ndroid_security<span class="symbol">\f</span>rida<span class="symbol">\F</span>rida-Scripts-master<span class="symbol">\u</span>npack<span class="symbol">\u</span>npack.js</span><br></pre></td></tr></table></figure>
+
+<p>发现没用，报错。</p>
+<h2><span id="xposed脱壳">xposed脱壳</span></h2><p>由于dumpdex不支持模拟器，所以换真机演示。</p>
+<h1><span id="frida-编程参考">frida 编程参考</span></h1><h1><span id="smali文件分析">smali文件分析</span></h1><p>源文件：</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">.class</span><span class="keyword"> public</span> <span class="class">Lnet/bluelotus/tomorrow/easyandroid/Crackme;</span></span><br><span class="line"><span class="keyword">.super</span> <span class="class">Ljava/lang/Object;</span></span><br><span class="line"><span class="keyword">.source</span> <span class="string">"Crackme.java"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># instance fields</span></span><br><span class="line"><span class="keyword">.field</span><span class="keyword"> private</span> str2:<span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># direct methods</span></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> public</span><span class="keyword"> constructor</span> &lt;init&gt;()V</span><br><span class="line"><span class="keyword">    .locals</span> 1</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .prologue</span></span><br><span class="line"><span class="keyword">    .line</span> 22</span><br><span class="line">   <span class="built_in"> invoke-direct </span>&#123;p0&#125;, <span class="class">Ljava/lang/Object;</span>-&gt;&lt;init&gt;()V</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 21</span><br><span class="line">   <span class="built_in"> const-string </span>v0, <span class="string">"cGhyYWNrICBjdGYgMjAxNg=="</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> iput-object </span>v0, p0, <span class="class">Lnet/bluelotus/tomorrow/easyandroid/Crackme;</span>-&gt;str2:<span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 23</span><br><span class="line">   <span class="built_in"> const-string </span>v0, <span class="string">"sSNnx1UKbYrA1+MOrdtDTA=="</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-direct </span>&#123;p0, v0&#125;, <span class="class">Lnet/bluelotus/tomorrow/easyandroid/Crackme;</span>-&gt;GetFlag(<span class="class">Ljava/lang/String;</span>)<span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 24</span><br><span class="line">    return-void</span><br><span class="line"><span class="keyword">.end method</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> private</span> GetFlag(<span class="class">Ljava/lang/String;</span>)<span class="class">Ljava/lang/String;</span></span><br><span class="line"><span class="keyword">    .locals</span> 4</span><br><span class="line"><span class="keyword">    .param</span> p1, <span class="string">"str"</span>    <span class="comment"># Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">    .prologue</span></span><br><span class="line">   <span class="built_in"> const/4 </span>v3, 0x0</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 27</span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;p1&#125;, <span class="class">Ljava/lang/String;</span>-&gt;getBytes()[B</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v2</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-static </span>&#123;v2, v3&#125;, <span class="class">Landroid/util/Base64;</span>-&gt;decode([BI)[B</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v0</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 29</span><br><span class="line"><span class="keyword">    .local</span> v0, <span class="string">"content"</span>:[B</span><br><span class="line">   <span class="built_in"> new-instance </span>v1, <span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> iget-object </span>v2, p0, <span class="class">Lnet/bluelotus/tomorrow/easyandroid/Crackme;</span>-&gt;str2:<span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;v2&#125;, <span class="class">Ljava/lang/String;</span>-&gt;getBytes()[B</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v2</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-static </span>&#123;v2, v3&#125;, <span class="class">Landroid/util/Base64;</span>-&gt;decode([BI)[B</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v2</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-direct </span>&#123;v1, v2&#125;, <span class="class">Ljava/lang/String;</span>-&gt;&lt;init&gt;([B)V</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 30</span><br><span class="line"><span class="keyword">    .local</span> v1, <span class="string">"kk"</span>:<span class="class">Ljava/lang/String;</span></span><br><span class="line">   <span class="built_in"> sget-object </span>v2, <span class="class">Ljava/lang/System;</span>-&gt;out:<span class="class">Ljava/io/PrintStream;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-direct </span>&#123;p0, v0, v1&#125;, <span class="class">Lnet/bluelotus/tomorrow/easyandroid/Crackme;</span>-&gt;decrypt([B<span class="class">Ljava/lang/String;</span>)<span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v3</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;v2, v3&#125;, <span class="class">Ljava/io/PrintStream;</span>-&gt;println(<span class="class">Ljava/lang/String;</span>)V</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 31</span><br><span class="line">   <span class="built_in"> const/4 </span>v2, 0x0</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> return-object </span>v2</span><br><span class="line"><span class="keyword">.end method</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> private</span> decrypt([B<span class="class">Ljava/lang/String;</span>)<span class="class">Ljava/lang/String;</span></span><br><span class="line"><span class="keyword">    .locals</span> 8</span><br><span class="line"><span class="keyword">    .param</span> p1, <span class="string">"content"</span>    <span class="comment"># [B</span></span><br><span class="line"><span class="keyword">    .param</span> p2, <span class="string">"password"</span>    <span class="comment"># Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">    .prologue</span></span><br><span class="line"><span class="keyword">    .line</span> 35</span><br><span class="line">   <span class="built_in"> const/4 </span>v4, 0x0</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 37</span><br><span class="line"><span class="keyword">    .local</span> v4, <span class="string">"m"</span>:<span class="class">Ljava/lang/String;</span></span><br><span class="line">   <span class="keyword"> :try_start_0</span></span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;p2&#125;, <span class="class">Ljava/lang/String;</span>-&gt;getBytes()[B</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v3</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 38</span><br><span class="line"><span class="keyword">    .local</span> v3, <span class="string">"keyStr"</span>:[B</span><br><span class="line">   <span class="built_in"> new-instance </span>v2, <span class="class">Ljavax/crypto/spec/SecretKeySpec;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> const-string </span>v7, <span class="string">"AES"</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-direct </span>&#123;v2, v3, v7&#125;, <span class="class">Ljavax/crypto/spec/SecretKeySpec;</span>-&gt;&lt;init&gt;([B<span class="class">Ljava/lang/String;</span>)V</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 39</span><br><span class="line"><span class="keyword">    .local</span> v2, <span class="string">"key"</span>:<span class="class">Ljavax/crypto/spec/SecretKeySpec;</span></span><br><span class="line">   <span class="built_in"> const-string </span>v7, <span class="string">"AES/ECB/NoPadding"</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-static </span>&#123;v7&#125;, <span class="class">Ljavax/crypto/Cipher;</span>-&gt;getInstance(<span class="class">Ljava/lang/String;</span>)<span class="class">Ljavax/crypto/Cipher;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v0</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 40</span><br><span class="line"><span class="keyword">    .local</span> v0, <span class="string">"cipher"</span>:<span class="class">Ljavax/crypto/Cipher;</span></span><br><span class="line">   <span class="built_in"> const/4 </span>v7, 0x2</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;v0, v7, v2&#125;, <span class="class">Ljavax/crypto/Cipher;</span>-&gt;init(I<span class="class">Ljava/security/Key;</span>)V</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 41</span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;v0, p1&#125;, <span class="class">Ljavax/crypto/Cipher;</span>-&gt;doFinal([B)[B</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> move-result-object </span>v6</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 42</span><br><span class="line"><span class="keyword">    .local</span> v6, <span class="string">"result"</span>:[B</span><br><span class="line">   <span class="built_in"> new-instance </span>v5, <span class="class">Ljava/lang/String;</span></span><br><span class="line"></span><br><span class="line">   <span class="built_in"> invoke-direct </span>&#123;v5, v6&#125;, <span class="class">Ljava/lang/String;</span>-&gt;&lt;init&gt;([B)V</span><br><span class="line">   <span class="keyword"> :try_end_0</span></span><br><span class="line"><span class="keyword">    .catch</span> <span class="class">Ljava/security/NoSuchAlgorithmException;</span> &#123;:try_start_0 ..<span class="keyword"> :try_end_0</span>&#125;<span class="keyword"> :catch_1</span></span><br><span class="line"><span class="keyword">    .catch</span> <span class="class">Ljavax/crypto/NoSuchPaddingException;</span> &#123;:try_start_0 ..<span class="keyword"> :try_end_0</span>&#125;<span class="keyword"> :catch_0</span></span><br><span class="line"><span class="keyword">    .catch</span> <span class="class">Ljava/security/InvalidKeyException;</span> &#123;:try_start_0 ..<span class="keyword"> :try_end_0</span>&#125;<span class="keyword"> :catch_4</span></span><br><span class="line"><span class="keyword">    .catch</span> <span class="class">Ljavax/crypto/IllegalBlockSizeException;</span> &#123;:try_start_0 ..<span class="keyword"> :try_end_0</span>&#125;<span class="keyword"> :catch_2</span></span><br><span class="line"><span class="keyword">    .catch</span> <span class="class">Ljavax/crypto/BadPaddingException;</span> &#123;:try_start_0 ..<span class="keyword"> :try_end_0</span>&#125;<span class="keyword"> :catch_3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">    .end local</span> v4    <span class="comment"># "m":Ljava/lang/String;</span></span><br><span class="line"><span class="keyword">    .local</span> v5, <span class="string">"m"</span>:<span class="class">Ljava/lang/String;</span></span><br><span class="line">   <span class="built_in"> move-object </span>v4, v5</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 46</span><br><span class="line"><span class="keyword">    .end local</span> v0    <span class="comment"># "cipher":Ljavax/crypto/Cipher;</span></span><br><span class="line"><span class="keyword">    .end local</span> v2    <span class="comment"># "key":Ljavax/crypto/spec/SecretKeySpec;</span></span><br><span class="line"><span class="keyword">    .end local</span> v3    <span class="comment"># "keyStr":[B</span></span><br><span class="line"><span class="keyword">    .end local</span> v5    <span class="comment"># "m":Ljava/lang/String;</span></span><br><span class="line"><span class="keyword">    .end local</span> v6    <span class="comment"># "result":[B</span></span><br><span class="line"><span class="keyword">    .restart</span> local v4    <span class="comment"># "m":Ljava/lang/String;</span></span><br><span class="line">   <span class="keyword"> :goto_0</span></span><br><span class="line">   <span class="built_in"> return-object </span>v4</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 43</span><br><span class="line">   <span class="keyword"> :catch_0</span></span><br><span class="line">   <span class="built_in"> move-exception </span>v1</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 44</span><br><span class="line"><span class="keyword">    .local</span> v1, <span class="string">"e"</span>:<span class="class">Ljava/security/GeneralSecurityException;</span></span><br><span class="line">   <span class="keyword"> :goto_1</span></span><br><span class="line">   <span class="built_in"> invoke-virtual </span>&#123;v1&#125;, <span class="class">Ljava/security/GeneralSecurityException;</span>-&gt;printStackTrace()V</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> goto </span>:goto_0</span><br><span class="line"></span><br><span class="line"><span class="keyword">    .line</span> 43</span><br><span class="line"><span class="keyword">    .end local</span> v1    <span class="comment"># "e":Ljava/security/GeneralSecurityException;</span></span><br><span class="line">   <span class="keyword"> :catch_1</span></span><br><span class="line">   <span class="built_in"> move-exception </span>v1</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> goto </span>:goto_1</span><br><span class="line"></span><br><span class="line">   <span class="keyword"> :catch_2</span></span><br><span class="line">   <span class="built_in"> move-exception </span>v1</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> goto </span>:goto_1</span><br><span class="line"></span><br><span class="line">   <span class="keyword"> :catch_3</span></span><br><span class="line">   <span class="built_in"> move-exception </span>v1</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> goto </span>:goto_1</span><br><span class="line"></span><br><span class="line">   <span class="keyword"> :catch_4</span></span><br><span class="line">   <span class="built_in"> move-exception </span>v1</span><br><span class="line"></span><br><span class="line">   <span class="built_in"> goto </span>:goto_1</span><br><span class="line"><span class="keyword">.end method</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2><span id="java类">JAVA类</span></h2><ul>
+<li>perform(function) 执行函数</li>
+<li>Java.use(className)  获取类名</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+      
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Frida/" rel="tag"><i class="fa fa-tag"></i>Frida</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/android/%E5%AE%89%E5%8D%93%E6%B5%8B%E8%AF%95-%E4%B8%80/" rel="prev" title="安卓测试(一)">
+      <i class="fa fa-chevron-left"></i> 安卓测试(一)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/LLVM%E7%B3%BB%E5%88%97-%E5%A4%9A%E6%80%81%E6%B5%8B%E8%AF%95/" rel="next" title="LLVM系列-多态测试">
+      LLVM系列-多态测试 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-text">编写demo测试frida api</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">编写demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">frida测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">飞聊软件逆向分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">frida脱壳</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">xposed脱壳</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-text">frida 编程参考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-text">smali文件分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">JAVA类</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="gwolfs"
+      src="/images/head1.png">
+  <p class="site-author-name" itemprop="name">gwolfs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/TateYdq" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;TateYdq" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1937441951@qq.com" title="E-Mail → mailto:1937441951@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+<!-- CloudCalendar -->
+<div class="widget-wrap" style="width: 90%;margin-left: auto;margin-right: auto; opacity: 0.97;">
+	<div class="widget" id="CloudCalendar"></div>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备19000724号-1 </a>
+      <img src="/images/beian.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802028114" rel="noopener" target="_blank">京公网安备 11010802028114号 </a>
+  </div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">gwolfs</span>
+</div>
+
+
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共31.4k字</span>
+  <span class="post-meta-divider">|</span>
+  本站总访问量<span id="busuanzi_value_site_pv"></span>次
+  <span class="post-meta-divider">|</span>
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+  <span class="post-meta-divider">|</span>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+<!-- calendar widget -->
+
+
+</body>
+</html>
