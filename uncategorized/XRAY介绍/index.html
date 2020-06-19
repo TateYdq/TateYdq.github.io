@@ -29,7 +29,7 @@
 <meta property="og:description" content="扫描扫描： 1xray webscan --basic-crawler url    测试： 1.\xray_windows_386.exe webscan --basic-crawler http:&#x2F;&#x2F;testphp.vulnweb.com&#x2F;      被动代理代理扮演中间人角色。 1.安装浏览器代理插件：SwitchyOmega插件 2.生成xray证书并安装证书 1.\xray_window">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-06-17T03:54:45.531Z">
-<meta property="article:modified_time" content="2020-06-17T04:56:42.417Z">
+<meta property="article:modified_time" content="2020-06-17T10:49:32.036Z">
 <meta property="article:author" content="gwolfs">
 <meta property="article:tag" content="web安全 SGX">
 <meta name="twitter:card" content="summary">
@@ -197,7 +197,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-06-17 11:54:45 / 修改时间：12:56:42" itemprop="dateCreated datePublished" datetime="2020-06-17T11:54:45+08:00">2020-06-17</time>
+              <time title="创建时间：2020-06-17 11:54:45 / 修改时间：18:49:32" itemprop="dateCreated datePublished" datetime="2020-06-17T11:54:45+08:00">2020-06-17</time>
             </span>
 
           
@@ -232,6 +232,43 @@
 <p>3.启动代理</p>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.\<span class="selector-tag">xray_windows_386</span><span class="selector-class">.exe</span> <span class="selector-tag">webscan</span> <span class="selector-tag">--listen</span> 127<span class="selector-class">.0</span><span class="selector-class">.0</span><span class="selector-class">.1</span><span class="selector-pseudo">:1111</span> <span class="selector-tag">--html-output</span> <span class="selector-tag">proxy</span><span class="selector-class">.html</span></span><br></pre></td></tr></table></figure>
 
+<p>可以新建proxy.bat文件：</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2><span id="配置文件">配置文件</span></h2><p>配置文件位置config.yaml（注意只有使用过一次xray才会生成配置文件）</p>
+<h3><span id="允许扫描的域">允许扫描的域</span></h3><p>配置允许扫描和不允许扫描的域：</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">includes</span></span><br><span class="line"><span class="attribute">excludes</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3><span id="认证信息配置">认证信息配置</span></h3><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">auth</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3><span id="扫描插件配置">扫描插件配置</span></h3><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plugins中把需要开启的选项设置enabled为<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>或者使用 –plugins pulgin1,plugin2,…</p>
+<h3><span id="发包速率限制">发包速率限制</span></h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">max_qps</span>              每秒最大请求次</span><br></pre></td></tr></table></figure>
+
+
+
+<h3><span id="扫描代理配置">扫描代理配置</span></h3><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">proxy</span></span><br></pre></td></tr></table></figure>
+
+<p>可以配置上游代理，比如流量分发。</p>
+<p>burpsuite和xray可以互相转发。</p>
+<h2><span id="编写自定义poc">编写自定义POC</span></h2><p>poc为yaml格式。</p>
+<p>可以使用多个规则来串联。</p>
+<p>poc的构成：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">- </span>name</span><br><span class="line"><span class="bullet">- </span>rules</span><br><span class="line"></span><br><span class="line"><span class="bullet">- </span>detail:</span><br></pre></td></tr></table></figure>
+
+
+
+
+
 
     </div>
 
@@ -262,7 +299,10 @@
     <a href="/uncategorized/solr%E6%BC%8F%E6%B4%9E%E7%A0%94%E7%A9%B6/" rel="prev" title="solr漏洞研究">
       <i class="fa fa-chevron-left"></i> solr漏洞研究
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/uncategorized/%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E6%BC%8F%E6%B4%9E%E9%9B%86%E5%90%88/" rel="next" title="常用软件漏洞集合">
+      常用软件漏洞集合 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -321,7 +361,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-text">扫描</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">被动代理</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-text">扫描</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">被动代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-text">允许扫描的域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-text">认证信息配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-text">扫描插件配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-text">发包速率限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-text">扫描代理配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-text">编写自定义POC</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -337,14 +377,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -403,7 +443,7 @@
 <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共31.4k字</span>
+  <span class="post-count">博客全站共31.8k字</span>
   <span class="post-meta-divider">|</span>
   本站总访问量<span id="busuanzi_value_site_pv"></span>次
   <span class="post-meta-divider">|</span>
