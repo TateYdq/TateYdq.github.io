@@ -19,6 +19,41 @@
       </tags>
   </entry>
   <entry>
+    <title>Leetcode72-编辑距离</title>
+    <url>/%E7%AE%97%E6%B3%95/Leetcode72-%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/</url>
+    <content><![CDATA[<h4><span id="72-编辑距离"></span></h4><p>难度困难928</p>
+<p>给你两个单词 <em>word1</em> 和 <em>word2*，请你计算出将 *word1</em> 转换成 <em>word2</em> 所使用的最少操作数 。</p>
+<p>你可以对一个单词进行如下三种操作：</p>
+<ol>
+<li>插入一个字符</li>
+<li>删除一个字符</li>
+<li>替换一个字符</li>
+</ol>
+<a id="more"></a>
+
+<p>假设<code>dp[i][j]</code>为从word1[0:i]到word2[0:j]的编辑距离，左闭右开，特殊的，word1[0:0]、word2[0:0]为空，</p>
+<p>则</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">对于替换，dp[<span class="string">i</span>][<span class="symbol">j</span>]=dp[<span class="string">i-1</span>][<span class="symbol">j-1</span>]+1 or dp[<span class="string">i-1</span>][<span class="symbol">j-1</span>]</span><br><span class="line">对于添加，dp[<span class="string">i</span>][<span class="symbol">j</span>]=dp[<span class="string">i-1</span>][<span class="symbol">j</span>]+1</span><br><span class="line">对于删除，dp[<span class="string">i</span>][<span class="symbol">j</span>]=dp[<span class="string">i</span>][<span class="symbol">j-1</span>]+1</span><br><span class="line"></span><br><span class="line">所以dp[<span class="string">i</span>][<span class="symbol">j</span>]=min(dp[<span class="string">i-1</span>][<span class="symbol">j-1</span>]+1,dp[<span class="string">i-1</span>][<span class="symbol">j</span>]+1,dp[<span class="string">i</span>][<span class="symbol">j-1</span>]+1);</span><br></pre></td></tr></table></figure>
+
+<p>递推方程:</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">（1）dp[<span class="string">0</span>][<span class="symbol">0</span>]~dp[<span class="string">0</span>][<span class="symbol">len(word2)-1</span>]</span><br><span class="line">（2）dp[<span class="string">0</span>][<span class="symbol">0</span>]~dp[<span class="string">len(word)-1</span>][<span class="symbol">0</span>]</span><br><span class="line"> (3)外层1~i，内层1~j,计算dp[<span class="string">i</span>][<span class="symbol">j</span>]</span><br></pre></td></tr></table></figure>
+
+<p>最短距离：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[][]dp = <span class="keyword">new</span> <span class="keyword">int</span>[word1.length()+<span class="number">1</span>][word2.length()+<span class="number">1</span>];</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= word2.length();j++)&#123;</span><br><span class="line">            dp[<span class="number">0</span>][j] = dp[<span class="number">0</span>][j-<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= word1.length();i++)&#123;</span><br><span class="line">            dp[i][<span class="number">0</span>] = dp[i-<span class="number">1</span>][<span class="number">0</span>] + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= word1.length();i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= word2.length();j++)&#123;</span><br><span class="line">                dp[i][j] = Math.min(dp[i][j-<span class="number">1</span>],dp[i-<span class="number">1</span>][j])+<span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span>(word1.charAt(i-<span class="number">1</span>) == word2.charAt(j-<span class="number">1</span>))&#123;</span><br><span class="line">                    dp[i][j] = Math.min(dp[i][j],dp[i-<span class="number">1</span>][j-<span class="number">1</span>]);</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    dp[i][j] = Math.min(dp[i][j],dp[i-<span class="number">1</span>][j-<span class="number">1</span>]+<span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[word1.length()][word2.length()];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/assets/image-20200621180754034.png" alt="image-20200621180754034"></p>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LLVM-bug</title>
     <url>/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/LLVM-bug/</url>
     <content><![CDATA[<h2><span id="llvmtrap">llvm.trap</span></h2><p>今天在做项目时发现一个问题。用clang生成的.bc文件可能会生成一些陷阱指令。</p>
