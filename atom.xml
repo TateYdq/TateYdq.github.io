@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.ydq6.com/"/>
-  <updated>2020-06-19T11:47:02.014Z</updated>
+  <updated>2020-06-20T16:08:54.592Z</updated>
   <id>http://blog.ydq6.com/</id>
   
   <author>
@@ -15,6 +15,56 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LLVM-bug</title>
+    <link href="http://blog.ydq6.com/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/LLVM-bug/"/>
+    <id>http://blog.ydq6.com/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/LLVM-bug/</id>
+    <published>2020-06-20T14:48:26.000Z</published>
+    <updated>2020-06-20T16:08:54.592Z</updated>
+    
+    <content type="html"><![CDATA[<h2><span id="llvmtrap">llvm.trap</span></h2><p>今天在做项目时发现一个问题。用clang生成的.bc文件可能会生成一些陷阱指令。</p><figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">call</span> void <span class="title">@llvm.trap</span>()</span><br><span class="line"><span class="keyword">unreachable</span></span><br></pre></td></tr></table></figure><p>所以在改写代码时要注意，不要在陷阱指令后加hook或其他指令，不然永远达不到而且会报错。</p><p>[注] 作者使用版本为llvm7.0</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2&gt;&lt;span id=&quot;llvmtrap&quot;&gt;llvm.trap&lt;/span&gt;&lt;/h2&gt;&lt;p&gt;今天在做项目时发现一个问题。用clang生成的.bc文件可能会生成一些陷阱指令。&lt;/p&gt;
+&lt;figure class=&quot;highlight llvm&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td c
+      
+    
+    </summary>
+    
+    
+      <category term="程序分析" scheme="http://blog.ydq6.com/categories/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/"/>
+    
+    
+      <category term="LLVM" scheme="http://blog.ydq6.com/tags/LLVM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>通达OA漏洞</title>
+    <link href="http://blog.ydq6.com/uncategorized/%E9%80%9A%E8%BE%BEOA%E6%BC%8F%E6%B4%9E/"/>
+    <id>http://blog.ydq6.com/uncategorized/%E9%80%9A%E8%BE%BEOA%E6%BC%8F%E6%B4%9E/</id>
+    <published>2020-06-20T03:17:08.000Z</published>
+    <updated>2020-06-20T05:34:09.672Z</updated>
+    
+    <content type="html"><![CDATA[<h3><span id="任意用户登录漏洞">任意用户登录漏洞</span></h3><p>在logincheck_code.php中删除cookie并在post请求中加入UID=1，然后响应返回系统管理员session值。</p><p>演示：<br><img src="/assets/image-20200620113426425.png" alt="image-20200620113426425"></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h3&gt;&lt;span id=&quot;任意用户登录漏洞&quot;&gt;任意用户登录漏洞&lt;/span&gt;&lt;/h3&gt;&lt;p&gt;在logincheck_code.php中删除cookie并在post请求中加入UID=1，然后响应返回系统管理员session值。&lt;/p&gt;
+&lt;p&gt;演示：&lt;br&gt;&lt;img src=&quot;/a
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Leetcode102-二叉树层次遍历</title>
@@ -50,9 +100,16 @@
     <link href="http://blog.ydq6.com/uncategorized/%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E6%BC%8F%E6%B4%9E%E9%9B%86%E5%90%88/"/>
     <id>http://blog.ydq6.com/uncategorized/%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E6%BC%8F%E6%B4%9E%E9%9B%86%E5%90%88/</id>
     <published>2020-06-17T10:17:19.000Z</published>
-    <updated>2020-06-17T10:17:19.898Z</updated>
+    <updated>2020-06-20T05:34:12.339Z</updated>
+    
+    <content type="html"><![CDATA[<h3><span id="nginx漏洞">Nginx漏洞</span></h3><h3><span id="通达oa">通达OA</span></h3><h3><span id="任意用户登录漏洞">任意用户登录漏洞</span></h3><p>在logincheck_code.php中删除cookie并在post请求中加入UID=1，然后响应返回系统管理员session值。</p><h3><span id="另一处任意用户登录漏洞">另一处任意用户登录漏洞</span></h3><p>通过精心构造请求得到系统管理员的codeuid,然后再在login_code_check.php的get请求中带入codeuid参数得到系统管理员的session。</p>]]></content>
     
     <summary type="html">
+    
+      
+      
+        &lt;h3&gt;&lt;span id=&quot;nginx漏洞&quot;&gt;Nginx漏洞&lt;/span&gt;&lt;/h3&gt;&lt;h3&gt;&lt;span id=&quot;通达oa&quot;&gt;通达OA&lt;/span&gt;&lt;/h3&gt;&lt;h3&gt;&lt;span id=&quot;任意用户登录漏洞&quot;&gt;任意用户登录漏洞&lt;/span&gt;&lt;/h3&gt;&lt;p&gt;在logincheck_cod
+      
     
     </summary>
     
@@ -464,64 +521,6 @@
     
       <category term="web安全" scheme="http://blog.ydq6.com/categories/web/"/>
     
-    
-      <category term="web" scheme="http://blog.ydq6.com/tags/web/"/>
-    
-      <category term="xxe" scheme="http://blog.ydq6.com/tags/xxe/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>求数组连续最大和</title>
-    <link href="http://blog.ydq6.com/%E7%AE%97%E6%B3%95/%E6%B1%82%E6%95%B0%E7%BB%84%E8%BF%9E%E7%BB%AD%E6%9C%80%E5%A4%A7%E5%92%8C/"/>
-    <id>http://blog.ydq6.com/%E7%AE%97%E6%B3%95/%E6%B1%82%E6%95%B0%E7%BB%84%E8%BF%9E%E7%BB%AD%E6%9C%80%E5%A4%A7%E5%92%8C/</id>
-    <published>2020-05-12T15:20:34.000Z</published>
-    <updated>2020-06-03T13:48:36.997Z</updated>
-    
-    <content type="html"><![CDATA[<p>题目描述：</p><p>一个有n个元素的数组，这个元素的数组既可以是正数又可以是负数，数组中连续的一个元素或多个元素可以组成一个连续的子数组，一个数组可能有很多个子数组，求子数组和的最大值。</p><h2><span id="方法一">方法一：</span></h2><p>设$$sum[i][j]$$为从i到j的数组和（其中i&lt;j），则计算出所有的sum即可。</p><p>sum计算公式：</p><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sum[<span class="string">i</span>][<span class="symbol">j</span>] = sum[<span class="string">i</span>][<span class="symbol">j-1</span>] + a[j]           （1-1）</span><br></pre></td></tr></table></figure><p>计算顺序，如图所示，画出一个二维数组表，其中值对应的就是$$sum[i][j]$$。</p><p>（1）先计算对角线上元素值。</p><p>（2）从第一行开始从左往右计算出值，并且每次计算的值和最大的值比较。计算方法为上面的公式（1-1）</p><p>（3）从2-n行开始从左往右计算出值，并且每次计算的值和最大的值比较。</p><p><img src="/assets/image-20200512234712911.png" alt="image-20200512234712911"></p><p>方法二：</p><p>动态规划方法：</p><p>dp[i]为以nums[i]结尾的最大子序列和。则：</p><p>（1）如果nums[i]&gt;dp[i-1]而且dp[i-1]&lt;0，那么</p><p>dp[i]=nums[i]</p><p>（2）如果dp[i-1]&gt;0，dp[i]=dp[i-1]+nums[i]</p><p>所以：</p><p><img src="/assets/image-20200603213124571.png" alt="image-20200603213124571"></p><p><img src="/assets/image-20200603213749125.png" alt="image-20200603213749125"></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> len = nums.length;</span><br><span class="line">        <span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[len];</span><br><span class="line">        dp[<span class="number">0</span>]=nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">int</span> maxValue = dp[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i =<span class="number">1</span>;i &lt; len;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(dp[i-<span class="number">1</span>]&lt;<span class="number">0</span>)&#123;</span><br><span class="line">                dp[i] = nums[i];</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                dp[i] = nums[i]+dp[i-<span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(dp[i] &gt; maxValue)&#123;</span><br><span class="line">                maxValue = dp[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> maxValue;</span><br></pre></td></tr></table></figure><p>感觉可以减少空间复杂度，dp没必要，用一个变量就可以了。</p><p>改进后：</p><p><img src="/assets/image-20200603214835166.png" alt="image-20200603214835166"></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;题目描述：&lt;/p&gt;
-&lt;p&gt;一个有n个元素的数组，这个元素的数组既可以是正数又可以是负数，数组中连续的一个元素或多个元素可以组成一个连续的子数组，一个数组可能有很多个子数组，求子数组和的最大值。&lt;/p&gt;
-&lt;h2&gt;&lt;span id=&quot;方法一&quot;&gt;方法一：&lt;/span&gt;&lt;/h2&gt;&lt;
-      
-    
-    </summary>
-    
-    
-      <category term="算法" scheme="http://blog.ydq6.com/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="算法" scheme="http://blog.ydq6.com/tags/%E7%AE%97%E6%B3%95/"/>
-    
-      <category term="数组" scheme="http://blog.ydq6.com/tags/%E6%95%B0%E7%BB%84/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>vulnhub_xxe</title>
-    <link href="http://blog.ydq6.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/vulnhub-xxe/"/>
-    <id>http://blog.ydq6.com/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/vulnhub-xxe/</id>
-    <published>2020-05-12T14:36:41.000Z</published>
-    <updated>2020-05-12T15:15:34.928Z</updated>
-    
-    <content type="html"><![CDATA[<h1><span id="vulnhub-xxe实验">vulnhub xxe实验</span></h1><h2><span id="1主机发现">(1)主机发现</span></h2><p>首先ifconfig查看当前ip地址： 10.1.1.92</p><p>然后利用netdiscover被动扫描扫描局域网机器。</p><a id="more"></a><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netdiscover -r 10.1.1.92/24</span><br></pre></td></tr></table></figure><p><img src="/assets/image-20200512161540297.png" alt="image-20200512161540297"></p><p>发现两台机器，90，91，93</p><p>利用Nmap扫描端口：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim ip.txt #将要扫描的ip列表写进ip.txt</span><br><span class="line">nmap -sV -p 1-65535 -iL ip.txt -v</span><br></pre></td></tr></table></figure><p>结果如下：</p><p><img src="/assets/image-20200512163413524.png" alt="image-20200512163413524"></p><p><img src="/assets/image-20200512163430298.png" alt="image-20200512163430298"></p><p><img src="/assets/image-20200512163449465.png" alt="image-20200512163449465"></p><p>访问91机器，发现是apache目录，找到目标。</p><h2><span id="2网站扫描">（2）网站扫描</span></h2><p>利用kali的dirb扫描:</p><p><img src="/assets/image-20200512162428309.png" alt="image-20200512162428309"></p><p>关键文件：robots.txt</p><p>访问发现：</p><p><img src="/assets/image-20200512162501481.png" alt="image-20200512162501481"></p><p>可以访问xxe目录，发现有登录栏。</p><p>访问admin.php，发现400了。所以猜想可能是xxe下的admin.php</p><p>又发现一个登录页面。所以可以知道后面个登录是管理员登录，前面个登录是用户登录。</p><h3><span id="漏洞挖掘">漏洞挖掘</span></h3><p>访问10.1.1.91/xxe</p><p>输入Name和Password:</p><p><img src="/assets/image-20200512163534468.png" alt="image-20200512163534468"></p><p>抓包:</p><p><img src="/assets/image-20200512163659235.png" alt="image-20200512163659235"></p><p>发现请求是xml请求，猜想有xxe,验证一下。</p><p>构造payload,验证漏洞</p><p><img src="/assets/image-20200512164212079.png" alt="image-20200512164212079"></p><p>漏洞存在。</p><p>构造payload读取源码:</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root</span>[<span class="meta">&lt;!ENTITY <span class="meta-keyword">xxe</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"php://filter/read=convert.base64-encode/resource=xxe.php"</span>&gt;</span>] &gt;</span></span><br><span class="line"><span class="symbol">&amp;xxe;</span></span><br></pre></td></tr></table></figure><p><img src="/assets/image-20200512164305534.png" alt="image-20200512164305534"></p><p>然后再解码：</p><p><img src="/assets/image-20200512164400006.png" alt="image-20200512164400006"></p><p>成功读取，再读admin.php，并解码：</p><p><img src="/assets/image-20200512164625029.png" alt="image-20200512164625029"></p><p>查出账户名为administhebest。密码的md5为 e6e061838856bf47e1de730719fb2609，md5解密后为admin@123.</p><p>admin.php处输入账号密码：</p><p><img src="/assets/image-20200512164816064.png" alt="image-20200512164816064"></p><p>得到flag:</p><p><img src="/assets/image-20200512164834411.png" alt="image-20200512164834411"></p><p>点击后发现跳转空了，加一个xxe目录就可以。</p><p><img src="/assets/image-20200512164917137.png" alt="image-20200512164917137"></p><p>可能flag在源码里，那就读源码：</p><p><img src="/assets/image-20200512165013929.png" alt="image-20200512165013929"></p><p><img src="/assets/image-20200512165033499.png" alt="image-20200512165033499"></p><p>得到flag：JQZFMMCZPE4HKWTNPBUFU6JVO5QUQQJ5。</p><p>flag还可以再解码： L2V0Yy8uZmxhZy5waHA= </p><p>再base64解码：</p><p>/etc/.flag.php</p><p>再读，由于是在etc目录下，所以用file协议读：</p><p><img src="/assets/image-20200512165748626.png" alt="image-20200512165748626"></p><p>很明显有加密，本地解密得到:</p><p><img src="/assets/image-20200512170140547.png" alt="image-20200512170140547"></p><p>发现不成功，原来是最后的?&gt;标识符打错了。</p><p>重写后发现访问虽然成功了，但是没有结果。重新换一台windows电脑解密即可，flag:</p><p>SAFCSP{xxe_is_so_easy}</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;vulnhub-xxe实验&quot;&gt;&lt;a href=&quot;#vulnhub-xxe实验&quot; class=&quot;headerlink&quot; title=&quot;vulnhub xxe实验&quot;&gt;&lt;/a&gt;vulnhub xxe实验&lt;/h1&gt;&lt;h2 id=&quot;1-主机发现&quot;&gt;&lt;a href=&quot;#1-主机发现&quot; class=&quot;headerlink&quot; title=&quot;(1)主机发现&quot;&gt;&lt;/a&gt;(1)主机发现&lt;/h2&gt;&lt;p&gt;首先ifconfig查看当前ip地址： 10.1.1.92&lt;/p&gt;
-&lt;p&gt;然后利用netdiscover被动扫描扫描局域网机器。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="渗透测试" scheme="http://blog.ydq6.com/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
-    
-    
-      <category term="靶机" scheme="http://blog.ydq6.com/tags/%E9%9D%B6%E6%9C%BA/"/>
     
       <category term="web" scheme="http://blog.ydq6.com/tags/web/"/>
     

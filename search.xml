@@ -19,6 +19,29 @@
       </tags>
   </entry>
   <entry>
+    <title>LLVM-bug</title>
+    <url>/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/LLVM-bug/</url>
+    <content><![CDATA[<h2><span id="llvmtrap">llvm.trap</span></h2><p>今天在做项目时发现一个问题。用clang生成的.bc文件可能会生成一些陷阱指令。</p>
+<figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line"><span class="keyword">call</span> void <span class="title">@llvm.trap</span>()</span><br><span class="line"><span class="keyword">unreachable</span></span><br></pre></td></tr></table></figure>
+
+<p>所以在改写代码时要注意，不要在陷阱指令后加hook或其他指令，不然永远达不到而且会报错。</p>
+<p>[注] 作者使用版本为llvm7.0</p>
+]]></content>
+      <categories>
+        <category>程序分析</category>
+      </categories>
+      <tags>
+        <tag>LLVM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>通达OA漏洞</title>
+    <url>/uncategorized/%E9%80%9A%E8%BE%BEOA%E6%BC%8F%E6%B4%9E/</url>
+    <content><![CDATA[<h3><span id="任意用户登录漏洞">任意用户登录漏洞</span></h3><p>在logincheck_code.php中删除cookie并在post请求中加入UID=1，然后响应返回系统管理员session值。</p>
+<p>演示：<br><img src="/assets/image-20200620113426425.png" alt="image-20200620113426425"></p>
+]]></content>
+  </entry>
+  <entry>
     <title>Leetcode102-二叉树层次遍历</title>
     <url>/program/Leetcode102-%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%82%E6%AC%A1%E9%81%8D%E5%8E%86/</url>
     <content><![CDATA[<h4><span id="102-二叉树的层序遍历"></span></h4><p>难度中等536</p>
@@ -47,7 +70,9 @@
   <entry>
     <title>常用软件漏洞集合</title>
     <url>/uncategorized/%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E6%BC%8F%E6%B4%9E%E9%9B%86%E5%90%88/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<h3><span id="nginx漏洞">Nginx漏洞</span></h3><h3><span id="通达oa">通达OA</span></h3><h3><span id="任意用户登录漏洞">任意用户登录漏洞</span></h3><p>在logincheck_code.php中删除cookie并在post请求中加入UID=1，然后响应返回系统管理员session值。</p>
+<h3><span id="另一处任意用户登录漏洞">另一处任意用户登录漏洞</span></h3><p>通过精心构造请求得到系统管理员的codeuid,然后再在login_code_check.php的get请求中带入codeuid参数得到系统管理员的session。</p>
+]]></content>
   </entry>
   <entry>
     <title>XRAY介绍</title>

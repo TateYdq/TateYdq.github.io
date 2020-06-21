@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://blog.ydq6.com/%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90/LLVM-bug/</loc>
+    <lastmod>2020-06-20</lastmod>
+  </url>  <url>
+    <loc>http://blog.ydq6.com/uncategorized/%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E6%BC%8F%E6%B4%9E%E9%9B%86%E5%90%88/</loc>
+    <lastmod>2020-06-20</lastmod>
+  </url>  <url>
+    <loc>http://blog.ydq6.com/uncategorized/%E9%80%9A%E8%BE%BEOA%E6%BC%8F%E6%B4%9E/</loc>
+    <lastmod>2020-06-20</lastmod>
+  </url>  <url>
     <loc>http://blog.ydq6.com/program/Leetcode102-%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%82%E6%AC%A1%E9%81%8D%E5%8E%86/</loc>
     <lastmod>2020-06-19</lastmod>
   </url>  <url>
     <loc>http://blog.ydq6.com/uncategorized/XRAY%E4%BB%8B%E7%BB%8D/</loc>
-    <lastmod>2020-06-17</lastmod>
-  </url>  <url>
-    <loc>http://blog.ydq6.com/uncategorized/%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E6%BC%8F%E6%B4%9E%E9%9B%86%E5%90%88/</loc>
     <lastmod>2020-06-17</lastmod>
   </url>  <url>
     <loc>http://blog.ydq6.com/%E7%AE%97%E6%B3%95/Leetcode139-%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86/</loc>
